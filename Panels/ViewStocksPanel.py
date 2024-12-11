@@ -29,17 +29,20 @@ from Networking.APIConstants import APIConstants
 from Frames.ChartFrame import ChartFrame
 from Threads.StoppableThread import StoppableThread
 from Frames.ViewStocksFrame import ViewStocksFrame
+from Frames.SearchStockFrame import SearchStockFrame
 
 class ViewStocksPanel(BasePanel):
 
-    __mbsMainBox: wx.BoxSizer = None
-    __mbsRightListBox: wx.BoxSizer = None
+    __mSearchStockFrame = None
+
     __mMainSplitter = None
 
     __mLeftPanel: wx.Panel = None
     __mRightPanel: wx.Panel = None
     __mDataPanel: wx.Panel = None
 
+    __mbsMainBox: wx.BoxSizer = None
+    __mbsRightListBox: wx.BoxSizer = None
     __mBoxSizerData = None
 
     __mtxSearchList: wx.TextCtrl = None
@@ -149,7 +152,7 @@ class ViewStocksPanel(BasePanel):
         self.__mtxSearchList.Bind(wx.EVT_TEXT, self.__on_change_search_list_value)
         hbs.Add(self.__mtxSearchList, 1, wx.EXPAND)
 
-        searchButton = super()._get_icon_button(self, wx.Bitmap(Icons.ICON_SEARCH), self.__on_click_search)
+        searchButton = super()._get_icon_button(self.__mRightPanel, wx.Bitmap(Icons.ICON_SEARCH), self.__on_click_search)
         hbs.Add(searchButton, 0, wx.EXPAND)
 
         vbs.Add(hbs, 0)
@@ -198,7 +201,8 @@ class ViewStocksPanel(BasePanel):
         self.__update_left_panel()
 
     def __on_click_search(self, evt):
-        print("SEARCH")
+        self.__mSearchStockFrame = SearchStockFrame(Strings.STR_SEARCH)
+        self.__mSearchStockFrame.Show(True)
 
     def __on_click_five_day_chart(self, evt):
         if not self.__mIsShowingChart5d:
@@ -273,59 +277,49 @@ class ViewStocksPanel(BasePanel):
 
     def __on_click_open_one_day_chart(self, evt):
         stockView = DataSynchronization.sync_get_chart(self.__mStockViewData.get_stock().get_sign(), APIConstants.VALUE_1D, APIConstants.VALUE_1M)
-        self.__mGraphOneDayPlot = ChartFrame(stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float))
+        self.__mGraphOneDayPlot = ChartFrame(Strings.STR_1D_VALUES, stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float))
         self.__mGraphOneDayPlot.Show(True)
         self.__mGraphOneDayPlot.Bind(wx.EVT_WINDOW_DESTROY, self.__on_destroy_graph_one_day_plot)
 
     def __on_click_open_five_day_chart(self, evt):
         stockView = DataSynchronization.sync_get_chart(self.__mStockViewData.get_stock().get_sign(), APIConstants.VALUE_5D, APIConstants.VALUE_1M)
-        cf = ChartFrame(stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float))
-        cf.Show(True)
+        ChartFrame(Strings.STR_5D_VALUES, stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float)).Show(True)
         
     def __on_click_open_one_month_chart(self, evt):
         stockView = DataSynchronization.sync_get_chart(self.__mStockViewData.get_stock().get_sign(), APIConstants.VALUE_1MO, APIConstants.VALUE_5M)
-        cf = ChartFrame(stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float))
-        cf.Show(True)
+        ChartFrame(Strings.STR_1MO_VALUES, stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float)).Show(True)
 
     def __on_click_open_three_month_chart(self, evt):
         stockView = DataSynchronization.sync_get_chart(self.__mStockViewData.get_stock().get_sign(), APIConstants.VALUE_3MO, APIConstants.VALUE_1H)
-        cf = ChartFrame(stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float))
-        cf.Show(True)
+        ChartFrame(Strings.STR_3MO_VALUES, stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float)).Show(True)
 
     def __on_click_open_six_month_chart(self, evt):
         stockView = DataSynchronization.sync_get_chart(self.__mStockViewData.get_stock().get_sign(), APIConstants.VALUE_6MO, APIConstants.VALUE_1H)
-        cf = ChartFrame(stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float))
-        cf.Show(True)
+        ChartFrame(Strings.STR_6MO_VALUES, stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float)).Show(True)
 
     def __on_click_open_one_year_chart(self, evt):
         stockView = DataSynchronization.sync_get_chart(self.__mStockViewData.get_stock().get_sign(), APIConstants.VALUE_1Y, APIConstants.VALUE_1H)
-        cf = ChartFrame(stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float))
-        cf.Show(True)
+        ChartFrame(Strings.STR_1Y_VALUES, stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float)).Show(True)
 
     def __on_click_open_two_year_chart(self, evt):
         stockView = DataSynchronization.sync_get_chart(self.__mStockViewData.get_stock().get_sign(), APIConstants.VALUE_2Y, APIConstants.VALUE_1H)
-        cf = ChartFrame(stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float))
-        cf.Show(True)
+        ChartFrame(Strings.STR_2Y_VALUES, stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float)).Show(True)
 
     def __on_click_open_five_year_chart(self, evt):
         stockView = DataSynchronization.sync_get_chart(self.__mStockViewData.get_stock().get_sign(), APIConstants.VALUE_5Y, APIConstants.VALUE_1D)
-        cf = ChartFrame(stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float))
-        cf.Show(True)
+        ChartFrame(Strings.STR_5Y_VALUES, stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float)).Show(True)
 
     def __on_click_open_ten_year_chart(self, evt):
         stockView = DataSynchronization.sync_get_chart(self.__mStockViewData.get_stock().get_sign(), APIConstants.VALUE_10Y, APIConstants.VALUE_1D)
-        cf = ChartFrame(stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float))
-        cf.Show(True)
+        ChartFrame(Strings.STR_10Y_VALUES, stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float)).Show(True)
 
     def __on_click_open_ytd_chart(self, evt):
         stockView = DataSynchronization.sync_get_chart(self.__mStockViewData.get_stock().get_sign(), APIConstants.VALUE_YTD, APIConstants.VALUE_1H)
-        cf = ChartFrame(stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float))
-        cf.Show(True)
+        ChartFrame(Strings.STR_YTD_VALUES, stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float)).Show(True)
 
     def __on_click_open_max_chart(self, evt):
         stockView = DataSynchronization.sync_get_chart(self.__mStockViewData.get_stock().get_sign(), APIConstants.VALUE_MAX, APIConstants.VALUE_1D)
-        cf = ChartFrame(stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float))
-        cf.Show(True)
+        ChartFrame(Strings.STR_MAX_VALUES, stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float)).Show(True)
 
     def __on_click_open_in_new_window(self, evt):
         frame = ViewStocksFrame(self.__mStockViewData.get_stock().get_name(), self.__mStockViewData.get_stock())
@@ -340,12 +334,13 @@ class ViewStocksPanel(BasePanel):
         if list_bottom != 0:
             self.__mList.EnsureVisible((list_bottom - 1))
         filtered = self.__mList.get_filtered_items()
-        for i in range(0, len(filtered)):
-            if self.__mStockViewData.get_stock().get_id() == filtered[i].get_id():
-                self.__mList.unbind_listener()
-                self.__mList.Select(i)
-                self.__mList.bind_listener()
-                break 
+        if filtered is not None and len(filtered) > 0:
+            for i in range(0, len(filtered)):
+                if self.__mStockViewData is not None and self.__mStockViewData.get_stock().get_id() == filtered[i].get_id():
+                    self.__mList.unbind_listener()
+                    self.__mList.Select(i)
+                    self.__mList.bind_listener()
+                    break 
         
     def __update_left_panel_data(self, event):
         if self.__mStockViewData is not None:
@@ -354,7 +349,7 @@ class ViewStocksPanel(BasePanel):
                 self.__mstPrePostMarketPrice.SetLabel(Strings.STR_FIELD_PRE_MARKET + str(self.__mStockViewData.get_stock().get_pre_market_price()))
             else:
                 if self.__mStockViewData.get_stock().get_post_market_price() is not None:
-                    self.__mstPrePostMarketPrice.SetLabel(Strings.STR_FIELD_POST_MARKET + str(self.__mStockViewData.get_stock().get_pre_market_price()))
+                    self.__mstPrePostMarketPrice.SetLabel(Strings.STR_FIELD_POST_MARKET + str(self.__mStockViewData.get_stock().get_post_market_price()))
                 else:
                     self.__mstPrePostMarketPrice.SetLabel("")
             self.__mstMarketCap.SetLabel(TextUtils.convert_number_to_millions_form(self.__mStockViewData.get_stock().get_market_cap()))
@@ -488,7 +483,7 @@ class ViewStocksPanel(BasePanel):
             self.__mstPrePostMarketPrice = wx.StaticText(panel, label = Strings.STR_FIELD_PRE_MARKET + str(self.__mStockViewData.get_stock().get_pre_market_price()))
         else:
             if self.__mStockViewData.get_stock().get_post_market_price() is not None:
-                self.__mstPrePostMarketPrice = wx.StaticText(panel, label = Strings.STR_FIELD_POST_MARKET + str(self.__mStockViewData.get_stock().get_pre_market_price()))
+                self.__mstPrePostMarketPrice = wx.StaticText(panel, label = Strings.STR_FIELD_POST_MARKET + str(self.__mStockViewData.get_stock().get_post_market_price()))
             else:
                 self.__mstPrePostMarketPrice = wx.StaticText(panel, label = "")
         

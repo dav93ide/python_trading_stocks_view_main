@@ -3,6 +3,7 @@
     main.py
     MainApplication.py
 
+
     Classes/
         BaseClasses/
             BaseClass.py
@@ -45,6 +46,7 @@
         MainFrame.py
         ChartFrame.py
         ViewStocksFrame.py
+        SearchStockFrame.py
 
 
     Resources/
@@ -68,13 +70,16 @@
         PlatformDataPanel.py
         ViewStocksPanel.py
         AddStockApplicationData.py
+        SearchStockPanel.py
 
 
     Dialogs/
         ConfirmDialog.py
 
+
     Threads/
         StoppableThread.py
+
 
     Utils/
         RegexUtils.py

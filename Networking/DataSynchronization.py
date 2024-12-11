@@ -81,13 +81,13 @@ class DataSynchronization(object):
         arrCompaniesNames = []
         arrExchangesNames = []
 
-        for i in range(0, len(totSymbols), 40):
-            DataSynchronization.__sync_initial_stocks_data(crumb, totSymbols[i:i+40], arrStocks, arrExchanges, arrCompanies, arrCurrencies, arrCompaniesNames, arrExchangesNames)
+        for i in range(0, len(totSymbols), 500):
+            DataSynchronization.__sync_initial_stocks_data(crumb, totSymbols[i:i+500], arrStocks, arrExchanges, arrCompanies, arrCurrencies, arrCompaniesNames, arrExchangesNames)
             progressDialog.Update(round((i * 100) / len(totSymbols)))
 
         
-        if len(totSymbols) % 40 != 0:
-            DataSynchronization.__sync_initial_stocks_data(crumb, totSymbols[-(len(totSymbols) % 40):], arrStocks, arrExchanges, arrCompanies, arrCurrencies, arrCompaniesNames, arrExchangesNames)
+        if len(totSymbols) % 500 != 0:
+            DataSynchronization.__sync_initial_stocks_data(crumb, totSymbols[-(len(totSymbols) % 500):], arrStocks, arrExchanges, arrCompanies, arrCurrencies, arrCompaniesNames, arrExchangesNames)
         progressDialog.Update(100)
 
         StoredDataUtils.store_data(arrStocks, DataFilenames.FILENAME_STOCK_DATA)
@@ -492,11 +492,11 @@ class DataSynchronization(object):
         cookie = DataSynchronization.__get_cookie_yahoo_finance_fake_request()
         crumb = DataSynchronization.__get_crumb_yahoo_finance(cookie)
 
-        for i in range(0, len(stocks), 40):
-            DataSynchronization.__update_stock_data(crumb, stocks[i:i+40])
+        for i in range(0, len(stocks), 500):
+            DataSynchronization.__update_stock_data(crumb, stocks[i:i+500])
 
-        if len(stocks) % 40 != 0:
-            DataSynchronization.__update_stock_data(crumb, stocks[-(len(stocks) % 40):])
+        if len(stocks) % 500 != 0:
+            DataSynchronization.__update_stock_data(crumb, stocks[-(len(stocks) % 500):])
 
         StoredDataUtils.remove_stored_data(DataFilenames.FILENAME_STOCK_DATA)
         StoredDataUtils.store_data(stocks, DataFilenames.FILENAME_STOCK_DATA)
