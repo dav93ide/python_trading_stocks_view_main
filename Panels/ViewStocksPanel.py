@@ -18,6 +18,7 @@ from Classes.Stock import Stock
 from Resources.Strings import Strings
 from Resources.Constants import Sizes
 from Resources.Constants import DataFilenames
+from Resources.Constants import Icons
 from Networking.DataSynchronization import DataSynchronization
 from Utils.WxUtils import WxUtils
 from Utils.TextUtils import TextUtils
@@ -147,6 +148,10 @@ class ViewStocksPanel(BasePanel):
         self.__mtxSearchList = wx.TextCtrl(self.__mRightPanel, wx.ID_ANY, pos = wx.DefaultPosition, value = "", size = (500, 25))
         self.__mtxSearchList.Bind(wx.EVT_TEXT, self.__on_change_search_list_value)
         hbs.Add(self.__mtxSearchList, 1, wx.EXPAND)
+
+        searchButton = super()._get_icon_button(self, wx.Bitmap(Icons.ICON_SEARCH), self.__on_click_search)
+        hbs.Add(searchButton, 0, wx.EXPAND)
+
         vbs.Add(hbs, 0)
 
         main.Add(vbs, 0)
@@ -191,6 +196,9 @@ class ViewStocksPanel(BasePanel):
         self.__mIsShowingChartYTD = False
         self.__mIsShowingChartMax = False
         self.__update_left_panel()
+
+    def __on_click_search(self, evt):
+        print("SEARCH")
 
     def __on_click_five_day_chart(self, evt):
         if not self.__mIsShowingChart5d:
@@ -332,12 +340,12 @@ class ViewStocksPanel(BasePanel):
         if list_bottom != 0:
             self.__mList.EnsureVisible((list_bottom - 1))
         filtered = self.__mList.get_filtered_items()
-            for i in range(0, len(filtered)):
-                if self.__mStockViewData.get_stock().get_id() == filtered[i].get_id():
-                    self.__mList.unbind_listener()
-                    self.__mList.Select(i)
-                    self.__mList.bind_listener()
-                    break 
+        for i in range(0, len(filtered)):
+            if self.__mStockViewData.get_stock().get_id() == filtered[i].get_id():
+                self.__mList.unbind_listener()
+                self.__mList.Select(i)
+                self.__mList.bind_listener()
+                break 
         
     def __update_left_panel_data(self, event):
         if self.__mStockViewData is not None:

@@ -24,6 +24,12 @@ class BasePanel(wx.Panel, threading.Thread):
         button = wx.Button(panel, wx.ID_ANY, text)
         button.Bind(wx.EVT_BUTTON, f)
         return button
+
+    def _get_icon_button(self, panel, icon, f):
+        button = wx.Button(panel, wx.ID_ANY, style = wx.BU_NOTEXT)
+        button.SetBitmap(icon)
+        button.Bind(wx.EVT_BUTTON, f)
+        return button
 #endregion
 
 #region - Message Methods

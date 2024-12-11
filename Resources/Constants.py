@@ -92,3 +92,5 @@ class DataFilenames():
     FILENAME_EXCHANGES = "Exchanges.dat"
     FILENAME_CURRENCIES = "Currencies.dat"
     
+class Icons():
+    ICON_SEARCH = "Icons/search.png"
