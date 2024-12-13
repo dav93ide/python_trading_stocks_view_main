@@ -12,11 +12,11 @@ class ChartFrame(wx.Frame):
     __mAxes = None
     __mToolbar = None
    
-    def __init__(self, x, y):
+    def __init__(self, title, x, y):
         super().__init__(None, -1, title, size=(550, 350))
 
         self.__mFigure = Figure()
-        self.__mAxes = self.figure.add_subplot()
+        self.__mAxes = self.__mFigure.add_subplot()
 
         self.__mAxes.plot(x, y)
 
