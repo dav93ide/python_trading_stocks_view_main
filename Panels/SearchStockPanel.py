@@ -102,11 +102,11 @@ class SearchStockPanel(BasePanel):
         panel = wx.Panel(parent)
         main = wx.BoxSizer(wx.HORIZONTAL)
         self.__mcbMaxMover = wx.CheckBox(panel, wx.ID_ANY, label = "Max Mover", style = wx.TE_CENTRE)
-        self.__mcbMaxMover.Bind(wx. wxEVT_CHECKBOX, self.__on_check_max_mover)
+        self.__mcbMaxMover.Bind(wx.EVT_CHECKBOX, self.__on_check_max_mover)
         main.Add(self.__mcbMaxMover, 1, wx.EXPAND)
 
         self.__mcbMinMover = wx.CheckBox(panel, wx.ID_ANY, label = "Min Mover", style = wx.TE_CENTRE)
-        self.__mcbMinMover.Bind(wx. wxEVT_CHECKBOX, self.__on_check_min_mover)
+        self.__mcbMinMover.Bind(wx.EVT_CHECKBOX, self.__on_check_min_mover)
         main.Add(self.__mcbMinMover, 1, wx.EXPAND)
 
         panel.SetSizer(main)
@@ -116,11 +116,11 @@ class SearchStockPanel(BasePanel):
         panel = wx.Panel(parent)
         main = wx.BoxSizer(wx.HORIZONTAL)
         self.__mcbMaxVolume = wx.CheckBox(panel, wx.ID_ANY, label = "Max Volume", style = wx.TE_CENTRE)
-        self.__mcbMaxVolume.Bind(wx. wxEVT_CHECKBOX, self.__on_check_max_volume)
+        self.__mcbMaxVolume.Bind(wx.EVT_CHECKBOX, self.__on_check_max_volume)
         main.Add(self.__mcbMaxVolume, 1, wx.EXPAND)
 
         self.__mcbMinVolume = wx.CheckBox(panel, wx.ID_ANY, label = "Min Volume", style = wx.TE_CENTRE)
-        self.__mcbMinVolume.Bind(wx. wxEVT_CHECKBOX, self.__on_check_min_volume)
+        self.__mcbMinVolume.Bind(wx.EVT_CHECKBOX, self.__on_check_min_volume)
         main.Add(self.__mcbMinVolume, 1, wx.EXPAND)
 
         panel.SetSizer(main)
@@ -140,19 +140,19 @@ class SearchStockPanel(BasePanel):
         panel = wx.Panel(parent)
         main = wx.BoxSizer(wx.HORIZONTAL)
         self.__mcbMoverAboveZeroToTen = wx.CheckBox(panel, wx.ID_ANY, label = "+0% - 10%", style = wx.TE_CENTRE)
-        self.__mcbMoverAboveZeroToTen.Bind(wx. wxEVT_CHECKBOX, self.__on_change_text_check_is_int_value)
+        self.__mcbMoverAboveZeroToTen.Bind(wx.EVT_CHECKBOX, self.__on_change_text_check_is_int_value)
         main.Add(self.__mcbMoverAboveZeroToTen, 1, wx.EXPAND)
 
         self.__mcbMoverAboveTenToTwenty = wx.CheckBox(panel, wx.ID_ANY, label = "+10% - 20%", style = wx.TE_CENTRE)
-        self.__mcbMoverAboveTenToTwenty.Bind(wx. wxEVT_CHECKBOX, self.__on_change_text_check_is_int_value)
+        self.__mcbMoverAboveTenToTwenty.Bind(wx.EVT_CHECKBOX, self.__on_change_text_check_is_int_value)
         main.Add(self.__mcbMoverAboveTenToTwenty, 1, wx.EXPAND)
 
         self.__mcbMoverAboveTwentyThirty = wx.CheckBox(panel, wx.ID_ANY, label = "+20% - 30%", style = wx.TE_CENTRE)
-        self.__mcbMoverAboveTwentyThirty.Bind(wx. wxEVT_CHECKBOX, self.__on_change_text_check_is_int_value)
+        self.__mcbMoverAboveTwentyThirty.Bind(wx.EVT_CHECKBOX, self.__on_change_text_check_is_int_value)
         main.Add(self.__mcbMoverAboveTwentyThirty, 1, wx.EXPAND)
 
         self.__mcbMoverAboveThirtyFourty = wx.CheckBox(panel, wx.ID_ANY, label = "+30% - 40%", style = wx.TE_CENTRE)
-        self.__mcbMoverAboveThirtyFourty.Bind(wx. wxEVT_CHECKBOX, self.__on_change_text_check_is_int_value)
+        self.__mcbMoverAboveThirtyFourty.Bind(wx.EVT_CHECKBOX, self.__on_change_text_check_is_int_value)
         main.Add(self.__mcbMoverAboveThirtyFourty, 1, wx.EXPAND)
         panel.SetSizer(main)
         return panel
@@ -161,19 +161,19 @@ class SearchStockPanel(BasePanel):
         panel = wx.Panel(parent)
         main = wx.BoxSizer(wx.HORIZONTAL)
         self.__mcbMoverBelowZeroToTen = wx.CheckBox(panel, wx.ID_ANY, label = "0% - -10%", style = wx.TE_CENTRE)
-        self.__mcbMoverBelowZeroToTen.Bind(wx. wxEVT_CHECKBOX, self.__on_check_below_zero_to_ten)
+        self.__mcbMoverBelowZeroToTen.Bind(wx.EVT_CHECKBOX, self.__on_check_below_zero_to_ten)
         main.Add(self.__mcbMoverBelowZeroToTen, 1, wx.EXPAND)
 
         self.__mcbMoverBelowTenToTwenty = wx.CheckBox(panel, wx.ID_ANY, label = "-10% - -20%", style = wx.TE_CENTRE)
-        self.__mcbMoverBelowTenToTwenty.Bind(wx. wxEVT_CHECKBOX, self.__on_check_below_ten_to_twenty)
+        self.__mcbMoverBelowTenToTwenty.Bind(wx.EVT_CHECKBOX, self.__on_check_below_ten_to_twenty)
         main.Add(self.__mcbMoverBelowTenToTwenty, 1, wx.EXPAND)
 
         self.__mcbMoverBelowTwentyThirty = wx.CheckBox(panel, wx.ID_ANY, label = "-20% - -30%", style = wx.TE_CENTRE)
-        self.__mcbMoverBelowTwentyThirty.Bind(wx. wxEVT_CHECKBOX, self.__on_check_below_twenty_to_thirty)
+        self.__mcbMoverBelowTwentyThirty.Bind(wx.EVT_CHECKBOX, self.__on_check_below_twenty_to_thirty)
         main.Add(self.__mcbMoverBelowTwentyThirty, 1, wx.EXPAND)
 
         self.__mcbMoverBelowThirtyFourty = wx.CheckBox(panel, wx.ID_ANY, label = "-30% - -40%", style = wx.TE_CENTRE)
-        self.__mcbMoverBelowThirtyFourty.Bind(wx. wxEVT_CHECKBOX, self.__on_check_below_thirty_to_fourty)
+        self.__mcbMoverBelowThirtyFourty.Bind(wx.EVT_CHECKBOX, self.__on_check_below_thirty_to_fourty)
         main.Add(self.__mcbMoverBelowThirtyFourty, 1, wx.EXPAND)
         panel.SetSizer(main)
         return panel
