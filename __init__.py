@@ -12,7 +12,7 @@
         ViewClasses/
             StockView.py
         FilterClasses/
-            
+            FilterSearchStockPanel.py
         BalanceSheet.py
         CurrencyAsset.py
         PlatformData.py
