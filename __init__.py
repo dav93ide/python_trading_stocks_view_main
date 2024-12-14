@@ -11,6 +11,8 @@
             BaseTradingStrategy.py
         ViewClasses/
             StockView.py
+        FilterClasses/
+            
         BalanceSheet.py
         CurrencyAsset.py
         PlatformData.py
