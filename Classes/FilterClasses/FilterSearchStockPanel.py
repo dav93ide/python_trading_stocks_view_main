@@ -122,10 +122,10 @@ class FilterSearchStockPanel(object):
         self.__mMoverAboveZero = moverAboveZero
 
     def set_mover_above_fifty(self, moverAboveFifty):
-        self.__mMoverAboveFifty__mMoverAboveHundred = moverAboveFiftyMoverAboveHundred
+        self.__mMoverAboveFifty = moverAboveFifty
 
-    def set_mover_above_hundred(self, moverAboveHundred):
-        self.__mMoverAboveFifty__mMoverAboveHundred = moverAboveFiftyMoverAboveHundred
+    def set_mover_above_hundred(self, moverAboveFifty):
+        self.__mMoverAboveHundred = moverAboveHundred
 
     def set_mover_below_zero(self, moverBelowZero):
         self.__mMoverBelowZero = moverBelowZero
@@ -158,5 +158,20 @@ class FilterSearchStockPanel(object):
         self.__mMoverBelowTwentyToThirty = moverBelowTwentyToThirty
 
     def set_mover_below_thirty_to_fourty(self, moverBelowThirtyToFourty):
-        self.__mMoverBelowThirtyToFourty = moverBelowThirtyToFourty
+        self.__mMoverBelowTwentyToThirty = moverBelowThirtyToFourty
     #endregion
+
+    def to_dict(self):
+        return {"mMinPrice" : self.__mMinPrice, "mMaxPrice": self.__mMaxPrice, "mMinVolume" : self.__mMinVolume, 
+                "mMaxVolume": self.__mMaxVolume, "mMaxPriceMover" : self.__mMaxPriceMover,
+                "mMaxPriceMover": self.__mMaxPriceMover, "mMinPriceMover" : self.__mMinPriceMover,
+                "mMaxVolumeMover" : self.__mMaxVolumeMover, "mMinVolumeMover" : self.__mMinVolumeMover,
+                "mMoverAboveZero": self.__mMoverAboveZero, "mMoverAboveFifty": self.__mMoverAboveFifty,
+                "mMoverBelowZero": self.__mMoverBelowZero, "mMoverBelowFifty" : self.__mMoverBelowFifty,
+                "mMoverBelowHundred" : self.__mMoverBelowHundred, "mMoverBelowHundred", self.__mMoverBelowHundred,
+                "mMoverAboveZeroToTen": self.__mMoverAboveZeroToTen, "mMoverAboveZeroToTen": self.__mMoverAboveZeroToTen,
+                "mMoverAboveTenToTwenty": self.__mMoverAboveTenToTwenty, "mMoverAboveTwentyToThirty": self.__mMoverAboveTwentyToThirty,
+                "mMoverAboveThirtyToFourty": self.__mMoverAboveThirtyToFourty,  "mMoverBelowZeroToTen": self.__mMoverBelowZeroToTen,
+                "mMoverBelowTenToTwenty": self.__mMoverBelowTenToTwenty, "mMoverBelowTwentyToThirty": self.__mMoverBelowTwentyToThirty,
+                "mMoverBelowTwentyToThirty": self.__mMoverBelowTwentyToThirty
+                }

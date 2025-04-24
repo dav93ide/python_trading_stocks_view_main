@@ -31,6 +31,9 @@ from Threads.StoppableThread import StoppableThread
 from Frames.ViewStocksFrame import ViewStocksFrame
 from Frames.SearchStockFrame import SearchStockFrame
 from Classes.FilterClasses.FilterSearchStockPanel import FilterSearchStockPanel
+from wx.lib.pubsub import pub 
+
+PANEL_LISTENER = "Panel Listener"
 
 class ViewStocksPanel(BasePanel):
 
@@ -107,6 +110,7 @@ class ViewStocksPanel(BasePanel):
 
 #region - Private Methods
 #region - Init Methods
+
     def init_threads(self):
         self.__mThreadUpdateGraph = StoppableThread(None, self.__update_graph_thread)
         self.__mThreadUpdateList = StoppableThread(None, self.__update_list_thread)
@@ -1013,5 +1017,12 @@ class ViewStocksPanel(BasePanel):
         p.SetSizer(hbs)
         return p
 
+        def set_respond(res):
+            print(res)
 #endregion
+
+    def __init_listeners(self):
+        j = json.dumps(self.__mFilterSearchStockPanel)
+        print(str(j))
+        pub.subscribe(self.listener, "laaalalal", "A")
 #endregion

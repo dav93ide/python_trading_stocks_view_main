@@ -3,6 +3,10 @@ from Panels.Base.BasePanel import BasePanel
 from Utils.KeyboardEventUtils import KeyboardEventUtils
 from Classes.FilterClasses.FilterSearchStockPanel import FilterSearchStockPanel
 from Resources.Constants import Icons
+from wx.lib.pubsub import pub 
+import json
+
+PANEL_LISTENER = "Panel Listener" 
 
 class SearchStockPanel(BasePanel):
 
@@ -279,59 +283,58 @@ class SearchStockPanel(BasePanel):
         KeyboardEventUtils.on_change_text_check_is_int_value(self, evt)
 
     def __on_check_max_mover(self, evt):
-        __mFilterSearchStockPanel.set_min_price(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_min_price(evt.IsChecked)
 
     def __on_check_min_mover(self, evt):
-        __mFilterSearchStockPanel.set_min_price_mover(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_min_price_mover(evt.IsChecked)
 
     def __on_check_max_volume(self, evt):
-        __mFilterSearchStockPanel.set_max_volume(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_max_volume(evt.IsChecked)
 
     def __on_check_min_volume(self, evt):
-        __mFilterSearchStockPanel.set_min_volume(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_min_volume(evt.IsChecked)
 
     def __on_check_above_zero(self, evt):
-        __mFilterSearchStockPanel.set_mover_above_zero(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_mover_above_zero(evt.IsChecked)
 
     def __on_check_above_fifty(self, evt):
-        __mFilterSearchStockPanel.set_mover_above_fifty(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_mover_above_fifty(evt.IsChecked)
 
     def __on_check_above_hundred(self, evt):
-        __mFilterSearchStockPanel.set_mover_above_hundred(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_mover_above_hundred(evt.IsChecked)
 
     def __on_check_below_zero(self, evt):
-        __mFilterSearchStockPanel.set_mover_below_zero(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_mover_below_zero(evt.IsChecked)
 
     def __on_check_below_fifty(self, evt):
-        __mFilterSearchStockPanel.set_mover_below_fifty(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_mover_below_fifty(evt.IsChecked)
 
     def __on_check_below_hundred(self, evt):
-        __mFilterSearchStockPanel.set_mover_below_hundred(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_mover_below_hundred(evt.IsChecked)
 
     def __on_check_above_zero_to_ten(self, evt):
-        __mFilterSearchStockPanel.set_mover_above_zero_to_ten(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_mover_above_zero_to_ten(evt.IsChecked)
 
     def __on_check_above_ten_to_twenty(self, evt):
-        __mFilterSearchStockPanel.set_mover_above_ten_to_twenty(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_mover_above_ten_to_twenty(evt.IsChecked)
 
     def __on_check_above_twenty_to_thirty(self, evt):
-        __mFilterSearchStockPanel.set_mover_above_twenty_to_thirty(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_mover_above_twenty_to_thirty(evt.IsChecked)
 
     def __on_click_above_thirty_to_fourty(self, evt):
-        _+mFilterSearchStockPanel.set_mover_above_thirty_to_fourty(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_mover_above_thirty_to_fourty(evt.IsChecked)
 
     def __on_check_below_zero_to_ten(self, evt):
-        _mFilterSearchStockPanel.set_mover_below_zero_to_ten(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_mover_below_zero_to_ten(evt.IsChecked)
 
     def __on_check_below_ten_to_twenty(self, evt):
-        _mFilterSearchStockPanel.set_mover_below_ten_to_twenty(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_mover_below_ten_to_twenty(evt.IsChecked)
 
     def __on_check_below_twenty_to_thirty(self, evt):
-        _mFilterSearchStockPanel.set_mover_below_twenty_to_thirty(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_mover_below_twenty_to_thirty(evt.IsChecked)
 
     def __on_check_below_thirty_to_fourty(self, evt):
-        _mFilterSearchStockPanel.set_mover_below_thirty_to_fourty(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_mover_below_thirty_to_fourty(evt.IsChecked)
 
-    def __on_click_search(self, evt):
         
 #endregion

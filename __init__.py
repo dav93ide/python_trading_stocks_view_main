@@ -77,7 +77,6 @@
 
     Dialogs/
         ConfirmDialog.py
-        SearchStockDialog.py
 
 
     Threads/
