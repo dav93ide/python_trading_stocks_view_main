@@ -1,6 +1,8 @@
 import wx
 from Panels.Base.BasePanel import BasePanel
 from Utils.KeyboardEventUtils import KeyboardEventUtils
+from Classes.FilterClasses.FilterSearchStockPanel import FilterSearchStockPanel
+from Resources.Constants import Icons
 
 class SearchStockPanel(BasePanel):
 
@@ -31,6 +33,8 @@ class SearchStockPanel(BasePanel):
     __mcbMoverBelowTwentyThirty = None
     __mcbMoverBelowThirtyFourty = None
 
+    __mFilterSearchStockPanel = FilterSearchStockPanel()
+
     def __init__(self, parent, size):
         super().__init__(parent, size)
         self.__init_layout()
@@ -50,6 +54,8 @@ class SearchStockPanel(BasePanel):
         vbs.Add(self.__get_panels_one_percentage_movers(), 0, wx.EXPAND)
         vbs.AddSpacer(10)
         vbs.Add(self.__get_panels_two_percentage_movers(), 0, wx.EXPAND)
+        vbs.AddSpacer(100)
+        vbs.Add(self.__get_panel_buttons(), 0, wx.EXPAND)
 
         main.Add(vbs, 1, wx.ALL|wx.EXPAND)
         main.AddSpacer(25)
@@ -257,55 +263,75 @@ class SearchStockPanel(BasePanel):
         return panel
 #endregion
 
+#region - Get Panel Filter
+    def __get_panel_buttons(self):
+        panel = wx.Panel(self)
+        main = wx.BoxSizer(wx.HORIZONTAL)
+        searchButton = super()._get_icon_button(panel, wx.Bitmap(Icons.ICON_SEARCH), self.__on_click_search)
+        main.Add(searchButton, 1, wx.EXPAND)
+        panel.SetSizer(main)
+        searchButton.Bind(wx.EVT_BUTTON, self.__on_click_search)
+        return panel
+#endregion
+
 #region - Event Handler Methods
     def __on_change_text_check_is_int_value(self, evt):
         KeyboardEventUtils.on_change_text_check_is_int_value(self, evt)
 
     def __on_check_max_mover(self, evt):
-        print("Max Mover")
+        __mFilterSearchStockPanel.set_min_price(evt.IsChecked)
 
     def __on_check_min_mover(self, evt):
-        print("Min Mover")
+        __mFilterSearchStockPanel.set_min_price_mover(evt.IsChecked)
 
     def __on_check_max_volume(self, evt):
-        print("Max Volume")
+        __mFilterSearchStockPanel.set_max_volume(evt.IsChecked)
 
     def __on_check_min_volume(self, evt):
-        print("Min Volume")
+        __mFilterSearchStockPanel.set_min_volume(evt.IsChecked)
+
+    def __on_check_above_zero(self, evt):
+        __mFilterSearchStockPanel.set_mover_above_zero(evt.IsChecked)
 
     def __on_check_above_fifty(self, evt):
-        print("__on_check_above_fifty")
+        __mFilterSearchStockPanel.set_mover_above_fifty(evt.IsChecked)
 
     def __on_check_above_hundred(self, evt):
-        print("__on_check_above_hundred")
+        __mFilterSearchStockPanel.set_mover_above_hundred(evt.IsChecked)
+
+    def __on_check_below_zero(self, evt):
+        __mFilterSearchStockPanel.set_mover_below_zero(evt.IsChecked)
 
     def __on_check_below_fifty(self, evt):
-        print("__on_check_below_fifty")
+        __mFilterSearchStockPanel.set_mover_below_fifty(evt.IsChecked)
 
     def __on_check_below_hundred(self, evt):
-        print("__on_check_below_hundred")
+        __mFilterSearchStockPanel.set_mover_below_hundred(evt.IsChecked)
 
     def __on_check_above_zero_to_ten(self, evt):
-        print("Above Zero to Ten")
+        __mFilterSearchStockPanel.set_mover_above_zero_to_ten(evt.IsChecked)
 
     def __on_check_above_ten_to_twenty(self, evt):
-        print("Above Ten To Twenty")
+        __mFilterSearchStockPanel.set_mover_above_ten_to_twenty(evt.IsChecked)
 
     def __on_check_above_twenty_to_thirty(self, evt):
-        print("Above Twenty to Thirty")
+        __mFilterSearchStockPanel.set_mover_above_twenty_to_thirty(evt.IsChecked)
 
     def __on_click_above_thirty_to_fourty(self, evt):
-        print("Above Thirty to Fourty")
+        _+mFilterSearchStockPanel.set_mover_above_thirty_to_fourty(evt.IsChecked)
 
     def __on_check_below_zero_to_ten(self, evt):
-        print("Below Zero to Ten")
+        _mFilterSearchStockPanel.set_mover_below_zero_to_ten(evt.IsChecked)
 
     def __on_check_below_ten_to_twenty(self, evt):
-        print("Below Ten to Twenty")
+        _mFilterSearchStockPanel.set_mover_below_ten_to_twenty(evt.IsChecked)
 
     def __on_check_below_twenty_to_thirty(self, evt):
-        print("Below Twenty to Thirty")
+        _mFilterSearchStockPanel.set_mover_below_twenty_to_thirty(evt.IsChecked)
 
     def __on_check_below_thirty_to_fourty(self, evt):
-        print("Below Thirty to Fourty")
+        _mFilterSearchStockPanel.set_mover_below_thirty_to_fourty(evt.IsChecked)
+
+    def __on_click_search(self, evt):
+        
 #endregion

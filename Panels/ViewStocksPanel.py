@@ -30,6 +30,7 @@ from Frames.ChartFrame import ChartFrame
 from Threads.StoppableThread import StoppableThread
 from Frames.ViewStocksFrame import ViewStocksFrame
 from Frames.SearchStockFrame import SearchStockFrame
+from Classes.FilterClasses.FilterSearchStockPanel import FilterSearchStockPanel
 
 class ViewStocksPanel(BasePanel):
 
@@ -91,6 +92,8 @@ class ViewStocksPanel(BasePanel):
     __mIsShowingChart10Y = False
     __mIsShowingChartYTD = False
     __mIsShowingChartMax = False
+
+    __mFilterSearchStockPanel = None
 
     def __init__(self, parent, size, stock):
         super().__init__(parent, size)
@@ -211,7 +214,6 @@ class ViewStocksPanel(BasePanel):
             self.__mLeftPanel.SetupScrolling()
             self.__mIsShowingChart5d = True
         
-
     def __on_click_one_month_chart(self, evt):
         if not self.__mIsShowingChart1Mo:
             stockView = DataSynchronization.sync_get_chart(self.__mStockViewData.get_stock().get_sign(), APIConstants.VALUE_1MO, APIConstants.VALUE_5M)
