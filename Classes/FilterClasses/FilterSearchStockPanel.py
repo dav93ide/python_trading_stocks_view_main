@@ -65,9 +65,6 @@ class FilterSearchStockPanel(object):
     def get_mover_below_fifty(self):
         return self.__mMoverBelowFifty
 
-    def get_mover_below_hundred(self):
-        return self.__mMoverBelowHundred
-
     def get_mover_above_zero_to_ten(self):
         return self.__mMoverAboveZeroToTen
 
@@ -124,7 +121,7 @@ class FilterSearchStockPanel(object):
     def set_mover_above_fifty(self, moverAboveFifty):
         self.__mMoverAboveFifty = moverAboveFifty
 
-    def set_mover_above_hundred(self, moverAboveFifty):
+    def set_mover_above_hundred(self, moverAboveHundred):
         self.__mMoverAboveHundred = moverAboveHundred
 
     def set_mover_below_zero(self, moverBelowZero):
@@ -132,9 +129,6 @@ class FilterSearchStockPanel(object):
 
     def set_mover_below_fifty(self, moverBelowFifty):
         self.__mMoverBelowFifty = moverBelowFifty
-
-    def set_mover_below_hundred(self, moverBelowHundred):
-        self.__mMoverBelowHundred = moverBelowHundred
 
     def set_mover_above_zero_to_ten(self, moverAboveZeroToTen):
         self.__mMoverAboveZeroToTen = moverAboveZeroToTen
@@ -161,17 +155,67 @@ class FilterSearchStockPanel(object):
         self.__mMoverBelowTwentyToThirty = moverBelowThirtyToFourty
     #endregion
 
+#region Public Methods
     def to_dict(self):
         return {"mMinPrice" : self.__mMinPrice, "mMaxPrice": self.__mMaxPrice, "mMinVolume" : self.__mMinVolume, 
                 "mMaxVolume": self.__mMaxVolume, "mMaxPriceMover" : self.__mMaxPriceMover,
-                "mMaxPriceMover": self.__mMaxPriceMover, "mMinPriceMover" : self.__mMinPriceMover,
-                "mMaxVolumeMover" : self.__mMaxVolumeMover, "mMinVolumeMover" : self.__mMinVolumeMover,
-                "mMoverAboveZero": self.__mMoverAboveZero, "mMoverAboveFifty": self.__mMoverAboveFifty,
-                "mMoverBelowZero": self.__mMoverBelowZero, "mMoverBelowFifty" : self.__mMoverBelowFifty,
-                "mMoverBelowHundred" : self.__mMoverBelowHundred, "mMoverBelowHundred", self.__mMoverBelowHundred,
-                "mMoverAboveZeroToTen": self.__mMoverAboveZeroToTen, "mMoverAboveZeroToTen": self.__mMoverAboveZeroToTen,
-                "mMoverAboveTenToTwenty": self.__mMoverAboveTenToTwenty, "mMoverAboveTwentyToThirty": self.__mMoverAboveTwentyToThirty,
-                "mMoverAboveThirtyToFourty": self.__mMoverAboveThirtyToFourty,  "mMoverBelowZeroToTen": self.__mMoverBelowZeroToTen,
-                "mMoverBelowTenToTwenty": self.__mMoverBelowTenToTwenty, "mMoverBelowTwentyToThirty": self.__mMoverBelowTwentyToThirty,
+                "mMaxPriceMover" : self.__mMaxPriceMover, "mMinPriceMover" : self.__mMinPriceMover,
+                "mMaxVolumeMover" : self.__mMaxVolumeMover, "mMinVolumeMover"  : self.__mMinVolumeMover,
+                "mMoverAboveZero" : self.__mMoverAboveZero, "mMoverAboveFifty" : self.__mMoverAboveFifty, "mMoverAboveHundred" : self.__mMoverAboveHundred,
+                "mMoverBelowZero" : self.__mMoverBelowZero, "mMoverBelowFifty" : self.__mMoverBelowFifty,
+                "mMoverBelowHundred" : self.__mMoverBelowHundred, "mMoverAboveZeroToTen": self.__mMoverAboveZeroToTen,
+                "mMoverAboveTenToTwenty": self.__mMoverAboveTenToTwenty, "mMoverAboveTwentyToThirty" : self.__mMoverAboveTwentyToThirty,
+                "mMoverAboveThirtyToFourty": self.__mMoverAboveThirtyToFourty,  "mMoverBelowZeroToTen" : self.__mMoverBelowZeroToTen,
+                "mMoverBelowTenToTwenty": self.__mMoverBelowTenToTwenty, "mMoverBelowTwentyToThirty" : self.__mMoverBelowTwentyToThirty,
                 "mMoverBelowTwentyToThirty": self.__mMoverBelowTwentyToThirty
                 }
+
+    def from_json(self, json):
+        self.set_min_price(json["mMinPrice"])
+        self.set_max_price(json["mMaxPrice"])
+        self.set_min_volume(json["mMinVolume"])
+        self.set_max_volume(json["mMaxVolume"])
+        self.set_max_price_mover(json["mMaxPriceMover"])
+        self.set_min_price_mover(json["mMinPriceMover"])
+        self.set_max_volume_mover(json["mMaxVolumeMover"])
+        self.set_min_volume_mover(json["mMinVolumeMover"])
+        self.set_mover_above_zero(json["mMoverAboveZero"])
+        self.set_mover_above_fifty(json["mMoverAboveFifty"])
+        self.set_mover_above_hundred(json["mMoverBelowZero"])
+        self.set_mover_above_hundred(json["mMoverAboveHundred"])
+        self.set_mover_below_zero(json["mMoverBelowFifty"])
+        self.set_mover_below_fifty(json["mMoverBelowHundred"])
+        self.set_mover_above_zero_to_ten(json["mMoverAboveZeroToTen"])
+        self.set_mover_above_ten_to_twenty(json["mMoverAboveTenToTwenty"])
+        self.set_mover_above_twenty_to_thirty(json["mMoverAboveTwentyToThirty"])
+        self.set_mover_above_thirty_to_fourty(json["mMoverAboveThirtyToFourty"])
+        self.set_mover_below_zero_to_ten(json["mMoverBelowZeroToTen"])
+        self.set_mover_below_ten_to_twenty(json["mMoverBelowTenToTwenty"])
+        self.set_mover_below_twenty_to_thirty(json["mMoverBelowTwentyToThirty"])
+#enderegion
+
+    # To String
+    def __str__(self):
+        return  "####################\n"\
+                f"# {FilterSearchStockPanel.__name__}\n"\
+                f"#- __mMinPrice: {self.__mMinPrice}\n"\
+                f"#- __mMaxPrice: {self.__mMaxPrice}\n"\
+                f"#- __mMinVolume: {self.__mMinVolume}\n"\
+                f"#- __mMaxVolume: {self.__mMaxVolume}\n"\
+                f"#- __mMaxPriceMover: {self.__mMaxPriceMover}\n"\
+                f"#- __mMaxVolumeMover: {self.__mMaxVolumeMover}\n"\
+                f"#- __mMinVolumeMover: {self.__mMinVolumeMover}\n"\
+                f"#- __mMoverAboveZero: {self.__mMoverAboveZero}\n"\
+                f"#- __mMoverAboveFifty: {self.__mMoverAboveFifty}\n"\
+                f"#- __mMoverBelowZero: {self.__mMoverBelowZero}\n"\
+                f"#- __mMoverBelowFifty: {self.__mMoverBelowFifty}\n"\
+                f"#- __mMoverBelowHundred: {self.__mMoverBelowHundred}\n"\
+                f"#- __mMoverAboveZeroToTen: {self.__mMoverAboveZeroToTen}\n"\
+                f"#- __mMoverAboveTenToTwenty: {self.__mMoverAboveTenToTwenty}\n"\
+                f"#- __mMoverAboveTwentyToThirty: {self.__mMoverAboveTwentyToThirty}\n"\
+                f"#- __mMoverAboveThirtyToFourty: {self.__mMoverAboveThirtyToFourty}\n"\
+                f"#- __mMoverBelowZeroToTen: {self.__mMoverBelowZeroToTen}\n"\
+                f"#- __mMoverBelowTenToTwenty: {self.__mMoverBelowTenToTwenty}\n"\
+                f"#- __mMoverBelowTwentyToThirty: {self.__mMoverBelowTwentyToThirty}\n"\
+                f"#- __mMoverBelowTwentyToThirty: {self.__mMoverBelowTwentyToThirty}\n"\
+                "####################"

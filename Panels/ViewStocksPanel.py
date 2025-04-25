@@ -32,8 +32,9 @@ from Frames.ViewStocksFrame import ViewStocksFrame
 from Frames.SearchStockFrame import SearchStockFrame
 from Classes.FilterClasses.FilterSearchStockPanel import FilterSearchStockPanel
 from wx.lib.pubsub import pub 
+import json
 
-PANEL_LISTENER = "Panel Listener"
+LISTEN_FILTER_STOCK_PANEL = "ListenFiltersStockPanel"
 
 class ViewStocksPanel(BasePanel):
 
@@ -96,12 +97,13 @@ class ViewStocksPanel(BasePanel):
     __mIsShowingChartYTD = False
     __mIsShowingChartMax = False
 
-    __mFilterSearchStockPanel = None
+    __mFilterSearchStockPanel = FilterSearchStockPanel()
 
     def __init__(self, parent, size, stock):
         super().__init__(parent, size)
         self.init_threads()
         self.Bind(wx.EVT_WINDOW_DESTROY, self.__on_destroy_self)
+        pub.subscribe(self.listen_filter_stock_panel, LISTEN_FILTER_STOCK_PANEL)
         self.__init_timers()
         self.__init_layout()
         
@@ -110,7 +112,6 @@ class ViewStocksPanel(BasePanel):
 
 #region - Private Methods
 #region - Init Methods
-
     def init_threads(self):
         self.__mThreadUpdateGraph = StoppableThread(None, self.__update_graph_thread)
         self.__mThreadUpdateList = StoppableThread(None, self.__update_list_thread)
@@ -1021,8 +1022,6 @@ class ViewStocksPanel(BasePanel):
             print(res)
 #endregion
 
-    def __init_listeners(self):
-        j = json.dumps(self.__mFilterSearchStockPanel)
-        print(str(j))
-        pub.subscribe(self.listener, "laaalalal", "A")
+    def listen_filter_stock_panel(self, message, arg= None):
+        self.__mFilterSearchStockPanel.from_json(message)
 #endregion

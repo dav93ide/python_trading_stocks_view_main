@@ -6,9 +6,11 @@ from Resources.Constants import Icons
 from wx.lib.pubsub import pub 
 import json
 
-PANEL_LISTENER = "Panel Listener" 
+LISTEN_FILTER_STOCK_PANEL = "ListenFiltersStockPanel"
 
 class SearchStockPanel(BasePanel):
+
+    __mMainSizer = None
 
     __mtxMinPrice = None
     __mtxMaxPrice = None
@@ -45,8 +47,8 @@ class SearchStockPanel(BasePanel):
 
 #region - Private Methods
     def __init_layout(self):
-        main = wx.BoxSizer(wx.HORIZONTAL)
-        main.AddSpacer(25)
+        self.__mMainSizer = wx.BoxSizer(wx.HORIZONTAL)
+        self.__mMainSizer.AddSpacer(25)
         
         vbs = wx.BoxSizer(wx.VERTICAL)
         vbs.Add(self.__get_panels_min_max_price(), 0, wx.EXPAND)
@@ -61,9 +63,9 @@ class SearchStockPanel(BasePanel):
         vbs.AddSpacer(100)
         vbs.Add(self.__get_panel_buttons(), 0, wx.EXPAND)
 
-        main.Add(vbs, 1, wx.ALL|wx.EXPAND)
-        main.AddSpacer(25)
-        self.SetSizer(main)
+        self.__mMainSizer.Add(vbs, 1, wx.ALL|wx.EXPAND)
+        self.__mMainSizer.AddSpacer(25)
+        self.SetSizer(self.__mMainSizer)
 
 #region - Min Max Price Methods
     def __get_panels_min_max_price(self):
@@ -181,7 +183,7 @@ class SearchStockPanel(BasePanel):
         panel = wx.Panel(parent)
         main = wx.BoxSizer(wx.HORIZONTAL)
         self.__mcbMoverAboveZero = wx.CheckBox(panel, wx.ID_ANY, label = "> 0% Movers")
-        self.__mcbMoverAboveZero.Bind(wx.EVT_CHECKBOX, self.__on_check_above_fifty)
+        self.__mcbMoverAboveZero.Bind(wx.EVT_CHECKBOX, self.__on_check_above_zero)
         main.Add(self.__mcbMoverAboveZero, 1, wx.EXPAND)
 
         self.__mcbMoverAboveFifty = wx.CheckBox(panel, wx.ID_ANY, label = "> 50% Movers")
@@ -199,16 +201,12 @@ class SearchStockPanel(BasePanel):
         panel = wx.Panel(parent)
         main = wx.BoxSizer(wx.HORIZONTAL)
         self.__mcbMoverBelowZero = wx.CheckBox(panel, wx.ID_ANY, label = "< 0% Movers")
-        self.__mcbMoverBelowZero.Bind(wx.EVT_CHECKBOX, self.__on_check_below_fifty)
+        self.__mcbMoverBelowZero.Bind(wx.EVT_CHECKBOX, self.__on_check_below_zero)
         main.Add(self.__mcbMoverBelowZero, 1, wx.EXPAND)
 
         self.__mcbMoverBelowFifty = wx.CheckBox(panel, wx.ID_ANY, label = "< -50% Movers")
         self.__mcbMoverBelowFifty.Bind(wx.EVT_CHECKBOX, self.__on_check_below_fifty)
         main.Add(self.__mcbMoverBelowFifty, 1, wx.EXPAND)
-
-        self.__mcbMoverBelowHundred = wx.CheckBox(panel, wx.ID_ANY, label = "< -100% Movers")
-        self.__mcbMoverBelowHundred.Bind(wx.EVT_CHECKBOX, self.__on_check_below_hundred)
-        main.Add(self.__mcbMoverBelowHundred, 1, wx.EXPAND)
 
         panel.SetSizer(main)
         return panel
@@ -274,67 +272,238 @@ class SearchStockPanel(BasePanel):
         searchButton = super()._get_icon_button(panel, wx.Bitmap(Icons.ICON_SEARCH), self.__on_click_search)
         main.Add(searchButton, 1, wx.EXPAND)
         panel.SetSizer(main)
-        searchButton.Bind(wx.EVT_BUTTON, self.__on_click_search)
         return panel
 #endregion
 
 #region - Event Handler Methods
+    def __on_click_search(self, evt):
+        self.__send_data()
+        self.GetParent().Destroy()
+        self.Layout()
+
     def __on_change_text_check_is_int_value(self, evt):
-        KeyboardEventUtils.on_change_text_check_is_int_value(self, evt)
+        if(KeyboardEventUtils.on_change_text_check_is_int_value(self, evt)):
+            match evt.GetEventObject():
+                case self.__mtxMinPrice:
+                    self.__mFilterSearchStockPanel.set_min_price(self.__mtxMinPrice.GetValue())
+                case self.__mtxMaxPrice:
+                    self.__mFilterSearchStockPanel.set_max_price(self.__mtxMaxPrice.GetValue())
+                case self.__mtxMinVolume:
+                    self.__mFilterSearchStockPanel.set_min_volume(self.__mtxMinVolume.GetValue())
+                case self.__mtxMaxVolume:
+                    self.__mFilterSearchStockPanel.set_max_volume(self.__mtxMaxVolume.GetValue())
 
     def __on_check_max_mover(self, evt):
-        self.__mFilterSearchStockPanel.set_min_price(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_max_price_mover(evt.IsChecked())
+        self.__mcbMinPriceMover.SetValue(False)
 
     def __on_check_min_mover(self, evt):
-        self.__mFilterSearchStockPanel.set_min_price_mover(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_min_price_mover(evt.IsChecked())
+        self.__mcbMaxPriceMover.SetValue(False)
 
     def __on_check_max_volume(self, evt):
-        self.__mFilterSearchStockPanel.set_max_volume(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_max_volume_mover(evt.IsChecked())
+        self.__mcbMinVolumeMover.SetValue(False)
 
     def __on_check_min_volume(self, evt):
-        self.__mFilterSearchStockPanel.set_min_volume(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_min_volume_mover(evt.IsChecked())
+        self.__mcbMaxVolumeMover.SetValue(False)
 
     def __on_check_above_zero(self, evt):
-        self.__mFilterSearchStockPanel.set_mover_above_zero(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_mover_above_zero(evt.IsChecked())
+        self.__mcbMoverAboveFifty.SetValue(False)
+        self.__mcbMoverAboveHundred.SetValue(False)
+        self.__mcbMoverBelowZero.SetValue(False)
+        self.__mcbMoverBelowFifty.SetValue(False)
+        self.__mcbMoverAboveZeroToTen.SetValue(False)
+        self.__mcbMoverAboveTenToTwenty.SetValue(False)
+        self.__mcbMoverAboveTwentyThirty.SetValue(False)
+        self.__mcbMoverAboveThirtyFourty.SetValue(False)
+        self.__mcbMoverBelowZeroToTen.SetValue(False)
+        self.__mcbMoverBelowTenToTwenty.SetValue(False)
+        self.__mcbMoverBelowTwentyThirty.SetValue(False)
+        self.__mcbMoverBelowThirtyFourty.SetValue(False)
 
     def __on_check_above_fifty(self, evt):
-        self.__mFilterSearchStockPanel.set_mover_above_fifty(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_mover_above_fifty(evt.IsChecked())
+        self.__mcbMoverAboveZero.SetValue(False)
+        self.__mcbMoverAboveHundred.SetValue(False)
+        self.__mcbMoverBelowZero.SetValue(False)
+        self.__mcbMoverBelowFifty.SetValue(False)
+        self.__mcbMoverAboveZeroToTen.SetValue(False)
+        self.__mcbMoverAboveTenToTwenty.SetValue(False)
+        self.__mcbMoverAboveTwentyThirty.SetValue(False)
+        self.__mcbMoverAboveThirtyFourty.SetValue(False)
+        self.__mcbMoverBelowZeroToTen.SetValue(False)
+        self.__mcbMoverBelowTenToTwenty.SetValue(False)
+        self.__mcbMoverBelowTwentyThirty.SetValue(False)
+        self.__mcbMoverBelowThirtyFourty.SetValue(False)
 
     def __on_check_above_hundred(self, evt):
-        self.__mFilterSearchStockPanel.set_mover_above_hundred(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_mover_above_hundred(evt.IsChecked())
+        self.__mcbMoverAboveZero.SetValue(False)
+        self.__mcbMoverAboveFifty.SetValue(False)
+        self.__mcbMoverBelowZero.SetValue(False)
+        self.__mcbMoverBelowFifty.SetValue(False)
+        self.__mcbMoverAboveZeroToTen.SetValue(False)
+        self.__mcbMoverAboveTenToTwenty.SetValue(False)
+        self.__mcbMoverAboveTwentyThirty.SetValue(False)
+        self.__mcbMoverAboveThirtyFourty.SetValue(False)
+        self.__mcbMoverBelowZeroToTen.SetValue(False)
+        self.__mcbMoverBelowTenToTwenty.SetValue(False)
+        self.__mcbMoverBelowTwentyThirty.SetValue(False)
+        self.__mcbMoverBelowThirtyFourty.SetValue(False)
 
     def __on_check_below_zero(self, evt):
-        self.__mFilterSearchStockPanel.set_mover_below_zero(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_mover_below_zero(evt.IsChecked())
+        self.__mcbMoverAboveZero.SetValue(False)
+        self.__mcbMoverAboveFifty.SetValue(False)
+        self.__mcbMoverAboveHundred.SetValue(False)
+        self.__mcbMoverBelowFifty.SetValue(False)
+        self.__mcbMoverAboveZeroToTen.SetValue(False)
+        self.__mcbMoverAboveTenToTwenty.SetValue(False)
+        self.__mcbMoverAboveTwentyThirty.SetValue(False)
+        self.__mcbMoverAboveThirtyFourty.SetValue(False)
+        self.__mcbMoverBelowZeroToTen.SetValue(False)
+        self.__mcbMoverBelowTenToTwenty.SetValue(False)
+        self.__mcbMoverBelowTwentyThirty.SetValue(False)
+        self.__mcbMoverBelowThirtyFourty.SetValue(False)
 
     def __on_check_below_fifty(self, evt):
-        self.__mFilterSearchStockPanel.set_mover_below_fifty(evt.IsChecked)
-
-    def __on_check_below_hundred(self, evt):
-        self.__mFilterSearchStockPanel.set_mover_below_hundred(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_mover_below_fifty(evt.IsChecked())
+        self.__mcbMoverAboveZero.SetValue(False)
+        self.__mcbMoverAboveFifty.SetValue(False)
+        self.__mcbMoverAboveHundred.SetValue(False)
+        self.__mcbMoverBelowZero.SetValue(False)
+        self.__mcbMoverAboveZeroToTen.SetValue(False)
+        self.__mcbMoverAboveTenToTwenty.SetValue(False)
+        self.__mcbMoverAboveTwentyThirty.SetValue(False)
+        self.__mcbMoverAboveThirtyFourty.SetValue(False)
+        self.__mcbMoverBelowZeroToTen.SetValue(False)
+        self.__mcbMoverBelowTenToTwenty.SetValue(False)
+        self.__mcbMoverBelowTwentyThirty.SetValue(False)
+        self.__mcbMoverBelowThirtyFourty.SetValue(False)
 
     def __on_check_above_zero_to_ten(self, evt):
-        self.__mFilterSearchStockPanel.set_mover_above_zero_to_ten(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_mover_above_zero_to_ten(evt.IsChecked())
+        self.__mcbMoverAboveZero.SetValue(False)
+        self.__mcbMoverAboveFifty.SetValue(False)
+        self.__mcbMoverAboveHundred.SetValue(False)
+        self.__mcbMoverBelowZero.SetValue(False)
+        self.__mcbMoverBelowFifty.SetValue(False)
+        self.__mcbMoverAboveTenToTwenty.SetValue(False)
+        self.__mcbMoverAboveTwentyThirty.SetValue(False)
+        self.__mcbMoverAboveThirtyFourty.SetValue(False)
+        self.__mcbMoverBelowZeroToTen.SetValue(False)
+        self.__mcbMoverBelowTenToTwenty.SetValue(False)
+        self.__mcbMoverBelowTwentyThirty.SetValue(False)
+        self.__mcbMoverBelowThirtyFourty.SetValue(False)
 
     def __on_check_above_ten_to_twenty(self, evt):
-        self.__mFilterSearchStockPanel.set_mover_above_ten_to_twenty(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_mover_above_ten_to_twenty(evt.IsChecked())
+        self.__mcbMoverAboveZero.SetValue(False)
+        self.__mcbMoverAboveFifty.SetValue(False)
+        self.__mcbMoverAboveHundred.SetValue(False)
+        self.__mcbMoverBelowZero.SetValue(False)
+        self.__mcbMoverBelowFifty.SetValue(False)
+        self.__mcbMoverAboveZeroToTen.SetValue(False)
+        self.__mcbMoverAboveTwentyThirty.SetValue(False)
+        self.__mcbMoverAboveThirtyFourty.SetValue(False)
+        self.__mcbMoverBelowZeroToTen.SetValue(False)
+        self.__mcbMoverBelowTenToTwenty.SetValue(False)
+        self.__mcbMoverBelowTwentyThirty.SetValue(False)
+        self.__mcbMoverBelowThirtyFourty.SetValue(False)
 
     def __on_check_above_twenty_to_thirty(self, evt):
-        self.__mFilterSearchStockPanel.set_mover_above_twenty_to_thirty(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_mover_above_twenty_to_thirty(evt.IsChecked())
+        self.__mcbMoverAboveZero.SetValue(False)
+        self.__mcbMoverAboveFifty.SetValue(False)
+        self.__mcbMoverAboveHundred.SetValue(False)
+        self.__mcbMoverBelowZero.SetValue(False)
+        self.__mcbMoverBelowFifty.SetValue(False)
+        self.__mcbMoverAboveZeroToTen.SetValue(False)
+        self.__mcbMoverAboveTenToTwenty.SetValue(False)
+        self.__mcbMoverBelowZeroToTen.SetValue(False)
+        self.__mcbMoverBelowTenToTwenty.SetValue(False)
+        self.__mcbMoverBelowTwentyThirty.SetValue(False)
+        self.__mcbMoverBelowThirtyFourty.SetValue(False)
 
     def __on_click_above_thirty_to_fourty(self, evt):
-        self.__mFilterSearchStockPanel.set_mover_above_thirty_to_fourty(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_mover_above_thirty_to_fourty(evt.IsChecked())
+        self.__mcbMoverAboveZero.SetValue(False)
+        self.__mcbMoverAboveFifty.SetValue(False)
+        self.__mcbMoverAboveHundred.SetValue(False)
+        self.__mcbMoverBelowZero.SetValue(False)
+        self.__mcbMoverBelowFifty.SetValue(False)
+        self.__mcbMoverAboveZeroToTen.SetValue(False)
+        self.__mcbMoverAboveTenToTwenty.SetValue(False)
+        self.__mcbMoverAboveTwentyThirty.SetValue(False)
+        self.__mcbMoverBelowZeroToTen.SetValue(False)
+        self.__mcbMoverBelowTenToTwenty.SetValue(False)
+        self.__mcbMoverBelowTwentyThirty.SetValue(False)
+        self.__mcbMoverBelowThirtyFourty.SetValue(False)
 
     def __on_check_below_zero_to_ten(self, evt):
-        self.__mFilterSearchStockPanel.set_mover_below_zero_to_ten(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_mover_below_zero_to_ten(evt.IsChecked())
+        self.__mcbMoverAboveZero.SetValue(False)
+        self.__mcbMoverAboveFifty.SetValue(False)
+        self.__mcbMoverAboveHundred.SetValue(False)
+        self.__mcbMoverBelowZero.SetValue(False)
+        self.__mcbMoverBelowFifty.SetValue(False)
+        self.__mcbMoverAboveZeroToTen.SetValue(False)
+        self.__mcbMoverAboveTenToTwenty.SetValue(False)
+        self.__mcbMoverAboveTwentyThirty.SetValue(False)
+        self.__mcbMoverAboveThirtyFourty.SetValue(False)
+        self.__mcbMoverBelowTenToTwenty.SetValue(False)
+        self.__mcbMoverBelowTwentyThirty.SetValue(False)
+        self.__mcbMoverBelowThirtyFourty.SetValue(False)
 
     def __on_check_below_ten_to_twenty(self, evt):
-        self.__mFilterSearchStockPanel.set_mover_below_ten_to_twenty(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_mover_below_ten_to_twenty(evt.IsChecked())
+        self.__mcbMoverAboveZero.SetValue(False)
+        self.__mcbMoverAboveFifty.SetValue(False)
+        self.__mcbMoverAboveHundred.SetValue(False)
+        self.__mcbMoverBelowZero.SetValue(False)
+        self.__mcbMoverBelowFifty.SetValue(False)
+        self.__mcbMoverAboveZeroToTen.SetValue(False)
+        self.__mcbMoverAboveTenToTwenty.SetValue(False)
+        self.__mcbMoverAboveTwentyThirty.SetValue(False)
+        self.__mcbMoverAboveThirtyFourty.SetValue(False)
+        self.__mcbMoverBelowZeroToTen.SetValue(False)
+        self.__mcbMoverBelowTwentyThirty.SetValue(False)
+        self.__mcbMoverBelowThirtyFourty.SetValue(False)
 
     def __on_check_below_twenty_to_thirty(self, evt):
-        self.__mFilterSearchStockPanel.set_mover_below_twenty_to_thirty(evt.IsChecked)
+        self.__mFilterSearchStockPanel.set_mover_below_twenty_to_thirty(evt.IsChecked())
+        self.__mcbMoverAboveZero.SetValue(False)
+        self.__mcbMoverAboveFifty.SetValue(False)
+        self.__mcbMoverAboveHundred.SetValue(False)
+        self.__mcbMoverBelowZero.SetValue(False)
+        self.__mcbMoverBelowFifty.SetValue(False)
+        self.__mcbMoverAboveZeroToTen.SetValue(False)
+        self.__mcbMoverAboveTenToTwenty.SetValue(False)
+        self.__mcbMoverAboveTwentyThirty.SetValue(False)
+        self.__mcbMoverAboveThirtyFourty.SetValue(False)
+        self.__mcbMoverBelowZeroToTen.SetValue(False)
+        self.__mcbMoverBelowTenToTwenty.SetValue(False)
+        self.__mcbMoverBelowThirtyFourty.SetValue(False)
 
     def __on_check_below_thirty_to_fourty(self, evt):
-        self.__mFilterSearchStockPanel.set_mover_below_thirty_to_fourty(evt.IsChecked)
-
-        
+        self.__mFilterSearchStockPanel.set_mover_below_thirty_to_fourty(evt.IsChecked())
+        self.__mcbMoverAboveZero.SetValue(False)
+        self.__mcbMoverAboveFifty.SetValue(False)
+        self.__mcbMoverAboveHundred.SetValue(False)
+        self.__mcbMoverBelowZero.SetValue(False)
+        self.__mcbMoverBelowFifty.SetValue(False)
+        self.__mcbMoverAboveZeroToTen.SetValue(False)
+        self.__mcbMoverAboveTenToTwenty.SetValue(False)
+        self.__mcbMoverAboveTwentyThirty.SetValue(False)
+        self.__mcbMoverAboveThirtyFourty.SetValue(False)
+        self.__mcbMoverBelowZeroToTen.SetValue(False)
+        self.__mcbMoverBelowTenToTwenty.SetValue(False)
+        self.__mcbMoverBelowTwentyThirty.SetValue(False)
 #endregion
+
+    def __send_data(self):
+        j = json.dumps(self.__mFilterSearchStockPanel.to_dict())
+        pub.sendMessage(LISTEN_FILTER_STOCK_PANEL, message = json.loads(j))
