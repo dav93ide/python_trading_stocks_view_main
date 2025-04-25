@@ -1,6 +1,7 @@
 import wx
 import math
 from Classes.Stock import Stock
+from Classes.FilterClasses.FilterSearchStockPanel import FilterSearchStockPanel
 
 class StocksViewList(wx.ListCtrl):
 
@@ -8,7 +9,8 @@ class StocksViewList(wx.ListCtrl):
     LIST_COLUMNS_SIZES = [75, 75, 250, 100, 150]
 
     __mCallback = None
-    __mFilter = None
+    __mFilterData = None
+    __mFilterName = None
     __mItems: [Stock] = None
     __mFilteredItems: [Stock] = None
 
@@ -32,6 +34,11 @@ class StocksViewList(wx.ListCtrl):
         self.__mItems.append(item)
 #endregion
 
+#region - Set Methods
+    def set_filter_data(filter):
+        self.__mFilterData = filter
+#enderegion
+
 #region - Public Methods
     def init_layout(self):
         for i in range(0, len(self.LIST_COLUMNS_SIZES)):
@@ -42,8 +49,8 @@ class StocksViewList(wx.ListCtrl):
 
     def add_items_and_populate(self, items):
         self.__mItems = items
-        if self.__mFilter is not None:
-            self.filter_items(self.__mFilter)
+        if self.__mFilterName is not None:
+            self.filter_items(self.__mFilterName)
         else:
             self.__mFilteredItems = items
             self.populate_list()
@@ -74,7 +81,7 @@ class StocksViewList(wx.ListCtrl):
             self.__mCallback(self.__mCurrentItem)
 
     def filter_items(self, ffilter):
-        self.__mFilter = ffilter
+        self.__mFilterName = ffilter
         if ffilter:
             self.__mFilteredItems = []
             for item in self.__mItems:
@@ -82,6 +89,27 @@ class StocksViewList(wx.ListCtrl):
                     self.__mFilteredItems.append(item)
         else:
             self.__mFilteredItems = self.__mItems
+        self.populate_list()
+
+    def filter_items(self):
+        if self.__mFilterName:
+            self.__mFilteredItems = []
+            for item in self.__mItems:
+                if self.__mFilterName.lower() in item.get_sign().lower() or self.__mFilterName.lower() in item.get_company().get_name().lower() or self.__mFilterName.lower() in item.get_exchange().get_full_name().lower():
+                    self.__mFilteredItems.append(item)
+        else:
+            self.__mFilteredItems = self.__mItems
+
+        if self.mFilterData is not None:
+            for item in self.__mItems:
+                if self.mFilterData.get_price() is not None:
+                    if item.get_price() >= self.mFilterData.get_min_price():
+                        self.__mFilteredItems.append(item)
+
+                if self.mFilterData.get_max_price() is not None:
+                    if item.get_price() <= self.mFilterData.get_max_price():
+                        self.__mFilteredItems.append(item)
+
         self.populate_list()
 
     def unbind_listener(self):

@@ -1048,4 +1048,5 @@ class ViewStocksPanel(BasePanel):
 
     def listen_filter_stock_panel(self, message, arg= None):
         self.__mFilterSearchStockPanel.from_json(message)
+        self.__mList.set_filter_data(self.__mFilterSearchStockPanel)
 #endregion
