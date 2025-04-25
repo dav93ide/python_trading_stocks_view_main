@@ -16,7 +16,6 @@ class FilterSearchStockPanel(object):
     __mMoverAboveHundred = None
     __mMoverBelowZero = None
     __mMoverBelowFifty = None
-    __mMoverBelowHundred = None
 
     __mMoverAboveZeroToTen = None
     __mMoverAboveTenToTwenty = None
@@ -56,8 +55,11 @@ class FilterSearchStockPanel(object):
     def get_mover_above_zero(self):
         return self.__mMoverAboveZero
 
-    def get_mover_above_fifty_mover_above_hundred(self):
-        return self.__mMoverAboveFifty__mMoverAboveHundred
+    def get_mover_above_fifty(self):
+        return self.__mMoverAboveFifty
+
+    def get_mover_above_hundred(self):
+        return self.__mMoverAboveHundred
 
     def get_mover_below_zero(self):
         return self.__mMoverBelowZero
@@ -163,7 +165,7 @@ class FilterSearchStockPanel(object):
                 "mMaxVolumeMover" : self.__mMaxVolumeMover, "mMinVolumeMover"  : self.__mMinVolumeMover,
                 "mMoverAboveZero" : self.__mMoverAboveZero, "mMoverAboveFifty" : self.__mMoverAboveFifty, "mMoverAboveHundred" : self.__mMoverAboveHundred,
                 "mMoverBelowZero" : self.__mMoverBelowZero, "mMoverBelowFifty" : self.__mMoverBelowFifty,
-                "mMoverBelowHundred" : self.__mMoverBelowHundred, "mMoverAboveZeroToTen": self.__mMoverAboveZeroToTen,
+                "mMoverAboveZeroToTen": self.__mMoverAboveZeroToTen,
                 "mMoverAboveTenToTwenty": self.__mMoverAboveTenToTwenty, "mMoverAboveTwentyToThirty" : self.__mMoverAboveTwentyToThirty,
                 "mMoverAboveThirtyToFourty": self.__mMoverAboveThirtyToFourty,  "mMoverBelowZeroToTen" : self.__mMoverBelowZeroToTen,
                 "mMoverBelowTenToTwenty": self.__mMoverBelowTenToTwenty, "mMoverBelowTwentyToThirty" : self.__mMoverBelowTwentyToThirty,
@@ -181,10 +183,9 @@ class FilterSearchStockPanel(object):
         self.set_min_volume_mover(json["mMinVolumeMover"])
         self.set_mover_above_zero(json["mMoverAboveZero"])
         self.set_mover_above_fifty(json["mMoverAboveFifty"])
-        self.set_mover_above_hundred(json["mMoverBelowZero"])
         self.set_mover_above_hundred(json["mMoverAboveHundred"])
-        self.set_mover_below_zero(json["mMoverBelowFifty"])
-        self.set_mover_below_fifty(json["mMoverBelowHundred"])
+        self.set_mover_below_zero(json["mMoverBelowZero"])
+        self.set_mover_below_fifty(json["mMoverBelowFifty"])
         self.set_mover_above_zero_to_ten(json["mMoverAboveZeroToTen"])
         self.set_mover_above_ten_to_twenty(json["mMoverAboveTenToTwenty"])
         self.set_mover_above_twenty_to_thirty(json["mMoverAboveTwentyToThirty"])
@@ -209,7 +210,6 @@ class FilterSearchStockPanel(object):
                 f"#- __mMoverAboveFifty: {self.__mMoverAboveFifty}\n"\
                 f"#- __mMoverBelowZero: {self.__mMoverBelowZero}\n"\
                 f"#- __mMoverBelowFifty: {self.__mMoverBelowFifty}\n"\
-                f"#- __mMoverBelowHundred: {self.__mMoverBelowHundred}\n"\
                 f"#- __mMoverAboveZeroToTen: {self.__mMoverAboveZeroToTen}\n"\
                 f"#- __mMoverAboveTenToTwenty: {self.__mMoverAboveTenToTwenty}\n"\
                 f"#- __mMoverAboveTwentyToThirty: {self.__mMoverAboveTwentyToThirty}\n"\
