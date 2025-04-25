@@ -133,7 +133,12 @@ class DataSynchronization(object):
                 exchange.set_name(j[APIConstants.FIELD_EXCHANGE])
                 exchange.set_full_name(j[APIConstants.FIELD_FULL_EXCHANGE_NAME])
 
-                stock.set_exchange(exchange)
+                # stock.set_exchange(exchange)
+
+                # stock.set_market_change_percent(j[APIConstants.FIELD_REGULAR_MARKET_CHANGE_PERCENT])
+
+                if APIConstants.FIELD_PRE_MARKET_CHANGE_PERCENT in j:
+                    stock.set_pre_market_change_percent(j[APIConstants.FIELD_PRE_MARKET_CHANGE_PERCENT])
 
                 if APIConstants.FIELD_PRE_MARKET_PRICE in j:
                     stock.set_pre_market_price(j[APIConstants.FIELD_PRE_MARKET_PRICE])
@@ -440,6 +445,9 @@ class DataSynchronization(object):
 
                 stock.set_market_change_percent(j[APIConstants.FIELD_REGULAR_MARKET_CHANGE_PERCENT])
 
+                if APIConstants.FIELD_PRE_MARKET_CHANGE_PERCENT in j:
+                    stock.set_pre_market_change_percent(j[APIConstants.FIELD_PRE_MARKET_CHANGE_PERCENT])
+
                 if APIConstants.FIELD_PRE_MARKET_PRICE in j:
                     stock.set_pre_market_price(j[APIConstants.FIELD_PRE_MARKET_PRICE])
                 else:
@@ -458,7 +466,9 @@ class DataSynchronization(object):
                     stock.set_earnings_timestamp(j[APIConstants.FIELD_EARNINGS_TIMESTAMP])
 
                 stock.set_book_value_per_share(j[APIConstants.FIELD_BOOK_VALUE])
-                stock.set_eps_trailing_twelve_months(j[APIConstants.FIELD_EPS_TRAILING_TWELVE_MONTHS])
+
+                if APIConstants.FIELD_EPS_TRAILING_TWELVE_MONTHS in j:
+                    stock.set_eps_trailing_twelve_months(j[APIConstants.FIELD_EPS_TRAILING_TWELVE_MONTHS])
 
                 if APIConstants.FIELD_EPS_FORWARD in j:
                     stock.set_eps_forward(j[APIConstants.FIELD_EPS_FORWARD])

@@ -55,6 +55,7 @@ class Stock(BaseAsset):
     __mAverageAnalystRating = None
     __mMarketChangePercent = None
     __mPreMarketPrice = None
+    __mPreMarketChangePerc = None
     __mPostMarketChangePercent = None
     __mPostMarketTime = None
     __mPostMarketPrice = None
@@ -215,6 +216,9 @@ class Stock(BaseAsset):
 
     def get_pre_market_price(self):
         return self.__mPreMarketPrice
+
+    def get_pre_market_change_percentage(self):
+        return self.__mPreMarketChangePerc
 
     def get_post_market_change_percent(self):
         return self.__mPostMarketChangePercent
@@ -392,6 +396,9 @@ class Stock(BaseAsset):
     def set_pre_market_price(self, price):
         self.__mPreMarketPrice = price
 
+    def set_pre_market_change_percent(self, perc):
+        self.__mPreMarketChangePerc = perc
+
     def set_post_market_change_percent(self, postMarketChangePercent):
         self.__mPostMarketChangePercent = postMarketChangePercent
 
@@ -489,6 +496,7 @@ class Stock(BaseAsset):
                 f"#- __mAverageAnalystRating: {self.__mAverageAnalystRating}\n"\
                 f"#- __mMarketChangePercent: {self.__mMarketChangePercent}\n"\
                 f"#- __mPreMarketPrice: {self.__mPreMarketPrice}\n"\
+                f"#- __mPreMarketChangePerc: {self.__mPreMarketChangePerc}\n"\
                 f"#- __mPostMarketChangePercent: {self.__mPostMarketChangePercent}\n"\
                 f"#- __mPostMarketTime: {self.__mPostMarketTime}\n"\
                 f"#- __mPostMarketPrice: {self.__mPostMarketPrice}\n"\

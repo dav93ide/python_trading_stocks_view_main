@@ -60,8 +60,10 @@ class ViewStocksPanel(BasePanel):
 
     __mGraphOneDayPlot = None
 
+    __mstMarketPercentage = None
     __mstPrice = None
     __mstPrePostMarketPrice = None
+    __mstPrePostMarketPercentage = None
     __mstMarketCap = None
     __mstDayMax = None
     __mstDayMin = None
@@ -351,6 +353,7 @@ class ViewStocksPanel(BasePanel):
         
     def __update_left_panel_data(self, event):
         if self.__mStockViewData is not None:
+            self.__mstMarketPercentage.SetLabel(str(round(self.__mStockViewData.get_stock().get_market_change_percent(), 2))  + "%      ")
             self.__mstPrice.SetLabel("$" + str(self.__mStockViewData.get_stock().get_price()))
             if self.__mStockViewData.get_stock().get_pre_market_price() is not None:
                 self.__mstPrePostMarketPrice.SetLabel(Strings.STR_FIELD_PRE_MARKET + str(self.__mStockViewData.get_stock().get_pre_market_price()))
@@ -482,20 +485,41 @@ class ViewStocksPanel(BasePanel):
         vbs.Add(st, 0, wx.EXPAND)
 
         hbs = wx.BoxSizer(wx.HORIZONTAL)
+        self.__mstMarketPercentage = wx.StaticText(panel, label = str(round(self.__mStockViewData.get_stock().get_market_change_percent(), 2))  + "%      ")
+        WxUtils.set_font_size_and_bold_and_roman(self.__mstMarketPercentage, 20)
+        if self.__mStockViewData.get_stock().get_market_change_percent() is not None and self.__mStockViewData.get_stock().get_market_change_percent() > 0:
+            self.__mstMarketPercentage.SetForegroundColour(Colors.GREEN)
+        else:
+            self.__mstMarketPercentage.SetForegroundColour(Colors.RED)
+        
         self.__mstPrice = wx.StaticText(panel, label = "$" + str(self.__mStockViewData.get_stock().get_price()))
         WxUtils.set_font_size_and_bold_and_roman(self.__mstPrice, 20)
+        hbs.Add(self.__mstMarketPercentage, 0, wx.EXPAND)
         hbs.Add(self.__mstPrice, 1, wx.EXPAND)
         
         if self.__mStockViewData.get_stock().get_pre_market_price() is not None:
             self.__mstPrePostMarketPrice = wx.StaticText(panel, label = Strings.STR_FIELD_PRE_MARKET + str(self.__mStockViewData.get_stock().get_pre_market_price()))
+            self.__mstPrePostMarketPercentage = wx.StaticText(panel, label = "     " + str(round(self.__mStockViewData.get_stock().get_pre_market_change_percentage(), 2)))
+            if self.__mStockViewData.get_stock().get_pre_market_change_percentage() is not None and self.__mStockViewData.get_stock().get_pre_market_change_percentage() > 0:
+                self.__mstPrePostMarketPercentage.SetForegroundColour(Colors.GREEN)
+            else:
+                self.__mstPrePostMarketPercentage.SetForegroundColour(Colors.RED)
         else:
             if self.__mStockViewData.get_stock().get_post_market_price() is not None:
                 self.__mstPrePostMarketPrice = wx.StaticText(panel, label = Strings.STR_FIELD_POST_MARKET + str(self.__mStockViewData.get_stock().get_post_market_price()))
+                self.__mstPrePostMarketPercentage = wx.StaticText(panel, label = "     " + str(round(self.__mStockViewData.get_stock().get_post_market_change_percent(), 2)))
+                if self.__mStockViewData.get_stock().get_post_market_change_percentage() is not None and self.__mStockViewData.get_stock().get_post_market_change_percentage() > 0:
+                    self.__mstPrePostMarketPercentage.SetForegroundColour(Colors.GREEN)
+                else:
+                    self.__mstPrePostMarketPercentage.SetForegroundColour(Colors.RED)
             else:
                 self.__mstPrePostMarketPrice = wx.StaticText(panel, label = "")
+                self.__mstPrePostMarketPercentage = wx.StaticText(panel, label = "")
         
+        WxUtils.set_font_size_and_bold_and_roman(self.__mstPrePostMarketPercentage, 20)
         WxUtils.set_font_size_and_bold_and_roman(self.__mstPrePostMarketPrice, 20)
-        hbs.Add(self.__mstPrePostMarketPrice, 0)
+        hbs.Add(self.__mstPrePostMarketPrice, 0, wx.EXPAND)
+        hbs.Add(self.__mstPrePostMarketPercentage, 0, wx.EXPAND)
         vbs.Add(hbs, 0, wx.EXPAND)
         
         panel.SetSizer(vbs)

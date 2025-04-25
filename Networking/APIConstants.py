@@ -148,6 +148,7 @@ class APIConstants(object):
     FIELD_FIRST_TRADE_DATE_MILLISECONDS = "firstTradeDateMilliseconds"
     FIELD_FINANCIAL_CURRENCY = "financialCurrency"
     FIELD_PRE_MARKET_PRICE = "preMarketPrice"
+    FIELD_PRE_MARKET_CHANGE_PERCENT = "preMarketChangePercent"
 #endregion
 
 #region - URL_API_YAHOO_FINANCE_GET_CHART - Json Fields

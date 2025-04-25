@@ -1,10 +1,11 @@
 import wx
+import math
 from Classes.Stock import Stock
 
 class StocksViewList(wx.ListCtrl):
 
-    LIST_COLUMNS = ["Symbol", "Name", "Price", "Exchange"]
-    LIST_COLUMNS_SIZES = [75, 300, 100, 150]
+    LIST_COLUMNS = ["%", "Symbol", "Name", "Price", "Exchange"]
+    LIST_COLUMNS_SIZES = [75, 75, 250, 100, 150]
 
     __mCallback = None
     __mFilter = None
@@ -52,13 +53,20 @@ class StocksViewList(wx.ListCtrl):
         if self.__mFilteredItems:
             for i in range(0, len(self.__mFilteredItems)):
                 item = self.__mFilteredItems[i]
-                self.InsertItem(i, str(item.get_sign()))
-                self.SetItem(i, 1, str(item.get_company().get_name()))
-                self.SetItem(i, 2, str(item.get_price()))
-                if item.get_exchange():
-                    self.SetItem(i, 3, str(item.get_exchange().get_full_name()))
+                if item.get_market_change_percent() is not None and item.get_market_change_percent() > 0:
+                    self.InsertItem(i, "+" + str(round(item.get_market_change_percent(), 2)))
                 else:
-                    self.SetItem(i, 3, "")
+                    if item.get_market_change_percent() is not None:
+                        self.InsertItem(i, str(round(item.get_market_change_percent(), 2)))
+                    else:
+                        self.InsertItem(i, str(0))
+                self.SetItem(i, 1, str(item.get_sign()))
+                self.SetItem(i, 2, str(item.get_company().get_name()))
+                self.SetItem(i, 3, str(item.get_price()))
+                if item.get_exchange():
+                    self.SetItem(i, 4, str(item.get_exchange().get_full_name()))
+                else:
+                    self.SetItem(i, 4, "")
 
     def on_item_selected(self, event):
         if self.__mCallback is not None:
