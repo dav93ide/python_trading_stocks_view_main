@@ -194,7 +194,7 @@ class ViewStocksPanel(BasePanel):
         self.__mThreadUpdateList.stop()
 
     def __on_change_search_list_value(self, evt):
-        self.__mList.filter_items(evt.GetString())
+        self.__mList.filter_items_by_name(evt.GetString())
 
     def __on_click_item_list(self, item):
         self.__mStockViewData = DataSynchronization.sync_single_stock_full_data(item.get_id(), item.get_sign())

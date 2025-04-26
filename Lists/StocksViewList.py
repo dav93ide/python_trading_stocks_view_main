@@ -74,9 +74,9 @@ class StocksViewList(wx.ListCtrl):
             self.__mCurrentItem = self.__mFilteredItems[event.Index]
             self.__mCallback(self.__mCurrentItem)
 
-    def filter_items(self, ffilter):
+    def filter_items_by_name(self, ffilter):
         self.__mFilterName = ffilter
-        filter_items()
+        self.filter_items()
 
     def filter_items(self):
         for item in self.__mItems:

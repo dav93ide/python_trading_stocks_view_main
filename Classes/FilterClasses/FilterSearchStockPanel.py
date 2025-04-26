@@ -1,4 +1,3 @@
-
 class FilterSearchStockPanel(object):
 
     __mMinPrice = None
