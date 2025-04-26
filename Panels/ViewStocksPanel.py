@@ -211,7 +211,7 @@ class ViewStocksPanel(BasePanel):
         self.__update_left_panel()
 
     def __on_click_search(self, evt):
-        self.__mSearchStockFrame = SearchStockFrame(Strings.STR_SEARCH)
+        self.__mSearchStockFrame = SearchStockFrame(Strings.STR_SEARCH, self.__mFilterSearchStockPanel)
         self.__mSearchStockFrame.Show(True)
 
     def __on_click_five_day_chart(self, evt):
@@ -1041,9 +1041,6 @@ class ViewStocksPanel(BasePanel):
 
         p.SetSizer(hbs)
         return p
-
-        def set_respond(res):
-            print(res)
 #endregion
 
     def listen_filter_stock_panel(self, message, arg= None):

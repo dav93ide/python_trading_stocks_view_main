@@ -41,9 +41,10 @@ class SearchStockPanel(BasePanel):
 
     __mFilterSearchStockPanel = FilterSearchStockPanel()
 
-    def __init__(self, parent, size):
+    def __init__(self, parent, size, filterData):
         super().__init__(parent, size)
         self.__init_layout()
+        self.init_filter_search_stock_panel()
 
 #region - Private Methods
     def __init_layout(self):
@@ -66,6 +67,28 @@ class SearchStockPanel(BasePanel):
         self.__mMainSizer.Add(vbs, 1, wx.ALL|wx.EXPAND)
         self.__mMainSizer.AddSpacer(25)
         self.SetSizer(self.__mMainSizer)
+
+    def init_filter_search_stock_panel(self):
+        self.__mFilterSearchStockPanel.set_min_price(False)
+        self.__mFilterSearchStockPanel.set_max_price(False)
+        self.__mFilterSearchStockPanel.set_min_volume(False)
+        self.__mFilterSearchStockPanel.set_max_volume(False)
+        self.__mFilterSearchStockPanel.set_max_price_mover(False)
+        self.__mFilterSearchStockPanel.set_min_price_mover(False)
+        self.__mFilterSearchStockPanel.set_max_volume_mover(False)
+        self.__mFilterSearchStockPanel.set_min_volume_mover(False)
+        self.__mFilterSearchStockPanel.set_mover_above_zero(False)
+        self.__mFilterSearchStockPanel.set_mover_above_fifty(False)
+        self.__mFilterSearchStockPanel.set_mover_above_hundred(False)
+        self.__mFilterSearchStockPanel.set_mover_below_zero(False)
+        self.__mFilterSearchStockPanel.set_mover_above_zero_to_ten(False)
+        self.__mFilterSearchStockPanel.set_mover_above_ten_to_twenty(False)
+        self.__mFilterSearchStockPanel.set_mover_above_twenty_to_thirty(False)
+        self.__mFilterSearchStockPanel.set_mover_above_thirty_to_fourty(False)
+        self.__mFilterSearchStockPanel.set_mover_below_zero_to_ten(False)
+        self.__mFilterSearchStockPanel.set_mover_below_ten_to_twenty(False)
+        self.__mFilterSearchStockPanel.set_mover_below_twenty_to_thirty(False)
+        self.__mFilterSearchStockPanel.set_mover_below_thirty_to_fourty(False)
 
 #region - Min Max Price Methods
     def __get_panels_min_max_price(self):
@@ -533,3 +556,4 @@ class SearchStockPanel(BasePanel):
     def __send_data(self):
         j = json.dumps(self.__mFilterSearchStockPanel.to_dict())
         pub.sendMessage(LISTEN_FILTER_STOCK_PANEL, message = json.loads(j))
+        self.GetParent().Destroy()

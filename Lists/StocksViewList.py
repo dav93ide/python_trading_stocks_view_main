@@ -49,11 +49,9 @@ class StocksViewList(wx.ListCtrl):
 
     def add_items_and_populate(self, items):
         self.__mItems = items
-        if self.__mFilterName is not None:
-            self.filter_items()
-        else:
-            self.__mFilteredItems = items
-            self.populate_list()
+        self.__mFilteredItems = items
+        self.filter_items()
+        self.populate_list()
 
     def populate_list(self):
         self.DeleteAllItems()
@@ -87,10 +85,13 @@ class StocksViewList(wx.ListCtrl):
     def filter_items(self):
         for item in self.__mItems:
             if item.get_market_change_percent() is None:
-                    item.set_market_change_percent(0)
+                item.set_market_change_percent(0)
+            if item.get_volume() is None:
+                item.set_volume(0) 
         self.filter_name()
-        self.filter_order()
-        self.filter_prices()
+        if self.__mFilterData is not None:
+            self.filter_prices()
+            self.filter_order()
 
     def filter_name(self):
         if self.__mFilterName:
@@ -102,91 +103,89 @@ class StocksViewList(wx.ListCtrl):
             self.__mFilteredItems = self.__mItems
 
     def filter_order(self):
-        if self.__mFilterData.get_max_price_mover() is not None:
-            items = []
-            i = 1
-            for item in self.__mFilteredItems:
-                max = item
-                for j in range(1, len(items)):
-                    item = items[j]
-                    if item.get_market_change_percent() > max.get_market_change_percent():
-                        max = item
-                print(max.get_name())
-                items.append(max)
-            if len(items) > 0:
-                self.__mFilteredItems = items
-        else:
-            self.__mFilteredItems = self.__mItems
+        if self.__mFilterData.get_max_price_mover():
+            pos = 0
+            for i in range(0, len(self.__mFilteredItems)):
+                one = self.__mFilteredItems[i]
+                for j in range(i + 1, len(self.__mFilteredItems)):
+                    two = self.__mFilteredItems[j]
+                    if one.get_market_change_percent() < two.get_market_change_percent():
+                        print("HERE")
+                        one = two
+                        pos = j
+                temp = self.__mFilteredItems[i]
+                self.__mFilteredItems[i] = one
+                self.__mFilteredItems[pos] = temp                
 
     def filter_prices(self):
         if self.__mFilterData is not None:
             items = []
             for item in self.__mFilteredItems:
-                if self.__mFilterData.get_min_price() is not None:
+                if self.__mFilterData.get_min_price():
                     if item.get_price() >= float(self.__mFilterData.get_min_price()):
                         items.append(item)
 
-                if self.__mFilterData.get_max_price() is not None:
+                if self.__mFilterData.get_max_price():
                     if item.get_price() <= float(self.__mFilterData.get_max_price()):
                         items.append(item)
 
-                if self.__mFilterData.get_min_volume() is not None:
+                if self.__mFilterData.get_min_volume():
                     if item.get_volume() >= int(self.__mFilterData.get_min_volume()):
                         items.append(item)
 
-                if self.__mFilterData.get_max_volume() is not None:
-                    if item.get_volume <= int(self.__mFilterData.get_max_volume()):
+                if self.__mFilterData.get_max_volume():
+                    if item.get_volume() <= int(self.__mFilterData.get_max_volume()):
                         items.append(item)
 
-                if self.__mFilterData.get_mover_above_zero() is not None:
+                if self.__mFilterData.get_mover_above_zero():
                     if item.get_market_change_percent() >= 0:
                         items.append(item)
 
-                if self.__mFilterData.get_mover_above_fifty() is not None:
+                if self.__mFilterData.get_mover_above_fifty():
                     if item.get_market_change_percent() >= 50:
                         items.append(item)
 
-                if self.__mFilterData.get_mover_above_hundred() is not None:
+                if self.__mFilterData.get_mover_above_hundred():
                     if item.get_market_change_percent() >= 100:
                         items.append(item)
 
-                if self.__mFilterData.get_mover_below_zero() is not None:
+                if self.__mFilterData.get_mover_below_zero():
                     if item.get_market_change_percent() <= 0:
                         items.append(item)
 
-                if self.__mFilterData.get_mover_below_fifty() is not None:
+                if self.__mFilterData.get_mover_below_fifty():
                     if item.get_market_change_percent() <= -50:
                         items.append(item)
 
-                if self.__mFilterData.get_mover_above_zero_to_ten() is not None:
+                if self.__mFilterData.get_mover_above_zero_to_ten():
                     if item.get_market_change_percent() >= 0 and item.get_market_change_percent() <= 10:
                         items.append(item)
 
-                if self.__mFilterData.get_mover_above_ten_to_twenty() is not None:
+                if self.__mFilterData.get_mover_above_ten_to_twenty():
                     if item.get_market_change_percent() >= 10 and item.get_market_change_percent() <= 20:
                         items.append(item)
 
-                if self.__mFilterData.get_mover_above_twenty_to_thirty() is not None:
+                if self.__mFilterData.get_mover_above_twenty_to_thirty():
                     if item.get_market_change_percent() >= 20 and item.get_market_change_percent() <= 30:
                         items.append(item)
 
-                if self.__mFilterData.get_mover_above_thirty_to_fourty() is not None:
+                if self.__mFilterData.get_mover_above_thirty_to_fourty():
                     if item.get_market_change_percent() >= 30 and item.get_market_change_percent() <= 40:
                         items.append(item)
 
-                if self.__mFilterData.get_mover_below_zero_to_ten() is not None:
+                if self.__mFilterData.get_mover_below_zero_to_ten():
                     if item.get_market_change_percent() <= 0 and item.get_market_change_percent() >= -10:
                         items.append(item)
 
-                if self.__mFilterData.get_mover_below_ten_to_twenty() is not None:
+                if self.__mFilterData.get_mover_below_ten_to_twenty():
                     if item.get_market_change_percent() <= -10 and item.get_market_change_percent() >= -20:
                         items.append(item)
 
-                if self.__mFilterData.get_mover_below_twenty_to_thirty() is not None:
+                if self.__mFilterData.get_mover_below_twenty_to_thirty():
                     if item.get_market_change_percent() <= -20 and item.get_market_change_percent() >= -30:
                         items.append(item)
 
-                if self.__mFilterData.get_mover_below_thirty_to_fourty() is not None:
+                if self.__mFilterData.get_mover_below_thirty_to_fourty():
                     if item.get_market_change_percent() <= -30 and item.get_market_change_percent() >= -40:
                         items.append(item)
 
