@@ -5,8 +5,8 @@ from Classes.FilterClasses.FilterSearchStockPanel import FilterSearchStockPanel
 
 class StocksViewList(wx.ListCtrl):
 
-    LIST_COLUMNS = ["%", "Symbol", "Name", "Price", "Exchange"]
-    LIST_COLUMNS_SIZES = [75, 75, 250, 100, 150]
+    LIST_COLUMNS = ["%", "Symbol", "Name", "Price"]
+    LIST_COLUMNS_SIZES = [75, 75, 250, 100]
 
     __mCallback = None
     __mFilterData = None
@@ -68,10 +68,6 @@ class StocksViewList(wx.ListCtrl):
                 self.SetItem(i, 1, str(item.get_sign()))
                 self.SetItem(i, 2, str(item.get_company().get_name()))
                 self.SetItem(i, 3, str(item.get_price()))
-                if item.get_exchange():
-                    self.SetItem(i, 4, str(item.get_exchange().get_full_name()))
-                else:
-                    self.SetItem(i, 4, "")
 
     def on_item_selected(self, event):
         if self.__mCallback is not None:
@@ -92,6 +88,7 @@ class StocksViewList(wx.ListCtrl):
         if self.__mFilterData is not None:
             self.filter_prices()
             self.filter_order()
+        self.populate_list()
 
     def filter_name(self):
         if self.__mFilterName:
@@ -104,7 +101,20 @@ class StocksViewList(wx.ListCtrl):
 
     def filter_order(self):
         if self.__mFilterData.get_max_price_mover():
-            pos = 0
+            pos = -1
+            for i in range(0, len(self.__mFilteredItems)):
+                one = self.__mFilteredItems[i]
+                for j in range(i + 1, len(self.__mFilteredItems)):
+                    two = self.__mFilteredItems[j]
+                    if one.get_market_change_percent() < two.get_market_change_percent():
+                        one = two
+                        pos = j
+                temp = self.__mFilteredItems[i]
+                self.__mFilteredItems[i] = one
+                self.__mFilteredItems[pos] = temp
+
+        if self.__mFilterData.get_min_price_mover():
+            pos = -1
             for i in range(0, len(self.__mFilteredItems)):
                 one = self.__mFilteredItems[i]
                 for j in range(i + 1, len(self.__mFilteredItems)):
@@ -114,7 +124,33 @@ class StocksViewList(wx.ListCtrl):
                         pos = j
                 temp = self.__mFilteredItems[i]
                 self.__mFilteredItems[i] = one
-                self.__mFilteredItems[pos] = temp                
+                self.__mFilteredItems[pos] = temp
+
+        if self.__mFilterData.get_max_volume_mover():
+            pos = -1
+            for i in range(0, len(self.__mFilteredItems)):
+                one = self.__mFilteredItems[i]
+                for j in range(i + 1, len(self.__mFilteredItems)):
+                    two = self.__mFilteredItems[j]
+                    if one.get_volume() < two.get_volume():
+                        one = two
+                        pos = j
+                temp = self.__mFilteredItems[i]
+                self.__mFilteredItems[i] = one
+                self.__mFilteredItems[pos] = temp
+
+        if self.__mFilterData.get_min_volume_mover():
+            pos = -1
+            for i in range(0, len(self.__mFilteredItems)):
+                one = self.__mFilteredItems[i]
+                for j in range(i + 1, len(self.__mFilteredItems)):
+                    two = self.__mFilteredItems[j]
+                    if one.get_volume() > two.get_volume():
+                        one = two
+                        pos = j
+                temp = self.__mFilteredItems[i]
+                self.__mFilteredItems[i] = one
+                self.__mFilteredItems[pos] = temp
 
     def filter_prices(self):
         if self.__mFilterData is not None:
@@ -129,11 +165,11 @@ class StocksViewList(wx.ListCtrl):
                         items.append(item)
 
                 if self.__mFilterData.get_min_volume():
-                    if item.get_volume() >= int(self.__mFilterData.get_min_volume()):
+                    if item.get_volume() >= float(self.__mFilterData.get_min_volume()):
                         items.append(item)
 
                 if self.__mFilterData.get_max_volume():
-                    if item.get_volume() <= int(self.__mFilterData.get_max_volume()):
+                    if item.get_volume() <= float(self.__mFilterData.get_max_volume()):
                         items.append(item)
 
                 if self.__mFilterData.get_mover_above_zero():
@@ -192,8 +228,6 @@ class StocksViewList(wx.ListCtrl):
                     self.__mFilteredItems = items
         else:
             self.__mFilteredItems = self.__mItems
-
-        self.populate_list()
 
     def unbind_listener(self):
         self.Unbind(wx.EVT_LIST_ITEM_SELECTED)
