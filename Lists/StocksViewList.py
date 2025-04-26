@@ -110,7 +110,6 @@ class StocksViewList(wx.ListCtrl):
                 for j in range(i + 1, len(self.__mFilteredItems)):
                     two = self.__mFilteredItems[j]
                     if one.get_market_change_percent() < two.get_market_change_percent():
-                        print("HERE")
                         one = two
                         pos = j
                 temp = self.__mFilteredItems[i]
