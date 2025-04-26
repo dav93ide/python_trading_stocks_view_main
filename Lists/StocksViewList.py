@@ -109,7 +109,7 @@ class StocksViewList(wx.ListCtrl):
                 one = self.__mFilteredItems[i]
                 for j in range(i + 1, len(self.__mFilteredItems)):
                     two = self.__mFilteredItems[j]
-                    if one.get_market_change_percent() < two.get_market_change_percent():
+                    if one.get_market_change_percent() > two.get_market_change_percent():
                         one = two
                         pos = j
                 temp = self.__mFilteredItems[i]
