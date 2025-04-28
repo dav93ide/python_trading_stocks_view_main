@@ -153,7 +153,7 @@ class FilterSearchStockPanel(object):
         self.__mMoverBelowTwentyToThirty = moverBelowTwentyToThirty
 
     def set_mover_below_thirty_to_fourty(self, moverBelowThirtyToFourty):
-        self.__mMoverBelowTwentyToThirty = moverBelowThirtyToFourty
+        self.__mMoverBelowThirtyToFourty = moverBelowThirtyToFourty
     #endregion
 
 #region Public Methods
@@ -168,7 +168,7 @@ class FilterSearchStockPanel(object):
                 "mMoverAboveTenToTwenty": self.__mMoverAboveTenToTwenty, "mMoverAboveTwentyToThirty" : self.__mMoverAboveTwentyToThirty,
                 "mMoverAboveThirtyToFourty": self.__mMoverAboveThirtyToFourty,  "mMoverBelowZeroToTen" : self.__mMoverBelowZeroToTen,
                 "mMoverBelowTenToTwenty": self.__mMoverBelowTenToTwenty, "mMoverBelowTwentyToThirty" : self.__mMoverBelowTwentyToThirty,
-                "mMoverBelowTwentyToThirty": self.__mMoverBelowTwentyToThirty
+                "__mMoverBelowThirtyToFourty": self.__mMoverBelowThirtyToFourty
                 }
 
     def from_json(self, json):
@@ -192,6 +192,7 @@ class FilterSearchStockPanel(object):
         self.set_mover_below_zero_to_ten(json["mMoverBelowZeroToTen"])
         self.set_mover_below_ten_to_twenty(json["mMoverBelowTenToTwenty"])
         self.set_mover_below_twenty_to_thirty(json["mMoverBelowTwentyToThirty"])
+        self.set_mover_below_thirty_to_fourty(json["mMoverBelowThirtyToFourty"])
 #enderegion
 
     # To String
