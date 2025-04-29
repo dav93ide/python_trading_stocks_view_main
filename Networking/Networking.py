@@ -11,7 +11,10 @@ class Networking(object):
     def download_get_crumb_yahoo_finance(headers):
         return requests.get(API.URL_API_YAHOO_FINANCE_GET_CRUMB, headers = headers).text
 
-    def download_all_stock_symbols(headers):
+    def download_gov_all_stock_symbols(headers):
+        return requests.get(API.URL_API_GOV_GET_SYMBOLS, headers = headers).text
+
+    def download_all_stock_analysis_symbols(headers):
         return requests.get(API.URL_API_STOCKANALYSIS_GET_SYMBOLS, headers = headers).text
 
     def download_stocks_data_from_symbols(symbols, headers):

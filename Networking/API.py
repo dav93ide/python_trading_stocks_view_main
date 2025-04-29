@@ -1,6 +1,7 @@
 class API(object):
     
 #region - API
+    URL_API_GOV_GET_SYMBOLS = "https://www.sec.gov/files/company_tickers.json"
     URL_API_STOCKANALYSIS_GET_SYMBOLS = "https://api.stockanalysis.com/api/screener/s/f?m=s&s=asc&c=s,n&i=stocks"
     URL_API_STOCKANALYSIS_GET_SYMBOLS_AND_STOCKS_INFO = "https://api.stockanalysis.com/api/screener/s/f?m=s&s=asc&c=s,n,industry,exchange,marketCap,price,volume&i=stocks"
 

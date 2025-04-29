@@ -168,7 +168,7 @@ class FilterSearchStockPanel(object):
                 "mMoverAboveTenToTwenty": self.__mMoverAboveTenToTwenty, "mMoverAboveTwentyToThirty" : self.__mMoverAboveTwentyToThirty,
                 "mMoverAboveThirtyToFourty": self.__mMoverAboveThirtyToFourty,  "mMoverBelowZeroToTen" : self.__mMoverBelowZeroToTen,
                 "mMoverBelowTenToTwenty": self.__mMoverBelowTenToTwenty, "mMoverBelowTwentyToThirty" : self.__mMoverBelowTwentyToThirty,
-                "__mMoverBelowThirtyToFourty": self.__mMoverBelowThirtyToFourty
+                "mMoverBelowThirtyToFourty": self.__mMoverBelowThirtyToFourty
                 }
 
     def from_json(self, json):

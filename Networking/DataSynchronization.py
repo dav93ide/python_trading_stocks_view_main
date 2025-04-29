@@ -58,13 +58,22 @@ class DataSynchronization(object):
 #region - Initial Stock Sync Methods
     def __sync_initial_all_stocks_symbols(progressDialog):
         progressDialog.Update(0, Strings.STR_PD_INITIAL_DOWNLOAD_SYMBOLS)
-        j = json.loads(Networking.download_all_stock_symbols(APIConstants.HEADERS_APP_JSON_TEXT_PLAIN_MOZILLA_UBUNTU_FIREFOX))
+        j = json.loads(Networking.download_all_stock_analysis_symbols(APIConstants.HEADERS_APP_JSON_TEXT_PLAIN_MOZILLA_UBUNTU_FIREFOX))
         symbols = []
 
         if j[APIConstants.FIELD_STATUS] == 200:
             for d in j[APIConstants.FIELD_DATA][APIConstants.FIELD_DATA]:
                 symbols.append(d[APIConstants.FIELD_S])
 
+        jj = json.loads(Networking.download_gov_all_stock_symbols(APIConstants.HEADERS_APP_JSON_TEXT_PLAIN_MOZILLA_UBUNTU_FIREFOX))
+        if jj:
+            for i in range(0, 9690):
+                if str(i) in jj.keys():
+                    if jj[str(i)]["ticker"] not in symbols:
+                        symbols.append(jj[str(i)]["ticker"])
+                else:
+                    break
+        print("HERE 0")
         StoredDataUtils.store_data(symbols, DataFilenames.FILENAME_STOCK_SYMBOLS)
 
         
@@ -80,13 +89,15 @@ class DataSynchronization(object):
 
         arrCompaniesNames = []
         arrExchangesNames = []
-
+        
         for i in range(0, len(totSymbols), 500):
+            print("HERE")
             DataSynchronization.__sync_initial_stocks_data(crumb, totSymbols[i:i+500], arrStocks, arrExchanges, arrCompanies, arrCurrencies, arrCompaniesNames, arrExchangesNames)
             progressDialog.Update(round((i * 100) / len(totSymbols)))
 
         
         if len(totSymbols) % 500 != 0:
+            print("HERE 2")
             DataSynchronization.__sync_initial_stocks_data(crumb, totSymbols[-(len(totSymbols) % 500):], arrStocks, arrExchanges, arrCompanies, arrCurrencies, arrCompaniesNames, arrExchangesNames)
         progressDialog.Update(100)
 
@@ -97,8 +108,8 @@ class DataSynchronization(object):
 
     def __sync_initial_stocks_data(crumb, symbols, arrStocks, arrExchanges, arrCompanies, arrCurrencies, arrCompaniesNames, arrExchangesNames):
         jj = json.loads(Networking.download_quote_of_stock(",".join(symbols), crumb, APIConstants.HEADERS_APP_JSON_TEXT_PLAIN_MOZILLA_UBUNTU_FIREFOX))
-
-        if jj is not None:
+        print(jj)
+        if jj is not None and APIConstants.FIELD_QUOTE_RESPONSE in jj and APIConstants.FIELD_RESULT in jj[APIConstants.FIELD_QUOTE_RESPONSE]:
             for j in jj[APIConstants.FIELD_QUOTE_RESPONSE][APIConstants.FIELD_RESULT]:
                 
                 company = Company(uuid.uuid4())
@@ -130,12 +141,16 @@ class DataSynchronization(object):
                 elif APIConstants.FIELD_FINANCIAL_CURRENCY in j:
                     exchange.set_currency(j[APIConstants.FIELD_FINANCIAL_CURRENCY])
 
-                exchange.set_name(j[APIConstants.FIELD_EXCHANGE])
-                exchange.set_full_name(j[APIConstants.FIELD_FULL_EXCHANGE_NAME])
+                if APIConstants.FIELD_EXCHANGE in j:
+                    exchange.set_name(j[APIConstants.FIELD_EXCHANGE])
 
-                # stock.set_exchange(exchange)
+                if APIConstants.FIELD_FULL_EXCHANGE_NAME in j:
+                    exchange.set_full_name(j[APIConstants.FIELD_FULL_EXCHANGE_NAME])
 
-                # stock.set_market_change_percent(j[APIConstants.FIELD_REGULAR_MARKET_CHANGE_PERCENT])
+                stock.set_exchange(exchange)
+
+                if APIConstants.FIELD_REGULAR_MARKET_CHANGE_PERCENT in j:
+                    stock.set_market_change_percent(j[APIConstants.FIELD_REGULAR_MARKET_CHANGE_PERCENT])
 
                 if APIConstants.FIELD_PRE_MARKET_CHANGE_PERCENT in j:
                     stock.set_pre_market_change_percent(j[APIConstants.FIELD_PRE_MARKET_CHANGE_PERCENT])
@@ -428,7 +443,10 @@ class DataSynchronization(object):
                 stock.set_ask_size(j[APIConstants.FIELD_ASK_SIZE])
                 stock.set_bid(j[APIConstants.FIELD_BID])
                 stock.set_bid_size(j[APIConstants.FIELD_BID_SIZE])
-                stock.set_avg_volume_ten_days(j[APIConstants.FIELD_AVG_DAILY_VOLUME_TEN_DAYS])
+
+                if APIConstants.FIELD_AVG_DAILY_VOLUME_TEN_DAYS in j:
+                    stock.set_avg_volume_ten_days(j[APIConstants.FIELD_AVG_DAILY_VOLUME_TEN_DAYS])
+                    
                 stock.set_avg_volume_three_months(j[APIConstants.FIELD_AVG_DAILY_VOLUME_THREE_MONTH])
                 stock.set_fifty_two_weeks_range(j[APIConstants.FIELD_FIFTY_TWO_WEEK_RANGE])
                 stock.set_fifty_two_weeks_high(j[APIConstants.FIELD_FIFTY_TWO_WEEK_HIGH])

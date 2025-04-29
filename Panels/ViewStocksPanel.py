@@ -499,7 +499,7 @@ class ViewStocksPanel(BasePanel):
         
         if self.__mStockViewData.get_stock().get_pre_market_price() is not None:
             self.__mstPrePostMarketPrice = wx.StaticText(panel, label = Strings.STR_FIELD_PRE_MARKET + str(self.__mStockViewData.get_stock().get_pre_market_price()))
-            self.__mstPrePostMarketPercentage = wx.StaticText(panel, label = "     " + str(round(self.__mStockViewData.get_stock().get_pre_market_change_percentage(), 2) + "%"))
+            self.__mstPrePostMarketPercentage = wx.StaticText(panel, label = "     " + str(round(self.__mStockViewData.get_stock().get_pre_market_change_percentage(), 2)) + "%")
             if self.__mStockViewData.get_stock().get_pre_market_change_percentage() is not None and self.__mStockViewData.get_stock().get_pre_market_change_percentage() > 0:
                 self.__mstPrePostMarketPercentage.SetForegroundColour(Colors.GREEN)
             else:
