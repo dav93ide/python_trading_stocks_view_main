@@ -86,7 +86,7 @@ class StocksViewList(wx.ListCtrl):
                 item.set_volume(0) 
         self.filter_name()
         if self.__mFilterData is not None:
-            self.filter_prices()
+            self.filter_values()
             self.filter_order()
         self.populate_list()
 
@@ -152,7 +152,7 @@ class StocksViewList(wx.ListCtrl):
                 self.__mFilteredItems[i] = one
                 self.__mFilteredItems[pos] = temp
 
-    def filter_prices(self):
+    def filter_values(self):
         if self.__mFilterData is not None:
             items = []
             for item in self.__mFilteredItems:

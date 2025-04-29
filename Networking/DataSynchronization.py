@@ -65,15 +65,14 @@ class DataSynchronization(object):
             for d in j[APIConstants.FIELD_DATA][APIConstants.FIELD_DATA]:
                 symbols.append(d[APIConstants.FIELD_S])
 
-        jj = json.loads(Networking.download_gov_all_stock_symbols(APIConstants.HEADERS_APP_JSON_TEXT_PLAIN_MOZILLA_UBUNTU_FIREFOX))
-        if jj:
-            for i in range(0, 9690):
-                if str(i) in jj.keys():
-                    if jj[str(i)]["ticker"] not in symbols:
-                        symbols.append(jj[str(i)]["ticker"])
-                else:
-                    break
-        print("HERE 0")
+        # jj = json.loads(Networking.download_gov_all_stock_symbols(APIConstants.HEADERS_APP_JSON_TEXT_PLAIN_MOZILLA_UBUNTU_FIREFOX))
+        # if jj:
+        #     for i in range(0, 9690):
+        #         if str(i) in jj.keys():
+        #             if jj[str(i)]["ticker"] not in symbols:
+        #                 symbols.append(jj[str(i)]["ticker"])
+        #         else:
+        #             break
         StoredDataUtils.store_data(symbols, DataFilenames.FILENAME_STOCK_SYMBOLS)
 
         
@@ -91,13 +90,11 @@ class DataSynchronization(object):
         arrExchangesNames = []
         
         for i in range(0, len(totSymbols), 500):
-            print("HERE")
             DataSynchronization.__sync_initial_stocks_data(crumb, totSymbols[i:i+500], arrStocks, arrExchanges, arrCompanies, arrCurrencies, arrCompaniesNames, arrExchangesNames)
             progressDialog.Update(round((i * 100) / len(totSymbols)))
 
         
         if len(totSymbols) % 500 != 0:
-            print("HERE 2")
             DataSynchronization.__sync_initial_stocks_data(crumb, totSymbols[-(len(totSymbols) % 500):], arrStocks, arrExchanges, arrCompanies, arrCurrencies, arrCompaniesNames, arrExchangesNames)
         progressDialog.Update(100)
 

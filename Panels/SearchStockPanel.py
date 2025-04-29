@@ -3,6 +3,7 @@ from Panels.Base.BasePanel import BasePanel
 from Utils.KeyboardEventUtils import KeyboardEventUtils
 from Classes.FilterClasses.FilterSearchStockPanel import FilterSearchStockPanel
 from Resources.Constants import Icons
+from Resources.Strings import Strings
 from wx.lib.pubsub import pub 
 import json
 
@@ -39,12 +40,26 @@ class SearchStockPanel(BasePanel):
     __mcbMoverBelowTwentyThirty = None
     __mcbMoverBelowThirtyFourty = None
 
+    __mstFifityWeeksData = None
+
+    __mcbMoverFiftyWeeksAboveZero = None
+    __mcbMoverFiftyWeeksAboveFifty = None
+    __mcbMoverFiftyWeeksAboveHundred = None
+    __mcbMoverFiftyWeeksBelowZero = None
+    __mcbMoverFiftyWeeksBelowFifty = None
+    __mcbMoverFiftyWeeksBelowHundred = None
+
+    __mcbMoverFiftyWeeksBelowZeroToTen = None
+    __mcbMoverFiftyWeeksBelowTenToTwenty = None
+    __mcbMoverFiftyWeeksBelowTwentyThirty = None
+    __mcbMoverFiftyWeeksBelowThirtyFourty = None
+
     __mFilterSearchStockPanel = FilterSearchStockPanel()
 
     def __init__(self, parent, size, filterData):
         super().__init__(parent, size)
+        self.__mFilterSearchStockPanel = filterData
         self.__init_layout()
-        self.init_filter_search_stock_panel()
 
 #region - Private Methods
     def __init_layout(self):
@@ -61,6 +76,10 @@ class SearchStockPanel(BasePanel):
         vbs.Add(self.__get_panels_one_percentage_movers(), 0, wx.EXPAND)
         vbs.AddSpacer(10)
         vbs.Add(self.__get_panels_two_percentage_movers(), 0, wx.EXPAND)
+        vbs.AddSpacer(30)
+        vbs.Add(self.__get_panel_text_fifty_weeks_data(), 0, wx.EXPAND)
+        vbs.AddSpacer(10)
+        vbs.Add(self.__get_panels_two_percentage_movers_two(), 0, wx.EXPAND)
         vbs.AddSpacer(100)
         vbs.Add(self.__get_panel_buttons(), 0, wx.EXPAND)
 
@@ -168,10 +187,14 @@ class SearchStockPanel(BasePanel):
         self.__mcbMaxPriceMover = wx.CheckBox(panel, wx.ID_ANY, label = "Max Mover")
         self.__mcbMaxPriceMover.Bind(wx.EVT_CHECKBOX, self.__on_check_max_mover)
         main.Add(self.__mcbMaxPriceMover, 1, wx.EXPAND)
+        if self.__mFilterSearchStockPanel.get_max_price_mover():
+            self.__mcbMaxPriceMover.SetValue(True)
 
         self.__mcbMinPriceMover = wx.CheckBox(panel, wx.ID_ANY, label = "Min Mover")
         self.__mcbMinPriceMover.Bind(wx.EVT_CHECKBOX, self.__on_check_min_mover)
         main.Add(self.__mcbMinPriceMover, 1, wx.EXPAND)
+        if self.__mFilterSearchStockPanel.get_min_price_mover():
+            self.__mcbMinPriceMover.SetValue(True)
 
         panel.SetSizer(main)
         return panel
@@ -182,10 +205,14 @@ class SearchStockPanel(BasePanel):
         self.__mcbMaxVolumeMover = wx.CheckBox(panel, wx.ID_ANY, label = "Max Volume")
         self.__mcbMaxVolumeMover.Bind(wx.EVT_CHECKBOX, self.__on_check_max_volume)
         main.Add(self.__mcbMaxVolumeMover, 1, wx.EXPAND)
+        if self.__mFilterSearchStockPanel.get_max_volume_mover():
+            self.__mcbMaxVolumeMover.SetValue(True)
 
         self.__mcbMinVolumeMover = wx.CheckBox(panel, wx.ID_ANY, label = "Min Volume")
         self.__mcbMinVolumeMover.Bind(wx.EVT_CHECKBOX, self.__on_check_min_volume)
         main.Add(self.__mcbMinVolumeMover, 1, wx.EXPAND)
+        if self.__mFilterSearchStockPanel.get_min_volume_mover():
+            self.__mcbMinVolumeMover.SetValue(True)
 
         panel.SetSizer(main)
         return panel
@@ -284,6 +311,67 @@ class SearchStockPanel(BasePanel):
         self.__mcbMoverBelowThirtyFourty = wx.CheckBox(panel, wx.ID_ANY, label = "-30% - -40%")
         self.__mcbMoverBelowThirtyFourty.Bind(wx.EVT_CHECKBOX, self.__on_check_below_thirty_to_fourty)
         main.Add(self.__mcbMoverBelowThirtyFourty, 1, wx.EXPAND)
+        panel.SetSizer(main)
+        return panel
+#endregion
+
+#region - Percentage Above Below Fifty Weeks Methods
+    def __get_panel_text_fifty_weeks_data(self):
+        panel = wx.Panel(self)
+        main = wx.BoxSizer(wx.HORIZONTAL)
+        self.__mstFifityWeeksData = wx.StaticText(panel, label = Strings.STR_FIELD_FIFTY_DAYS_DATA)
+        main.Add(self.__mstFifityWeeksData, 1, wx.EXPAND)
+        panel.SetSizer(main)
+        return panel
+
+    def __get_panels_two_percentage_movers_two(self):
+        panel = wx.Panel(self)
+        main = wx.BoxSizer(wx.HORIZONTAL)
+        main.Add(self.__get_panel_two_percentage_above_movers_two(panel), 1, wx.EXPAND)
+        main.AddSpacer(25)
+        main.Add(self.__get_panel_two_percentage_below_movers_two(panel), 1, wx.EXPAND)
+        panel.SetSizer(main)
+        return panel
+
+    def __get_panel_two_percentage_above_movers_two(self, parent):
+        panel = wx.Panel(parent)
+        main = wx.BoxSizer(wx.HORIZONTAL)
+        a = wx.CheckBox(panel, wx.ID_ANY, label = "+0% - 10%")
+        a.Bind(wx.EVT_CHECKBOX, self.__on_check_above_zero_to_ten)
+        main.Add(a, 1, wx.EXPAND)
+
+        b = wx.CheckBox(panel, wx.ID_ANY, label = "+10% - 20%")
+        b.Bind(wx.EVT_CHECKBOX, self.__on_check_above_ten_to_twenty)
+        main.Add(b, 1, wx.EXPAND)
+
+        c = wx.CheckBox(panel, wx.ID_ANY, label = "+20% - 30%")
+        c.Bind(wx.EVT_CHECKBOX, self.__on_check_above_twenty_to_thirty)
+        main.Add(c, 1, wx.EXPAND)
+
+        d = wx.CheckBox(panel, wx.ID_ANY, label = "+30% - 40%")
+        d.Bind(wx.EVT_CHECKBOX, self.__on_click_above_thirty_to_fourty)
+        main.Add(d, 1, wx.EXPAND)
+        panel.SetSizer(main)
+        return panel
+
+    def __get_panel_two_percentage_below_movers_two(self, parent):
+        panel = wx.Panel(parent)
+        main = wx.BoxSizer(wx.HORIZONTAL)
+        a = wx.CheckBox(panel, wx.ID_ANY, label = "0% - -10%")
+        a.Bind(wx.EVT_CHECKBOX, self.__on_check_below_zero_to_ten)
+        main.Add(a, 1, wx.EXPAND)
+
+        b = wx.CheckBox(panel, wx.ID_ANY, label = "-10% - -20%")
+        b.Bind(wx.EVT_CHECKBOX, self.__on_check_below_ten_to_twenty)
+        main.Add(b, 1, wx.EXPAND)
+
+        c = wx.CheckBox(panel, wx.ID_ANY, label = "-20% - -30%")
+        c.Bind(wx.EVT_CHECKBOX, self.__on_check_below_twenty_to_thirty)
+        main.Add(c, 1, wx.EXPAND)
+
+        d = wx.CheckBox(panel, wx.ID_ANY, label = "-30% - -40%")
+        d.Bind(wx.EVT_CHECKBOX, self.__on_check_below_thirty_to_fourty)
+        main.Add(d, 1, wx.EXPAND)
         panel.SetSizer(main)
         return panel
 #endregion
