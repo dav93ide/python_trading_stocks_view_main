@@ -65,6 +65,8 @@ class DataSynchronization(object):
             for d in j[APIConstants.FIELD_DATA][APIConstants.FIELD_DATA]:
                 symbols.append(d[APIConstants.FIELD_S])
 
+        # COMMENTED BECAUSE OTHERWISE THE ORDERING AND FILTERING OF ALL STOCKS TAKES TOO MUCH
+
         # jj = json.loads(Networking.download_gov_all_stock_symbols(APIConstants.HEADERS_APP_JSON_TEXT_PLAIN_MOZILLA_UBUNTU_FIREFOX))
         # if jj:
         #     for i in range(0, 9690):
