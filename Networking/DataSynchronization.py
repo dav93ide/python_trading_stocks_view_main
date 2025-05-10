@@ -16,6 +16,7 @@ from Utils.TextUtils import TextUtils
 from Utils.StoredDataUtils import StoredDataUtils
 from Environment import Environment
 from datetime import datetime
+import requests
 
 class DataSynchronization(object):
 
@@ -58,16 +59,18 @@ class DataSynchronization(object):
 #region - Initial Stock Sync Methods
     def __sync_initial_all_stocks_symbols(progressDialog):
         progressDialog.Update(0, Strings.STR_PD_INITIAL_DOWNLOAD_SYMBOLS)
-        j = json.loads(Networking.download_all_stock_analysis_symbols(APIConstants.HEADERS_APP_JSON_TEXT_PLAIN_MOZILLA_UBUNTU_FIREFOX))
+        j = json.loads(Networking.download_all_stock_analysis_symbols(APIConstants.HEADERS_ONE))
         symbols = []
 
         if j[APIConstants.FIELD_STATUS] == 200:
             for d in j[APIConstants.FIELD_DATA][APIConstants.FIELD_DATA]:
                 symbols.append(d[APIConstants.FIELD_S])
 
-        # COMMENTED BECAUSE OTHERWISE THE ORDERING AND FILTERING OF ALL STOCKS TAKES TOO MUCH
-
-        # jj = json.loads(Networking.download_gov_all_stock_symbols(APIConstants.HEADERS_APP_JSON_TEXT_PLAIN_MOZILLA_UBUNTU_FIREFOX))
+        #######################################################################################
+        # COMMENTED BECAUSE OTHERWISE THE ORDERING AND FILTERING OF ALL STOCKS TAKES TOO MUCH #
+        #######################################################################################
+        #
+        # jj = json.loads(Networking.download_gov_all_stock_symbols(APIConstants.HEADERS_ONE))
         # if jj:
         #     for i in range(0, 9690):
         #         if str(i) in jj.keys():
@@ -75,6 +78,9 @@ class DataSynchronization(object):
         #                 symbols.append(jj[str(i)]["ticker"])
         #         else:
         #             break
+        #
+        #######################################################################################
+
         StoredDataUtils.store_data(symbols, DataFilenames.FILENAME_STOCK_SYMBOLS)
 
         
@@ -106,8 +112,7 @@ class DataSynchronization(object):
         StoredDataUtils.store_data(arrCurrencies, DataFilenames.FILENAME_CURRENCIES)
 
     def __sync_initial_stocks_data(crumb, symbols, arrStocks, arrExchanges, arrCompanies, arrCurrencies, arrCompaniesNames, arrExchangesNames):
-        jj = json.loads(Networking.download_quote_of_stock(",".join(symbols), crumb, APIConstants.HEADERS_APP_JSON_TEXT_PLAIN_MOZILLA_UBUNTU_FIREFOX))
-        print(jj)
+        jj = json.loads(Networking.download_quote_of_stock(",".join(symbols), crumb, APIConstants.HEADERS_ONE))
         if jj is not None and APIConstants.FIELD_QUOTE_RESPONSE in jj and APIConstants.FIELD_RESULT in jj[APIConstants.FIELD_QUOTE_RESPONSE]:
             for j in jj[APIConstants.FIELD_QUOTE_RESPONSE][APIConstants.FIELD_RESULT]:
                 
@@ -290,10 +295,11 @@ class DataSynchronization(object):
 
 #region - Single Stock Sync Methods
     def __sync_single_get_fundamentals_series_stock_data(symbol, stockView, stock):
+        print(symbol)
         j = json.loads(Networking.download_fundamentals_timeseries_stock_data(symbol, 
             TextUtils.remove_point_and_before_point(str(DateUtils.convert_date_to_unix_date_format_dash_ymdHMs(str(DateUtils.get_diff_date_years(DateUtils.get_current_date(), 1))))),
             TextUtils.remove_point_and_before_point(str(DateUtils.get_current_date_unix_time())), 
-            ",".join(APIConstants.FIELDS_API_GET_FUNDAMENTALS_SERIES_STOCK), APIConstants.HEADERS_APP_JSON_TEXT_PLAIN_MOZILLA_UBUNTU_FIREFOX))
+            ",".join(APIConstants.FIELDS_API_GET_FUNDAMENTALS_SERIES_STOCK), APIConstants.HEADERS_ONE))
 
         for jj in j[APIConstants.FIELD_TIMESERIES][APIConstants.FIELD_RESULT]:
             for attr in APIConstants.FIELDS_API_GET_FUNDAMENTALS_SERIES_STOCK:
@@ -378,7 +384,7 @@ class DataSynchronization(object):
                                 Environment().get_logger().error(DataSynchronization.__name__ + " - " + Strings.STR_ERROR_JSON)
 
     def __sync_chart(symbol, rnge, interval, stockView):
-        jj = json.loads(Networking.download_chart(symbol, rnge, interval, APIConstants.HEADERS_APP_JSON_TEXT_PLAIN_MOZILLA_UBUNTU_FIREFOX))
+        jj = json.loads(Networking.download_chart(symbol, rnge, interval, APIConstants.HEADERS_ONE))
 
         for j in jj[APIConstants.FIELD_CHART][APIConstants.FIELD_RESULT]:
             timestamps = []
@@ -412,17 +418,17 @@ class DataSynchronization(object):
         return dicti
 
     def __get_cookie_yahoo_finance_fake_request():
-        res = Networking.download_request_yahoo_finance_get_cookie(APIConstants.HEADERS_APP_JSON_TEXT_PLAIN_MOZILLA_UBUNTU_FIREFOX)
+        res = Networking.download_request_yahoo_finance_get_cookie(APIConstants.HEADERS_ONE)
         return res.headers[APIConstants.HEADER_SET_COOKIE][0:res.headers[APIConstants.HEADER_SET_COOKIE].index(";")]
 
     def __get_crumb_yahoo_finance(cookie):
-        headers = APIConstants.HEADERS_APP_JSON_TEXT_PLAIN_MOZILLA_UBUNTU_FIREFOX
+        headers = APIConstants.HEADERS_ONE
         headers[APIConstants.HEADER_COOKIE] = cookie
         crumb = Networking.download_get_crumb_yahoo_finance(headers)
         return crumb
 
     def __sync_quote_of_stock(symbol, crumb, stock):
-        jj = json.loads(Networking.download_quote_of_stock(symbol, crumb, APIConstants.HEADERS_APP_JSON_TEXT_PLAIN_MOZILLA_UBUNTU_FIREFOX))
+        jj = json.loads(Networking.download_quote_of_stock(symbol, crumb, APIConstants.HEADERS_ONE))
         
         if jj is not None:
             for j in jj[APIConstants.FIELD_QUOTE_RESPONSE][APIConstants.FIELD_RESULT]:
@@ -533,7 +539,7 @@ class DataSynchronization(object):
         for s in stocks:
             symbols.append(s.get_sign())
 
-        jj = json.loads(Networking.download_quote_of_stock(",".join(symbols), crumb, APIConstants.HEADERS_APP_JSON_TEXT_PLAIN_MOZILLA_UBUNTU_FIREFOX))
+        jj = json.loads(Networking.download_quote_of_stock(",".join(symbols), crumb, APIConstants.HEADERS_ONE))
 
         if jj is not None:
             for i in range(0, len(jj[APIConstants.FIELD_QUOTE_RESPONSE][APIConstants.FIELD_RESULT])):
