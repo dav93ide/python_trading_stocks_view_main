@@ -6,7 +6,7 @@ from Classes.FilterClasses.FilterSearchStockPanel import FilterSearchStockPanel
 class SearchStockFrame(wx.Frame):
 
     def __init__(self, title, filterData):
-        wx.Frame.__init__(self, None, wx.ID_ANY, title, size=Constants.DISPLAY_SIZE_MAIN_FRAME)
+        wx.Frame.__init__(self, None, wx.ID_ANY, title, size = Constants.DISPLAY_SIZE_SEARCH_STOCKS_FRAME)
         wx.Frame.CenterOnScreen(self)
         self.__init_main_panel(filterData)
 

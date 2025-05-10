@@ -161,7 +161,8 @@ class Strings(object):
     STR_DOWNLOAD_DATA = "Download Data"
     STR_FIELD_PRE_MARKET = "Pre Market: $"
     STR_FIELD_POST_MARKET = "Post Market: $"
-    STR_FIELD_FIFTY_DAYS_DATA = "Data 50 Weeks"
+    STR_FIELD_FIFTY_WEEKS_STOCK_DATA = "50 Weeks Stock Data"
+    STR_FIELD_STOCK_DATA = "Stock Data"
 
     STR_SPECIFICS_BOT = "Specifics of the BOT:"
     STR_DATA_MAKING_BOT = [

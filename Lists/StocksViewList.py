@@ -224,6 +224,58 @@ class StocksViewList(wx.ListCtrl):
                     if item.get_market_change_percent() <= -30 and item.get_market_change_percent() >= -40:
                         items.append(item)
 
+                if self.__mFilterData.get_mover_fifty_weeks_above_zero():
+                    if item.get_fifty_two_weeks_perc_change() and item.get_fifty_two_weeks_perc_change() >= 0:
+                        items.append(item)
+
+                if self.__mFilterData.get_mover_fifty_weeks_above_fifty():
+                    if item.get_fifty_two_weeks_perc_change() and item.get_fifty_two_weeks_perc_change() >= 50:
+                        items.append(item)
+
+                if self.__mFilterData.get_mover_fifty_weeks_above_hundred():
+                    if item.get_fifty_two_weeks_perc_change() and item.get_fifty_two_weeks_perc_change() >= 100:
+                        items.append(item)
+
+                if self.__mFilterData.get_mover_fifty_weeks_below_zero():
+                    if item.get_fifty_two_weeks_perc_change() and item.get_fifty_two_weeks_perc_change() < 0:
+                        items.append(item)
+
+                if self.__mFilterData.get_mover_fifty_weeks_below_fifty():
+                    if item.get_fifty_two_weeks_perc_change() and item.get_fifty_two_weeks_perc_change() < 0:
+                        items.append(item)
+
+                if self.__mFilterData.get_mover_fifty_weeks_above_zero_to_ten():
+                    if item.get_fifty_two_weeks_perc_change() and item.get_fifty_two_weeks_perc_change() > 0 and item.get_fifty_two_weeks_perc_change() <= 10:
+                        items.append(item)
+
+                if self.__mFilterData.get_mover_fifty_weeks_above_ten_to_twenty():
+                    if item.get_fifty_two_weeks_perc_change() and item.get_fifty_two_weeks_perc_change() > 10 and item.get_fifty_two_weeks_perc_change() <= 20:
+                        items.append(item)
+
+                if self.__mFilterData.get_mover_fifty_weeks_above_twenty_to_thirty():
+                    if item.get_fifty_two_weeks_perc_change() and item.get_fifty_two_weeks_perc_change() > 20 and item.get_fifty_two_weeks_perc_change() <= 30:
+                        items.append(item)
+
+                if self.__mFilterData.get_mover_fifty_weeks_above_thirty_to_fourty():
+                    if item.get_fifty_two_weeks_perc_change() and item.get_fifty_two_weeks_perc_change() > 30 and item.get_fifty_two_weeks_perc_change() <= 40:
+                        items.append(item)
+
+                if self.__mFilterData.get_mover_fifty_weeks_below_zero_to_ten:
+                    if item.get_fifty_two_weeks_perc_change() and item.get_fifty_two_weeks_perc_change() < 0 and item.get_fifty_two_weeks_perc_change() > -10:
+                        items.append(item)
+
+                if self.__mFilterData.get_mover_fifty_weeks_below_ten_to_twenty:
+                    if item.get_fifty_two_weeks_perc_change() and item.get_fifty_two_weeks_perc_change() < -10 and item.get_fifty_two_weeks_perc_change() > -20:
+                        items.append(item)
+                
+                if self.__mFilterData.get_mover_fifty_weeks_below_twenty_to_thirty:
+                    if item.get_fifty_two_weeks_perc_change() and item.get_fifty_two_weeks_perc_change() < -20 and item.get_fifty_two_weeks_perc_change() > -30:
+                        items.append(item)
+
+                if self.__mFilterData.get_mover_fifty_weeks_below_thirty_to_fourty:
+                    if item.get_fifty_two_weeks_perc_change() and item.get_fifty_two_weeks_perc_change() < -30 and item.get_fifty_two_weeks_perc_change() > -40:
+                        items.append(item)
+
                 if len(items) > 0:
                     self.__mFilteredItems = items
         else:

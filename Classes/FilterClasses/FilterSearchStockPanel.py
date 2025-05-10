@@ -26,6 +26,22 @@ class FilterSearchStockPanel(object):
     __mMoverBelowTwentyToThirty = None
     __mMoverBelowThirtyToFourty = None
 
+    __mMoverFiftyWeeksAboveZero = None
+    __mMoverFiftyWeeksAboveFifty = None
+    __mMoverFiftyWeeksAboveHundred = None
+    __mMoverFiftyWeeksBelowZero = None
+    __mMoverFiftyWeeksBelowFifty = None
+
+    __mMoverFiftyWeeksAboveZeroToTen = None
+    __mMoverFiftyWeeksAboveTenToTwenty = None
+    __mMoverFiftyWeeksAboveTwentyThirty = None
+    __mMoverFiftyWeeksAboveThirtyFourty = None
+
+    __mMoverFiftyWeeksBelowZeroToTen = None
+    __mMoverFiftyWeeksBelowTenToTwenty = None
+    __mMoverFiftyWeeksBelowTwentyThirty = None
+    __mMoverFiftyWeeksBelowThirtyFourty = None
+
     #region - Get Methods
     def get_min_price(self):
         return self.__mMinPrice
@@ -89,6 +105,45 @@ class FilterSearchStockPanel(object):
 
     def get_mover_below_thirty_to_fourty(self):
         return self.__mMoverBelowThirtyToFourty
+
+    def get_mover_fifty_weeks_above_zero(self):
+	    return self.__mMoverFiftyWeeksAboveZero 
+
+    def get_mover_fifty_weeks_above_fifty(self):
+        return self.__mMoverFiftyWeeksAboveFifty 
+
+    def get_mover_fifty_weeks_above_hundred(self):
+        return self.__mMoverFiftyWeeksAboveHundred 
+
+    def get_mover_fifty_weeks_below_zero(self):
+        return self.__mMoverFiftyWeeksBelowZero 
+
+    def get_mover_fifty_weeks_below_fifty(self):
+        return self.__mMoverFiftyWeeksBelowFifty 
+
+    def get_mover_fifty_weeks_above_zero_to_ten(self):
+	    return self.__mMoverFiftyWeeksAboveZeroToTen
+
+    def get_mover_fifty_weeks_above_ten_to_twenty(self):
+        return self.__mMoverFiftyWeeksAboveTenToTwenty
+
+    def get_mover_fifty_weeks_above_twenty_to_thirty(self):
+        return self.__mMoverFiftyWeeksAboveTwentyThirty
+
+    def get_mover_fifty_weeks_above_thirty_to_fourty(self):
+        return self.__mMoverFiftyWeeksAboveThirtyFourty
+
+    def get_mover_fifty_weeks_below_zero_to_ten(self):
+        return self.__mMoverFiftyWeeksBelowZeroToTen 
+
+    def get_mover_fifty_weeks_below_ten_to_twenty(self):
+        return self.__mMoverFiftyWeeksBelowTenToTwenty 
+
+    def get_mover_fifty_weeks_below_twenty_to_thirty(self):
+        return self.__mMoverFiftyWeeksBelowTwentyThirty 
+
+    def get_mover_fifty_weeks_below_thirty_to_fourty(self):
+        return self.__mMoverFiftyWeeksBelowThirtyFourty
     #endregion
 
     #region - Set Methods
@@ -154,21 +209,72 @@ class FilterSearchStockPanel(object):
 
     def set_mover_below_thirty_to_fourty(self, moverBelowThirtyToFourty):
         self.__mMoverBelowThirtyToFourty = moverBelowThirtyToFourty
+
+    def set_mover_fifty_weeks_above_zero(self, moverFiftyWeeksAboveZero):
+	    self.__mMoverFiftyWeeksAboveZero  = moverFiftyWeeksAboveZero 
+
+    def set_mover_fifty_weeks_above_fifty(self, moverFiftyWeeksAboveFifty):
+        self.__mMoverFiftyWeeksAboveFifty  = moverFiftyWeeksAboveFifty 
+
+    def set_mover_fifty_weeks_above_hundred(self, moverFiftyWeeksAboveHundred):
+        self.__mMoverFiftyWeeksAboveHundred  = moverFiftyWeeksAboveHundred 
+
+    def set_mover_fifty_weeks_below_zero(self, moverFiftyWeeksBelowZero):
+        self.__mMoverFiftyWeeksBelowZero  = moverFiftyWeeksBelowZero 
+
+    def set_mover_fifty_weeks_below_fifty(self, moverFiftyWeeksBelowFifty):
+        self.__mMoverFiftyWeeksBelowFifty  = moverFiftyWeeksBelowFifty 
+
+    def set_mover_fifty_weeks_above_zero_to_ten(self, moverFiftyWeeksAboveZeroToTen):
+	    self.__mMoverFiftyWeeksAboveZeroToTen = moverFiftyWeeksAboveZeroToTen
+
+    def set_mover_fifty_weeks_above_ten_to_twenty(self, moverFiftyWeeksAboveTenToTwenty):
+        self.__mMoverFiftyWeeksAboveTenToTwenty = moverFiftyWeeksAboveTenToTwenty
+
+    def set_mover_fifty_weeks_above_twenty_to_thirty(self, moverFiftyWeeksAboveTwentyThirty):
+        self.__mMoverFiftyWeeksAboveTwentyThirty = moverFiftyWeeksAboveTwentyThirty
+
+    def set_mover_fifty_weeks_above_thirty_to_fourty(self, moverFiftyWeeksAboveThirtyFourty):
+        self.__mMoverFiftyWeeksAboveThirtyFourty = moverFiftyWeeksAboveThirtyFourty
+
+    def set_mover_fifty_weeks_below_zero_to_ten(self, moverFiftyWeeksBelowZeroToTen):
+        self.__mMoverFiftyWeeksBelowZeroToTen  = moverFiftyWeeksBelowZeroToTen 
+
+    def set_mover_fifty_weeks_below_ten_to_twenty(self, moverFiftyWeeksBelowTenToTwenty):
+        self.__mMoverFiftyWeeksBelowTenToTwenty  = moverFiftyWeeksBelowTenToTwenty 
+
+    def set_mover_fifty_weeks_below_twenty_to_thirty(self, moverFiftyWeeksBelowTwentyThirty):
+        self.__mMoverFiftyWeeksBelowTwentyThirty  = moverFiftyWeeksBelowTwentyThirty 
+
+    def set_mover_fifty_weeks_below_thirty_to_fourty(self, moverFiftyWeeksBelowThirtyFourty):
+        self.__mMoverFiftyWeeksBelowThirtyFourty  = moverFiftyWeeksBelowThirtyFourty 
     #endregion
 
 #region Public Methods
     def to_dict(self):
         return {"mMinPrice" : self.__mMinPrice, "mMaxPrice": self.__mMaxPrice, "mMinVolume" : self.__mMinVolume, 
                 "mMaxVolume": self.__mMaxVolume, "mMaxPriceMover" : self.__mMaxPriceMover,
+
                 "mMaxPriceMover" : self.__mMaxPriceMover, "mMinPriceMover" : self.__mMinPriceMover,
                 "mMaxVolumeMover" : self.__mMaxVolumeMover, "mMinVolumeMover"  : self.__mMinVolumeMover,
+
                 "mMoverAboveZero" : self.__mMoverAboveZero, "mMoverAboveFifty" : self.__mMoverAboveFifty, "mMoverAboveHundred" : self.__mMoverAboveHundred,
                 "mMoverBelowZero" : self.__mMoverBelowZero, "mMoverBelowFifty" : self.__mMoverBelowFifty,
-                "mMoverAboveZeroToTen": self.__mMoverAboveZeroToTen,
-                "mMoverAboveTenToTwenty": self.__mMoverAboveTenToTwenty, "mMoverAboveTwentyToThirty" : self.__mMoverAboveTwentyToThirty,
-                "mMoverAboveThirtyToFourty": self.__mMoverAboveThirtyToFourty,  "mMoverBelowZeroToTen" : self.__mMoverBelowZeroToTen,
-                "mMoverBelowTenToTwenty": self.__mMoverBelowTenToTwenty, "mMoverBelowTwentyToThirty" : self.__mMoverBelowTwentyToThirty,
-                "mMoverBelowThirtyToFourty": self.__mMoverBelowThirtyToFourty
+
+                "mMoverAboveZeroToTen": self.__mMoverAboveZeroToTen, "mMoverAboveTenToTwenty": self.__mMoverAboveTenToTwenty, 
+                "mMoverAboveTwentyToThirty" : self.__mMoverAboveTwentyToThirty, "mMoverAboveThirtyToFourty": self.__mMoverAboveThirtyToFourty,  
+
+                "mMoverBelowZeroToTen" : self.__mMoverBelowZeroToTen, "mMoverBelowTenToTwenty": self.__mMoverBelowTenToTwenty, 
+                "mMoverBelowTwentyToThirty" : self.__mMoverBelowTwentyToThirty, "mMoverBelowThirtyToFourty": self.__mMoverBelowThirtyToFourty,
+
+                "mMoverFiftyWeeksAboveZero": self.__mMoverFiftyWeeksAboveZero, "mMoverFiftyWeeksAboveFifty": self.__mMoverFiftyWeeksAboveFifty, "mMoverFiftyWeeksAboveHundred": self.__mMoverFiftyWeeksAboveHundred,
+                "mMoverFiftyWeeksBelowZero": self.__mMoverFiftyWeeksBelowZero, "mMoverFiftyWeeksBelowFifty": self.__mMoverFiftyWeeksBelowFifty,
+
+                "mMoverFiftyWeeksAboveZeroToTen": self.__mMoverFiftyWeeksAboveZeroToTen, "mMoverFiftyWeeksAboveTenToTwenty": self.__mMoverFiftyWeeksAboveTenToTwenty,
+                "mMoverFiftyWeeksAboveTwentyThirty": self.__mMoverFiftyWeeksAboveTwentyThirty, "mMoverFiftyWeeksAboveThirtyFourty": self.__mMoverFiftyWeeksAboveThirtyFourty,
+
+                "mMoverFiftyWeeksBelowZeroToTen": self.__mMoverFiftyWeeksBelowZeroToTen, "mMoverFiftyWeeksBelowTenToTwenty": self.__mMoverFiftyWeeksBelowTenToTwenty,
+                "mMoverFiftyWeeksBelowTwentyThirty": self.__mMoverFiftyWeeksBelowTwentyThirty, "mMoverFiftyWeeksBelowThirtyFourty": self.__mMoverFiftyWeeksBelowThirtyFourty
                 }
 
     def from_json(self, json):
@@ -193,21 +299,35 @@ class FilterSearchStockPanel(object):
         self.set_mover_below_ten_to_twenty(json["mMoverBelowTenToTwenty"])
         self.set_mover_below_twenty_to_thirty(json["mMoverBelowTwentyToThirty"])
         self.set_mover_below_thirty_to_fourty(json["mMoverBelowThirtyToFourty"])
+        self.set_mover_fifty_weeks_above_zero(json["mMoverFiftyWeeksAboveZero"])
+        self.set_mover_fifty_weeks_above_fifty(json["mMoverFiftyWeeksAboveFifty"])
+        self.set_mover_fifty_weeks_above_hundred(json["mMoverFiftyWeeksAboveHundred"])
+        self.set_mover_fifty_weeks_below_zero(json["mMoverFiftyWeeksBelowZero"])
+        self.set_mover_fifty_weeks_below_fifty(json["mMoverFiftyWeeksBelowFifty"])
+        self.set_mover_fifty_weeks_above_zero_to_ten(json["mMoverFiftyWeeksAboveZeroToTen"])
+        self.set_mover_fifty_weeks_above_ten_to_twenty(json["mMoverFiftyWeeksAboveTenToTwenty"])
+        self.set_mover_fifty_weeks_above_twenty_to_thirty(json["mMoverFiftyWeeksAboveTwentyThirty"])
+        self.set_mover_fifty_weeks_above_thirty_to_fourty(json["mMoverFiftyWeeksAboveThirtyFourty"])
+        self.set_mover_fifty_weeks_below_zero_to_ten(json["mMoverFiftyWeeksBelowZeroToTen"])
+        self.set_mover_fifty_weeks_below_ten_to_twenty(json["mMoverFiftyWeeksBelowTenToTwenty"])
+        self.set_mover_fifty_weeks_below_twenty_to_thirty(json["mMoverFiftyWeeksBelowTwentyThirty"])
+        self.set_mover_fifty_weeks_below_thirty_to_fourty(json["mMoverFiftyWeeksBelowThirtyFourty"])
 #enderegion
 
     # To String
     def __str__(self):
         return  "####################\n"\
-                f"# {FilterSearchStockPanel.__name__}\n"\
                 f"#- __mMinPrice: {self.__mMinPrice}\n"\
                 f"#- __mMaxPrice: {self.__mMaxPrice}\n"\
                 f"#- __mMinVolume: {self.__mMinVolume}\n"\
                 f"#- __mMaxVolume: {self.__mMaxVolume}\n"\
                 f"#- __mMaxPriceMover: {self.__mMaxPriceMover}\n"\
+                f"#- __mMinPriceMover: {self.__mMinPriceMover}\n"\
                 f"#- __mMaxVolumeMover: {self.__mMaxVolumeMover}\n"\
                 f"#- __mMinVolumeMover: {self.__mMinVolumeMover}\n"\
                 f"#- __mMoverAboveZero: {self.__mMoverAboveZero}\n"\
                 f"#- __mMoverAboveFifty: {self.__mMoverAboveFifty}\n"\
+                f"#- __mMoverAboveHundred: {self.__mMoverAboveHundred}\n"\
                 f"#- __mMoverBelowZero: {self.__mMoverBelowZero}\n"\
                 f"#- __mMoverBelowFifty: {self.__mMoverBelowFifty}\n"\
                 f"#- __mMoverAboveZeroToTen: {self.__mMoverAboveZeroToTen}\n"\
@@ -217,5 +337,14 @@ class FilterSearchStockPanel(object):
                 f"#- __mMoverBelowZeroToTen: {self.__mMoverBelowZeroToTen}\n"\
                 f"#- __mMoverBelowTenToTwenty: {self.__mMoverBelowTenToTwenty}\n"\
                 f"#- __mMoverBelowTwentyToThirty: {self.__mMoverBelowTwentyToThirty}\n"\
-                f"#- __mMoverBelowTwentyToThirty: {self.__mMoverBelowTwentyToThirty}\n"\
-                "####################"
+                f"#- __mMoverBelowThirtyToFourty: {self.__mMoverBelowThirtyToFourty}\n"\
+                f"#- __mMoverFiftyWeeksAboveZero: {self.__mMoverFiftyWeeksAboveZero}\n"\
+                f"#- __mMoverFiftyWeeksAboveFifty: {self.__mMoverFiftyWeeksAboveFifty}\n"\
+                f"#- __mMoverFiftyWeeksAboveHundred: {self.__mMoverFiftyWeeksAboveHundred}\n"\
+                f"#- __mMoverFiftyWeeksBelowZero: {self.__mMoverFiftyWeeksBelowZero}\n"\
+                f"#- __mMoverFiftyWeeksBelowFifty: {self.__mMoverFiftyWeeksBelowFifty}\n"\
+                f"#- __mMoverFiftyWeeksBelowZeroToTen: {self.__mMoverFiftyWeeksBelowZeroToTen}\n"\
+                f"#- __mMoverFiftyWeeksBelowTenToTwenty: {self.__mMoverFiftyWeeksBelowTenToTwenty}\n"\
+                f"#- __mMoverFiftyWeeksBelowTwentyThirty: {self.__mMoverFiftyWeeksBelowTwentyThirty}\n"\
+                f"#- __mMoverFiftyWeeksBelowThirtyFourty: {self.__mMoverFiftyWeeksBelowThirtyFourty}\n"\
+                "####################\n"

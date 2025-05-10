@@ -52,6 +52,7 @@ class TradingStrategyType(IntEnum):
 
 class Constants():
     DISPLAY_SIZE_MAIN_FRAME = (1000, 500)
+    DISPLAY_SIZE_SEARCH_STOCKS_FRAME = (1000, 1000)
 
     CHOICE_EMPTY_INDEX = -1
 
