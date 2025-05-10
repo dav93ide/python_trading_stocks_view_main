@@ -295,7 +295,6 @@ class DataSynchronization(object):
 
 #region - Single Stock Sync Methods
     def __sync_single_get_fundamentals_series_stock_data(symbol, stockView, stock):
-        print(symbol)
         j = json.loads(Networking.download_fundamentals_timeseries_stock_data(symbol, 
             TextUtils.remove_point_and_before_point(str(DateUtils.convert_date_to_unix_date_format_dash_ymdHMs(str(DateUtils.get_diff_date_years(DateUtils.get_current_date(), 1))))),
             TextUtils.remove_point_and_before_point(str(DateUtils.get_current_date_unix_time())), 

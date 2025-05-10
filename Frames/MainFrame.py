@@ -167,7 +167,6 @@ class MainFrame(wx.Frame):
 
     def __remove_view_stocks_panel(self):
         if self.__mViewStocksPanel:
-            print("Destroy")
             self.__mViewStocksPanel.Destroy()
 
     def __remove_add_stocks_application_panel(self):
