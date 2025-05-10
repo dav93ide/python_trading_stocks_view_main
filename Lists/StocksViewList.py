@@ -87,7 +87,7 @@ class StocksViewList(wx.ListCtrl):
         self.filter_name()
         if self.__mFilterData is not None:
             self.filter_values()
-            # self.filter_order()
+            self.filter_order()
         self.populate_list()
 
     def filter_name(self):
