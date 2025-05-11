@@ -157,25 +157,37 @@ class StocksViewList(wx.ListCtrl):
             items = []
             for item in self.__mFilteredItems:
 
-                if self.__mFilterData.get_min_price() is not None and self.__mFilterData.get_min_price():
+                if self.__mFilterData.get_max_price() is not None and self.__mFilterData.get_max_price() and self.__mFilterData.get_min_price() is not None and self.__mFilterData.get_min_price():
+                    if item.get_price() >= float(self.__mFilterData.get_min_price()) and item.get_price() <= float(self.__mFilterData.get_max_price()):
+                        items.append(item)
+                elif self.__mFilterData.get_min_price() is not None and self.__mFilterData.get_min_price():
                     if item.get_price() >= float(self.__mFilterData.get_min_price()):
                         items.append(item)
-                        
-
-                if self.__mFilterData.get_max_price() is not None and self.__mFilterData.get_max_price():
+                elif self.__mFilterData.get_max_price() is not None and self.__mFilterData.get_max_price():
                     if item.get_price() <= float(self.__mFilterData.get_max_price()):
                         items.append(item)
                         
 
-                if self.__mFilterData.get_min_volume() is not None and self.__mFilterData.get_min_volume():
+                if self.__mFilterData.get_min_volume() is not None and self.__mFilterData.get_min_volume() and self.__mFilterData.get_max_volume() is not None and self.__mFilterData.get_max_volume():
+                    if item.get_volume() >= float(self.__mFilterData.get_min_volume()) and item.get_volume() <= float(self.__mFilterData.get_max_volume()):
+                        items.append(item)
+                elif self.__mFilterData.get_min_volume() is not None and self.__mFilterData.get_min_volume():
                     if item.get_volume() >= float(self.__mFilterData.get_min_volume()):
                         items.append(item)
-                        
-
-                if self.__mFilterData.get_max_volume() is not None and self.__mFilterData.get_max_volume():
+                elif self.__mFilterData.get_max_volume() is not None and self.__mFilterData.get_max_volume():
                     if item.get_volume() <= float(self.__mFilterData.get_max_volume()):
                         items.append(item)
-                        
+
+                if self.__mFilterData.get_value_max_mover() is not None and self.__mFilterData.get_value_max_mover() and self.__mFilterData.get_value_min_mover() is not None and self.__mFilterData.get_value_min_mover():
+                    if item.get_market_change_percent() and float(item.get_market_change_percent()) <= float(self.__mFilterData.get_value_max_mover()) and float(item.get_market_change_percent()) >= float(self.__mFilterData.get_value_min_mover()):
+                        items.append(item)
+                elif self.__mFilterData.get_value_min_mover() is not None and self.__mFilterData.get_value_min_mover():
+                    if item.get_market_change_percent() and float(item.get_market_change_percent()) >= float(self.__mFilterData.get_value_min_mover()):
+                        items.append(item)
+                elif self.__mFilterData.get_value_max_mover() is not None and self.__mFilterData.get_value_max_mover():
+                    if item.get_market_change_percent() and float(item.get_market_change_percent()) <= float(self.__mFilterData.get_value_max_mover()):
+                        items.append(item)
+
 
                 if self.__mFilterData.get_mover_above_zero() is not None and self.__mFilterData.get_mover_above_zero():
                     if item.get_market_change_percent() and float(item.get_market_change_percent()) >= 0:
@@ -239,7 +251,17 @@ class StocksViewList(wx.ListCtrl):
                 if self.__mFilterData.get_mover_below_thirty_to_fourty() is not None and self.__mFilterData.get_mover_below_thirty_to_fourty():
                     if item.get_market_change_percent() and float(item.get_market_change_percent()) <= -30 and float(item.get_market_change_percent()) >= -40:
                         items.append(item)
-                        
+
+                if self.__mFilterData.get_fifty_value_max_mover() is not None and self.__mFilterData.get_fifty_value_max_mover() and self.__mFilterData.get_fifty_value_min_mover() is not None and self.__mFilterData.get_fifty_value_min_mover():
+                    if item.get_fifty_two_weeks_perc_change() and float(item.get_fifty_two_weeks_perc_change()) <= float(self.__mFilterData.get_fifty_value_max_mover()) and float(item.get_market_change_percent()) >= float(self.__mFilterData.get_fifty_value_min_mover()):
+                        items.append(item)
+                elif self.__mFilterData.get_fifty_value_max_mover() is not None and self.__mFilterData.get_fifty_value_max_mover():
+                    if item.get_fifty_two_weeks_perc_change() and float(item.get_fifty_two_weeks_perc_change()) <= float(self.__mFilterData.get_fifty_value_max_mover()):
+                        items.append(item)
+                elif self.__mFilterData.get_fifty_value_min_mover() is not None and self.__mFilterData.get_fifty_value_min_mover():
+                    if item.get_fifty_two_weeks_perc_change() and float(item.get_fifty_two_weeks_perc_change()) >= float(self.__mFilterData.get_fifty_value_min_mover()):
+                        print("HERE")
+                        items.append(item)
 
                 if self.__mFilterData.get_mover_fifty_weeks_above_zero() is not None and self.__mFilterData.get_mover_fifty_weeks_above_zero():
                     if item.get_fifty_two_weeks_perc_change() and float(item.get_fifty_two_weeks_perc_change()) >= 0:

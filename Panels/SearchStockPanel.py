@@ -26,6 +26,9 @@ class SearchStockPanel(BasePanel):
 
     __mstStockData = None
 
+    __mtxMaxValueMover = None
+    __mtxMinValueMover = None
+
     __mcbMoverAboveZero = None
     __mcbMoverAboveFifty = None
     __mcbMoverAboveHundred = None
@@ -43,7 +46,10 @@ class SearchStockPanel(BasePanel):
     __mcbMoverBelowTwentyThirty = None
     __mcbMoverBelowThirtyFourty = None
 
-    __mstFifityWeeksData = None
+    __mstFiftyWeeksData = None
+
+    __mtxFiftyMaxValueMover = None
+    __mtxFiftyMinValueMover = None
 
     __mcbMoverFiftyWeeksAboveZero = None
     __mcbMoverFiftyWeeksAboveFifty = None
@@ -60,6 +66,8 @@ class SearchStockPanel(BasePanel):
     __mcbMoverFiftyWeeksBelowTenToTwenty = None
     __mcbMoverFiftyWeeksBelowTwentyThirty = None
     __mcbMoverFiftyWeeksBelowThirtyFourty = None
+
+    __mstDividendData = None
 
     __mFilterSearchStockPanel = FilterSearchStockPanel()
 
@@ -82,15 +90,21 @@ class SearchStockPanel(BasePanel):
         vbs.AddSpacer(10)
         vbs.Add(self.__get_panel_text_stock_data(), 0, wx.EXPAND)
         vbs.AddSpacer(10)
+        vbs.Add(self.__get_panels_values_max_min_mover(), 0, wx.EXPAND)
+        vbs.AddSpacer(10)
         vbs.Add(self.__get_panels_one_percentage_movers(), 0, wx.EXPAND)
         vbs.AddSpacer(10)
         vbs.Add(self.__get_panels_two_percentage_movers(), 0, wx.EXPAND)
         vbs.AddSpacer(30)
         vbs.Add(self.__get_panel_text_fifty_weeks_data(), 0, wx.EXPAND)
         vbs.AddSpacer(10)
+        vbs.Add(self.__get_panels_fifty_weeks_values_max_min_mover(), 0, wx.EXPAND)
+        vbs.AddSpacer(10)
         vbs.Add(self.__get_panels_two_fifty_weeks_percentage_movers(), 0, wx.EXPAND)
         vbs.AddSpacer(10)
         vbs.Add(self.__get_panels_three_percentage_fifty_weeks_movers(), 0, wx.EXPAND)
+        vbs.AddSpacer(30)
+        vbs.Add(self.__get_panel_text_dividend_data(), 0, wx.EXPAND)
         vbs.AddSpacer(100)
         vbs.Add(self.__get_panel_buttons(), 0, wx.EXPAND)
 
@@ -125,21 +139,9 @@ class SearchStockPanel(BasePanel):
         panel = wx.Panel(self)
         main = wx.BoxSizer(wx.HORIZONTAL)
 
-        main.Add(self.__get_panel_min_price(panel), 1, wx.EXPAND)
-        main.AddSpacer(25)
         main.Add(self.__get_panel_max_price(panel), 1, wx.EXPAND)
-
-        panel.SetSizer(main)
-        return panel
-
-    def __get_panel_min_price(self, parent):
-        panel = wx.Panel(parent)
-        main = wx.BoxSizer(wx.VERTICAL)
-
-        main.Add(wx.StaticText(panel, label = "Min Price", style = wx.ALIGN_CENTRE), 0, wx.EXPAND)
-        self.__mtxMinPrice = wx.TextCtrl(panel, wx.ID_ANY, value = "", style = wx.TE_CENTRE)
-        self.__mtxMinPrice.Bind(wx.EVT_CHAR, self.__on_change_text_check_is_int_value)
-        main.Add(self.__mtxMinPrice, 0, wx.EXPAND)
+        main.AddSpacer(25)
+        main.Add(self.__get_panel_min_price(panel), 1, wx.EXPAND)
 
         panel.SetSizer(main)
         return panel
@@ -152,6 +154,22 @@ class SearchStockPanel(BasePanel):
         self.__mtxMaxPrice = wx.TextCtrl(panel, wx.ID_ANY, value = "", style = wx.TE_CENTRE)
         self.__mtxMaxPrice.Bind(wx.EVT_CHAR, self.__on_change_text_check_is_int_value)
         main.Add(self.__mtxMaxPrice, 0, wx.EXPAND)
+        if self.__mFilterSearchStockPanel.get_max_price():
+            self.__mtxMaxPrice.SetValue(self.__mFilterSearchStockPanel.get_max_price())
+
+        panel.SetSizer(main)
+        return panel
+
+    def __get_panel_min_price(self, parent):
+        panel = wx.Panel(parent)
+        main = wx.BoxSizer(wx.VERTICAL)
+
+        main.Add(wx.StaticText(panel, label = "Min Price", style = wx.ALIGN_CENTRE), 0, wx.EXPAND)
+        self.__mtxMinPrice = wx.TextCtrl(panel, wx.ID_ANY, value = "", style = wx.TE_CENTRE)
+        self.__mtxMinPrice.Bind(wx.EVT_CHAR, self.__on_change_text_check_is_int_value)
+        main.Add(self.__mtxMinPrice, 0, wx.EXPAND)
+        if self.__mFilterSearchStockPanel.get_min_price():
+            self.__mtxMinPrice.SetValue(self.__mFilterSearchStockPanel.get_min_price())
 
         panel.SetSizer(main)
         return panel
@@ -162,21 +180,9 @@ class SearchStockPanel(BasePanel):
         panel = wx.Panel(self)
         main = wx.BoxSizer(wx.HORIZONTAL)
 
-        main.Add(self.__get_panel_min_volume(panel), 1, wx.EXPAND)
-        main.AddSpacer(25)
         main.Add(self.__get_panel_max_volume(panel), 1, wx.EXPAND)
-
-        panel.SetSizer(main)
-        return panel
-
-    def __get_panel_min_volume(self, parent):
-        panel = wx.Panel(parent)
-        main = wx.BoxSizer(wx.VERTICAL)
-
-        main.Add(wx.StaticText(panel, label = "Min Volume", style = wx.ALIGN_CENTRE), 0, wx.EXPAND)
-        self.__mtxMinVolume = wx.TextCtrl(panel, wx.ID_ANY, value = "", style = wx.TE_CENTRE)
-        self.__mtxMinVolume.Bind(wx.EVT_CHAR, self.__on_change_text_check_is_int_value)
-        main.Add(self.__mtxMinVolume, 0, wx.EXPAND)
+        main.AddSpacer(25)
+        main.Add(self.__get_panel_min_volume(panel), 1, wx.EXPAND)
 
         panel.SetSizer(main)
         return panel
@@ -189,9 +195,26 @@ class SearchStockPanel(BasePanel):
         self.__mtxMaxVolume = wx.TextCtrl(panel, wx.ID_ANY, value = "", style = wx.TE_CENTRE)
         self.__mtxMaxVolume.Bind(wx.EVT_CHAR, self.__on_change_text_check_is_int_value)
         main.Add(self.__mtxMaxVolume, 0, wx.EXPAND)
+        if self.__mFilterSearchStockPanel.get_max_volume():
+            self.__mtxMaxVolume.SetValue(self.__mFilterSearchStockPanel.get_max_volume())
 
         panel.SetSizer(main)
         return panel
+
+    def __get_panel_min_volume(self, parent):
+        panel = wx.Panel(parent)
+        main = wx.BoxSizer(wx.VERTICAL)
+
+        main.Add(wx.StaticText(panel, label = "Min Volume", style = wx.ALIGN_CENTRE), 0, wx.EXPAND)
+        self.__mtxMinVolume = wx.TextCtrl(panel, wx.ID_ANY, value = "", style = wx.TE_CENTRE)
+        self.__mtxMinVolume.Bind(wx.EVT_CHAR, self.__on_change_text_check_is_int_value)
+        main.Add(self.__mtxMinVolume, 0, wx.EXPAND)
+        if self.__mFilterSearchStockPanel.get_min_volume():
+            self.__mtxMinVolume.SetValue(self.__mFilterSearchStockPanel.get_min_volume())
+
+        panel.SetSizer(main)
+        return panel
+
 #endregion
 
 #region - Min Max Movers / Volumes Methods
@@ -251,9 +274,48 @@ class SearchStockPanel(BasePanel):
         panel = wx.Panel(self)
         main = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.__mstStockData = wx.StaticText(panel, label = Strings.STR_FIELD_STOCK_DATA, style = wx.ALIGN_CENTRE_HORIZONTAL)
+        self.__mstStockData = wx.StaticText(panel, label = Strings.STR_STOCK_DATA, style = wx.ALIGN_CENTRE_HORIZONTAL)
         WxUtils.set_font_size_and_bold_and_roman(self.__mstStockData, 15)
         main.Add(self.__mstStockData, 1, wx.EXPAND)
+
+        panel.SetSizer(main)
+        return panel
+
+    def __get_panels_values_max_min_mover(self):
+        panel = wx.Panel(self)
+        main = wx.BoxSizer(wx.HORIZONTAL)
+
+        main.Add(self.__get_panel_value_max_mover(panel), 1, wx.EXPAND)
+        main.AddSpacer(25)
+        main.Add(self.__get_panel_value_min_mover(panel), 1, wx.EXPAND)
+
+        panel.SetSizer(main)
+        return panel
+
+    def __get_panel_value_max_mover(self, parent):
+        panel = wx.Panel(parent)
+        main = wx.BoxSizer(wx.VERTICAL)
+
+        main.Add(wx.StaticText(panel, label = "Max Value %", style = wx.ALIGN_CENTRE), 0, wx.EXPAND)
+        self.__mtxMaxValueMover = wx.TextCtrl(panel, wx.ID_ANY, value = "", style = wx.TE_CENTRE)
+        self.__mtxMaxValueMover.Bind(wx.EVT_CHAR, self.__on_change_text_check_is_int_value)
+        main.Add(self.__mtxMaxValueMover, 0, wx.EXPAND)
+        if self.__mFilterSearchStockPanel.get_value_max_mover():
+            self.__mtxMaxValueMover.SetValue(self.__mFilterSearchStockPanel.get_value_max_mover())
+
+        panel.SetSizer(main)
+        return panel
+
+    def __get_panel_value_min_mover(self, parent):
+        panel = wx.Panel(parent)
+        main = wx.BoxSizer(wx.VERTICAL)
+
+        main.Add(wx.StaticText(panel, label = "Min Value %", style = wx.ALIGN_CENTRE), 0, wx.EXPAND)
+        self.__mtxMinValueMover = wx.TextCtrl(panel, wx.ID_ANY, value = "", style = wx.TE_CENTRE)
+        self.__mtxMinValueMover.Bind(wx.EVT_CHAR, self.__on_change_text_check_is_int_value)
+        main.Add(self.__mtxMinValueMover, 0, wx.EXPAND)
+        if self.__mFilterSearchStockPanel.get_value_min_mover():
+            self.__mtxMinValueMover.SetValue(self.__mFilterSearchStockPanel.get_value_min_mover())
 
         panel.SetSizer(main)
         return panel
@@ -391,9 +453,48 @@ class SearchStockPanel(BasePanel):
         panel = wx.Panel(self)
         main = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.__mstFifityWeeksData = wx.StaticText(panel, label = Strings.STR_FIELD_FIFTY_WEEKS_STOCK_DATA, style = wx.ALIGN_CENTRE_HORIZONTAL)
-        WxUtils.set_font_size_and_bold_and_roman(self.__mstFifityWeeksData, 15)
-        main.Add(self.__mstFifityWeeksData, 1, wx.EXPAND)
+        self.__mstFiftyWeeksData = wx.StaticText(panel, label = Strings.STR_FIFTY_WEEKS_STOCK_DATA, style = wx.ALIGN_CENTRE_HORIZONTAL)
+        WxUtils.set_font_size_and_bold_and_roman(self.__mstFiftyWeeksData, 15)
+        main.Add(self.__mstFiftyWeeksData, 1, wx.EXPAND)
+
+        panel.SetSizer(main)
+        return panel
+
+    def __get_panels_fifty_weeks_values_max_min_mover(self):
+        panel = wx.Panel(self)
+        main = wx.BoxSizer(wx.HORIZONTAL)
+
+        main.Add(self.__get_panel_fifty_weeks_value_max_mover(panel), 1, wx.EXPAND)
+        main.AddSpacer(25)
+        main.Add(self.__get_panel_fifty_weeks_value_min_mover(panel), 1, wx.EXPAND)
+
+        panel.SetSizer(main)
+        return panel
+
+    def __get_panel_fifty_weeks_value_max_mover(self, parent):
+        panel = wx.Panel(parent)
+        main = wx.BoxSizer(wx.VERTICAL)
+
+        main.Add(wx.StaticText(panel, label = "52-Week Max Value %", style = wx.ALIGN_CENTRE), 0, wx.EXPAND)
+        self.__mtxFiftyMaxValueMover = wx.TextCtrl(panel, wx.ID_ANY, value = "", style = wx.TE_CENTRE)
+        self.__mtxFiftyMaxValueMover.Bind(wx.EVT_CHAR, self.__on_change_text_check_is_int_value)
+        main.Add(self.__mtxFiftyMaxValueMover, 0, wx.EXPAND)
+        if self.__mFilterSearchStockPanel.get_fifty_value_max_mover():
+            self.__mtxFiftyMaxValueMover.SetValue(self.__mFilterSearchStockPanel.get_fifty_value_max_mover())
+
+        panel.SetSizer(main)
+        return panel
+
+    def __get_panel_fifty_weeks_value_min_mover(self, parent):
+        panel = wx.Panel(parent)
+        main = wx.BoxSizer(wx.VERTICAL)
+
+        main.Add(wx.StaticText(panel, label = "52-Week Min Value %", style = wx.ALIGN_CENTRE), 0, wx.EXPAND)
+        self.__mtxFiftyMinValueMover = wx.TextCtrl(panel, wx.ID_ANY, value = "", style = wx.TE_CENTRE)
+        self.__mtxFiftyMinValueMover.Bind(wx.EVT_CHAR, self.__on_change_text_check_is_int_value)
+        main.Add(self.__mtxFiftyMinValueMover, 0, wx.EXPAND)
+        if self.__mFilterSearchStockPanel.get_fifty_value_min_mover():
+            self.__mtxFiftyMinValueMover.SetValue(self.__mFilterSearchStockPanel.get_fifty_value_min_mover())
 
         panel.SetSizer(main)
         return panel
@@ -529,6 +630,19 @@ class SearchStockPanel(BasePanel):
         return panel
 #endregion
 
+#region - Dividend Methods
+    def __get_panel_text_dividend_data(self):
+        panel = wx.Panel(self)
+        main = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.__mstDividendData = wx.StaticText(panel, label = Strings.STR_DIVIDEND_DATA, style = wx.ALIGN_CENTRE_HORIZONTAL)
+        WxUtils.set_font_size_and_bold_and_roman(self.__mstDividendData, 15)
+        main.Add(self.__mstDividendData, 1, wx.EXPAND)
+
+        panel.SetSizer(main)
+        return panel
+#endregion
+
 #region - Get Panel Filter
     def __get_panel_buttons(self):
         panel = wx.Panel(self)
@@ -558,6 +672,14 @@ class SearchStockPanel(BasePanel):
                     self.__mFilterSearchStockPanel.set_min_volume(self.__mtxMinVolume.GetValue())
                 case self.__mtxMaxVolume:
                     self.__mFilterSearchStockPanel.set_max_volume(self.__mtxMaxVolume.GetValue())
+                case self.__mtxMaxValueMover:
+                    self.__mFilterSearchStockPanel.set_value_max_mover(self.__mtxMaxValueMover.GetValue())
+                case self.__mtxMinValueMover:
+                    self.__mFilterSearchStockPanel.set_value_min_mover(self.__mtxMinValueMover.GetValue())
+                case self.__mtxFiftyMaxValueMover:
+                    self.__mFilterSearchStockPanel.set_fifty_value_max_mover(self.__mtxFiftyMaxValueMover.GetValue())
+                case self.__mtxFiftyMinValueMover:
+                    self.__mFilterSearchStockPanel.set_fifty_value_min_mover(self.__mtxFiftyMinValueMover.GetValue())
 
     def __on_check_max_mover(self, evt):
         self.__mFilterSearchStockPanel.set_max_price_mover(evt.IsChecked())

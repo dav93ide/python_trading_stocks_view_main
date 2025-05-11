@@ -1,14 +1,17 @@
 class FilterSearchStockPanel(object):
 
-    __mMinPrice = None
     __mMaxPrice = None
-    __mMinVolume = None
+    __mMinPrice = None
     __mMaxVolume = None
+    __mMinVolume = None
 
     __mMaxPriceMover = None
     __mMinPriceMover = None
     __mMaxVolumeMover = None
     __mMinVolumeMover = None
+
+    __mValueMaxMover = None
+    __mValueMinMover = None
 
     __mMoverAboveZero = None
     __mMoverAboveFifty = None
@@ -25,6 +28,9 @@ class FilterSearchStockPanel(object):
     __mMoverBelowTenToTwenty = None
     __mMoverBelowTwentyToThirty = None
     __mMoverBelowThirtyToFourty = None
+
+    __mFiftyValueMaxMover = None
+    __mFiftyValueMinMover = None
 
     __mMoverFiftyWeeksAboveZero = None
     __mMoverFiftyWeeksAboveFifty = None
@@ -43,17 +49,17 @@ class FilterSearchStockPanel(object):
     __mMoverFiftyWeeksBelowThirtyFourty = None
 
     #region - Get Methods
-    def get_min_price(self):
-        return self.__mMinPrice
-
     def get_max_price(self):
         return self.__mMaxPrice
 
-    def get_min_volume(self):
-        return self.__mMinVolume
+    def get_min_price(self):
+        return self.__mMinPrice
 
     def get_max_volume(self):
         return self.__mMaxVolume
+
+    def get_min_volume(self):
+        return self.__mMinVolume
 
     def get_max_price_mover(self):
         return self.__mMaxPriceMover
@@ -66,6 +72,12 @@ class FilterSearchStockPanel(object):
 
     def get_min_volume_mover(self):
         return self.__mMinVolumeMover
+
+    def get_value_max_mover(self):
+	    return self.__mValueMaxMover
+
+    def get_value_min_mover(self):
+	    return self.__mValueMinMover
 
     def get_mover_above_zero(self):
         return self.__mMoverAboveZero
@@ -105,6 +117,12 @@ class FilterSearchStockPanel(object):
 
     def get_mover_below_thirty_to_fourty(self):
         return self.__mMoverBelowThirtyToFourty
+
+    def get_fifty_value_max_mover(self):
+        return self.__mFiftyValueMaxMover
+
+    def get_fifty_value_min_mover(self):
+        return self.__mFiftyValueMinMover
 
     def get_mover_fifty_weeks_above_zero(self):
 	    return self.__mMoverFiftyWeeksAboveZero 
@@ -147,17 +165,17 @@ class FilterSearchStockPanel(object):
     #endregion
 
     #region - Set Methods
-    def set_min_price(self, minPrice):
-        self.__mMinPrice = minPrice
-
     def set_max_price(self, maxPrice):
         self.__mMaxPrice = maxPrice
 
-    def set_min_volume(self, minVolume):
-        self.__mMinVolume = minVolume
+    def set_min_price(self, minPrice):
+        self.__mMinPrice = minPrice
 
     def set_max_volume(self, maxVolume):
         self.__mMaxVolume = maxVolume
+
+    def set_min_volume(self, minVolume):
+        self.__mMinVolume = minVolume
 
     def set_max_price_mover(self, maxPriceMover):
         self.__mMaxPriceMover = maxPriceMover
@@ -170,6 +188,12 @@ class FilterSearchStockPanel(object):
 
     def set_min_volume_mover(self, minVolumeMover):
         self.__mMinVolumeMover = minVolumeMover
+
+    def set_value_max_mover(self, valueMaxMover):
+	    self.__mValueMaxMover = valueMaxMover
+
+    def set_value_min_mover(self, valueMinMover):
+	    self.__mValueMinMover = valueMinMover
 
     def set_mover_above_zero(self, moverAboveZero):
         self.__mMoverAboveZero = moverAboveZero
@@ -209,6 +233,12 @@ class FilterSearchStockPanel(object):
 
     def set_mover_below_thirty_to_fourty(self, moverBelowThirtyToFourty):
         self.__mMoverBelowThirtyToFourty = moverBelowThirtyToFourty
+
+    def set_fifty_value_max_mover(self, fiftyValueMaxMover):
+        self.__mFiftyValueMaxMover = fiftyValueMaxMover
+
+    def set_fifty_value_min_mover(self, fiftyValueMinMover):
+        self.__mFiftyValueMinMover = fiftyValueMinMover
 
     def set_mover_fifty_weeks_above_zero(self, moverFiftyWeeksAboveZero):
 	    self.__mMoverFiftyWeeksAboveZero  = moverFiftyWeeksAboveZero 
@@ -252,11 +282,13 @@ class FilterSearchStockPanel(object):
 
 #region Public Methods
     def to_dict(self):
-        return {"mMinPrice" : self.__mMinPrice, "mMaxPrice": self.__mMaxPrice, "mMinVolume" : self.__mMinVolume, 
-                "mMaxVolume": self.__mMaxVolume, "mMaxPriceMover" : self.__mMaxPriceMover,
+        return {"mMaxPrice": self.__mMaxPrice, "mMinPrice" : self.__mMinPrice, 
+                "mMaxVolume": self.__mMaxVolume, "mMinVolume" : self.__mMinVolume, 
 
                 "mMaxPriceMover" : self.__mMaxPriceMover, "mMinPriceMover" : self.__mMinPriceMover,
                 "mMaxVolumeMover" : self.__mMaxVolumeMover, "mMinVolumeMover"  : self.__mMinVolumeMover,
+
+                "mValueMaxMover": self.__mValueMaxMover, "mValueMinMover": self.__mValueMinMover,
 
                 "mMoverAboveZero" : self.__mMoverAboveZero, "mMoverAboveFifty" : self.__mMoverAboveFifty, "mMoverAboveHundred" : self.__mMoverAboveHundred,
                 "mMoverBelowZero" : self.__mMoverBelowZero, "mMoverBelowFifty" : self.__mMoverBelowFifty,
@@ -266,6 +298,8 @@ class FilterSearchStockPanel(object):
 
                 "mMoverBelowZeroToTen" : self.__mMoverBelowZeroToTen, "mMoverBelowTenToTwenty": self.__mMoverBelowTenToTwenty, 
                 "mMoverBelowTwentyToThirty" : self.__mMoverBelowTwentyToThirty, "mMoverBelowThirtyToFourty": self.__mMoverBelowThirtyToFourty,
+
+                "mFiftyValueMaxMover": self.__mFiftyValueMaxMover, "mFiftyValueMinMover": self.__mFiftyValueMinMover,
 
                 "mMoverFiftyWeeksAboveZero": self.__mMoverFiftyWeeksAboveZero, "mMoverFiftyWeeksAboveFifty": self.__mMoverFiftyWeeksAboveFifty, "mMoverFiftyWeeksAboveHundred": self.__mMoverFiftyWeeksAboveHundred,
                 "mMoverFiftyWeeksBelowZero": self.__mMoverFiftyWeeksBelowZero, "mMoverFiftyWeeksBelowFifty": self.__mMoverFiftyWeeksBelowFifty,
@@ -286,6 +320,8 @@ class FilterSearchStockPanel(object):
         self.set_min_price_mover(json["mMinPriceMover"])
         self.set_max_volume_mover(json["mMaxVolumeMover"])
         self.set_min_volume_mover(json["mMinVolumeMover"])
+        self.set_value_max_mover(json["mValueMaxMover"])
+        self.set_value_min_mover(json["mValueMinMover"])
         self.set_mover_above_zero(json["mMoverAboveZero"])
         self.set_mover_above_fifty(json["mMoverAboveFifty"])
         self.set_mover_above_hundred(json["mMoverAboveHundred"])
@@ -299,6 +335,8 @@ class FilterSearchStockPanel(object):
         self.set_mover_below_ten_to_twenty(json["mMoverBelowTenToTwenty"])
         self.set_mover_below_twenty_to_thirty(json["mMoverBelowTwentyToThirty"])
         self.set_mover_below_thirty_to_fourty(json["mMoverBelowThirtyToFourty"])
+        self.set_fifty_value_max_mover(json["mFiftyValueMaxMover"])
+        self.set_fifty_value_min_mover(json["mFiftyValueMinMover"])
         self.set_mover_fifty_weeks_above_zero(json["mMoverFiftyWeeksAboveZero"])
         self.set_mover_fifty_weeks_above_fifty(json["mMoverFiftyWeeksAboveFifty"])
         self.set_mover_fifty_weeks_above_hundred(json["mMoverFiftyWeeksAboveHundred"])
@@ -317,14 +355,16 @@ class FilterSearchStockPanel(object):
     # To String
     def __str__(self):
         return  "####################\n"\
-                f"#- __mMinPrice: {self.__mMinPrice}\n"\
                 f"#- __mMaxPrice: {self.__mMaxPrice}\n"\
-                f"#- __mMinVolume: {self.__mMinVolume}\n"\
+                f"#- __mMinPrice: {self.__mMinPrice}\n"\
                 f"#- __mMaxVolume: {self.__mMaxVolume}\n"\
+                f"#- __mMinVolume: {self.__mMinVolume}\n"\
                 f"#- __mMaxPriceMover: {self.__mMaxPriceMover}\n"\
                 f"#- __mMinPriceMover: {self.__mMinPriceMover}\n"\
                 f"#- __mMaxVolumeMover: {self.__mMaxVolumeMover}\n"\
                 f"#- __mMinVolumeMover: {self.__mMinVolumeMover}\n"\
+                f"#- __mValueMaxMover: {self.__mValueMaxMover}\n"\
+                f"#- __mValueMinMover: {self.__mValueMinMover}\n"\
                 f"#- __mMoverAboveZero: {self.__mMoverAboveZero}\n"\
                 f"#- __mMoverAboveFifty: {self.__mMoverAboveFifty}\n"\
                 f"#- __mMoverAboveHundred: {self.__mMoverAboveHundred}\n"\
@@ -338,11 +378,17 @@ class FilterSearchStockPanel(object):
                 f"#- __mMoverBelowTenToTwenty: {self.__mMoverBelowTenToTwenty}\n"\
                 f"#- __mMoverBelowTwentyToThirty: {self.__mMoverBelowTwentyToThirty}\n"\
                 f"#- __mMoverBelowThirtyToFourty: {self.__mMoverBelowThirtyToFourty}\n"\
+                f"#- __mFiftyValueMaxMover: {self.__mFiftyValueMaxMover}\n"\
+                f"#- __mFiftyValueMinMover: {self.__mFiftyValueMinMover}\n"\
                 f"#- __mMoverFiftyWeeksAboveZero: {self.__mMoverFiftyWeeksAboveZero}\n"\
                 f"#- __mMoverFiftyWeeksAboveFifty: {self.__mMoverFiftyWeeksAboveFifty}\n"\
                 f"#- __mMoverFiftyWeeksAboveHundred: {self.__mMoverFiftyWeeksAboveHundred}\n"\
                 f"#- __mMoverFiftyWeeksBelowZero: {self.__mMoverFiftyWeeksBelowZero}\n"\
                 f"#- __mMoverFiftyWeeksBelowFifty: {self.__mMoverFiftyWeeksBelowFifty}\n"\
+                f"#- __mMoverFiftyWeeksAboveZeroToTen: {self.__mMoverFiftyWeeksAboveZeroToTen}\n"\
+                f"#- __mMoverFiftyWeeksAboveTenToTwenty: {self.__mMoverFiftyWeeksAboveTenToTwenty}\n"\
+                f"#- __mMoverFiftyWeeksAboveTwentyThirty: {self.__mMoverFiftyWeeksAboveTwentyThirty}\n"\
+                f"#- __mMoverFiftyWeeksAboveThirtyFourty: {self.__mMoverFiftyWeeksAboveThirtyFourty}\n"\
                 f"#- __mMoverFiftyWeeksBelowZeroToTen: {self.__mMoverFiftyWeeksBelowZeroToTen}\n"\
                 f"#- __mMoverFiftyWeeksBelowTenToTwenty: {self.__mMoverFiftyWeeksBelowTenToTwenty}\n"\
                 f"#- __mMoverFiftyWeeksBelowTwentyThirty: {self.__mMoverFiftyWeeksBelowTwentyThirty}\n"\

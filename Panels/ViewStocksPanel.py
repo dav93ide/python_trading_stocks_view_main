@@ -353,7 +353,7 @@ class ViewStocksPanel(BasePanel):
         
     def __update_left_panel_data(self, event):
         if self.__mStockViewData is not None:
-            self.__mstMarketPercentage.SetLabel(str(round(self.__mStockViewData.get_stock().get_market_change_percent(), 2))  + "%      ")
+            self.__mstMarketPercentage.SetLabel(str(round(self.__mStockViewData.get_stock().get_market_change_percent(), 2))  + "%\t\t")
             self.__mstPrice.SetLabel("$" + str(self.__mStockViewData.get_stock().get_price()))
             if self.__mStockViewData.get_stock().get_pre_market_price() is not None:
                 self.__mstPrePostMarketPrice.SetLabel(Strings.STR_FIELD_PRE_MARKET + str(self.__mStockViewData.get_stock().get_pre_market_price()))
@@ -492,14 +492,14 @@ class ViewStocksPanel(BasePanel):
         else:
             self.__mstMarketPercentage.SetForegroundColour(Colors.RED)
         
-        self.__mstPrice = wx.StaticText(panel, label = "$" + str(self.__mStockViewData.get_stock().get_price()) + "     ")
+        self.__mstPrice = wx.StaticText(panel, label = "$" + str(self.__mStockViewData.get_stock().get_price()) + "\t\t")
         WxUtils.set_font_size_and_bold_and_roman(self.__mstPrice, 20)
         hbs.Add(self.__mstPrice, 0, wx.EXPAND)
         hbs.Add(self.__mstMarketPercentage, 1, wx.EXPAND)
         
         if self.__mStockViewData.get_stock().get_pre_market_price() is not None:
             self.__mstPrePostMarketPrice = wx.StaticText(panel, label = Strings.STR_FIELD_PRE_MARKET + str(self.__mStockViewData.get_stock().get_pre_market_price()))
-            self.__mstPrePostMarketPercentage = wx.StaticText(panel, label = "     " + str(round(self.__mStockViewData.get_stock().get_pre_market_change_percentage(), 2)) + "%")
+            self.__mstPrePostMarketPercentage = wx.StaticText(panel, label = "\t\t" + str(round(self.__mStockViewData.get_stock().get_pre_market_change_percentage(), 2)) + "%")
             if self.__mStockViewData.get_stock().get_pre_market_change_percentage() is not None and self.__mStockViewData.get_stock().get_pre_market_change_percentage() > 0:
                 self.__mstPrePostMarketPercentage.SetForegroundColour(Colors.GREEN)
             else:
