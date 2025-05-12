@@ -164,6 +164,7 @@ class Strings(object):
     STR_FIFTY_WEEKS_STOCK_DATA = "50 Weeks Stock Data"
     STR_STOCK_DATA = "Stock Data"
     STR_DIVIDEND_DATA = "Dividend Data"
+    STR_UNDEFINED = "Undefined"
 
     STR_SPECIFICS_BOT = "Specifics of the BOT:"
     STR_DATA_MAKING_BOT = [

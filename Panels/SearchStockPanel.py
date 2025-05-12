@@ -68,6 +68,11 @@ class SearchStockPanel(BasePanel):
     __mcbMoverFiftyWeeksBelowThirtyFourty = None
 
     __mstDividendData = None
+    
+    __mcbDividendOnly = None
+    __mcbNoDividendOnly = None
+    __mcbDividendYeldMax = None
+    __mcbDividendDateMin = None
 
     __mFilterSearchStockPanel = FilterSearchStockPanel()
 
@@ -105,6 +110,8 @@ class SearchStockPanel(BasePanel):
         vbs.Add(self.__get_panels_three_percentage_fifty_weeks_movers(), 0, wx.EXPAND)
         vbs.AddSpacer(30)
         vbs.Add(self.__get_panel_text_dividend_data(), 0, wx.EXPAND)
+        vbs.AddSpacer(10)
+        vbs.Add(self.__get_panels_dividend_data(), 0, wx.EXPAND)
         vbs.AddSpacer(100)
         vbs.Add(self.__get_panel_buttons(), 0, wx.EXPAND)
 
@@ -641,6 +648,55 @@ class SearchStockPanel(BasePanel):
 
         panel.SetSizer(main)
         return panel
+
+    def __get_panels_dividend_data(self):
+        panel = wx.Panel(self)
+        main = wx.BoxSizer(wx.HORIZONTAL)
+
+        main.Add(self.__get_panel_dividend_yeld_max(panel), 1, wx.EXPAND)
+        main.AddSpacer(25)
+        main.Add(self.__get_panel_dividend_date_min(panel), 1, wx.EXPAND)
+
+        panel.SetSizer(main)
+        return panel
+
+    def __get_panel_dividend_yeld_max(self, parent):
+        panel = wx.Panel(parent)
+        main = wx.BoxSizer(wx.VERTICAL)
+
+        self.__mcbDividendOnly = wx.CheckBox(panel, wx.ID_ANY, label = "Dividend Only", style = wx.ALIGN_CENTRE)
+        self.__mcbDividendOnly.Bind(wx.EVT_CHECKBOX, self.__on_check_dividend_only)
+        main.Add(self.__mcbDividendOnly, 1, wx.EXPAND)
+        if self.__mFilterSearchStockPanel.get_value_max_mover():
+            self.__mcbDividendOnly.SetValue(self.__mFilterSearchStockPanel.get_dividend_only())
+
+        self.__mcbNoDividendOnly = wx.CheckBox(panel, wx.ID_ANY, label = "No Dividend Only", style = wx.ALIGN_CENTRE)
+        self.__mcbNoDividendOnly.Bind(wx.EVT_CHECKBOX, self.__on_check_no_dividend_only)
+        main.Add(self.__mcbNoDividendOnly, 1, wx.EXPAND)
+        if self.__mFilterSearchStockPanel.get_value_max_mover():
+            self.__mcbNoDividendOnly.SetValue(self.__mFilterSearchStockPanel.get_no_dividend_only())
+
+        panel.SetSizer(main)
+        return panel
+
+    def __get_panel_dividend_date_min(self, parent):
+        panel = wx.Panel(parent)
+        main = wx.BoxSizer(wx.VERTICAL)
+
+        self.__mcbDividendDateMin = wx.CheckBox(panel, wx.ID_ANY, label = "Dividend Date Min", style = wx.ALIGN_CENTRE)
+        self.__mcbDividendDateMin.Bind(wx.EVT_CHECKBOX, self.__on_check_dividend_date_min)
+        main.Add(self.__mcbDividendDateMin, 1, wx.EXPAND)
+        if self.__mFilterSearchStockPanel.get_value_min_mover():
+            self.__mcbDividendDateMin.SetValue(self.__mFilterSearchStockPanel.get_dividend_date_min())
+
+        self.__mcbDividendYeldMax = wx.CheckBox(panel, wx.ID_ANY, label = "Dividend Yeld Max", style = wx.ALIGN_CENTRE)
+        self.__mcbDividendYeldMax.Bind(wx.EVT_CHECKBOX, self.__on_check_dividend_yeld_max)
+        main.Add(self.__mcbDividendYeldMax, 1, wx.EXPAND)
+        if self.__mFilterSearchStockPanel.get_value_max_mover():
+            self.__mcbDividendYeldMax.SetValue(self.__mFilterSearchStockPanel.get_dividend_yeld_max())
+
+        panel.SetSizer(main)
+        return panel
 #endregion
 
 #region - Get Panel Filter
@@ -989,7 +1045,7 @@ class SearchStockPanel(BasePanel):
         self.__mcbMoverFiftyWeeksBelowTwentyThirty.SetValue(False)
         self.__mcbMoverFiftyWeeksBelowThirtyFourty.SetValue(False)
 
-    def __on_check_fifty_weeks_above_zero_to_ten():      
+    def __on_check_fifty_weeks_above_zero_to_ten(self, evt):      
         self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_zero_to_ten(evt.IsChecked())
         self.__mcbMoverFiftyWeeksAboveZero.SetValue(False)
         self.__mcbMoverFiftyWeeksAboveFifty.SetValue(False)
@@ -1004,7 +1060,7 @@ class SearchStockPanel(BasePanel):
         self.__mcbMoverFiftyWeeksBelowTwentyThirty.SetValue(False)
         self.__mcbMoverFiftyWeeksBelowThirtyFourty.SetValue(False)
 
-    def __on_check_fifty_weeks_above_ten_to_twenty():      
+    def __on_check_fifty_weeks_above_ten_to_twenty(self, evt):      
         self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_ten_to_twenty(evt.IsChecked())
         self.__mcbMoverFiftyWeeksAboveZero.SetValue(False)
         self.__mcbMoverFiftyWeeksAboveFifty.SetValue(False)
@@ -1019,7 +1075,7 @@ class SearchStockPanel(BasePanel):
         self.__mcbMoverFiftyWeeksBelowTwentyThirty.SetValue(False)
         self.__mcbMoverFiftyWeeksBelowThirtyFourty.SetValue(False)
 
-    def __on_check_fifty_weeks_above_twenty_to_thirty():   
+    def __on_check_fifty_weeks_above_twenty_to_thirty(self, evt):   
         self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_twenty_thirty(evt.IsChecked())
         self.__mcbMoverFiftyWeeksAboveZero.SetValue(False)
         self.__mcbMoverFiftyWeeksAboveFifty.SetValue(False)
@@ -1034,7 +1090,7 @@ class SearchStockPanel(BasePanel):
         self.__mcbMoverFiftyWeeksBelowTwentyThirty.SetValue(False)
         self.__mcbMoverFiftyWeeksBelowThirtyFourty.SetValue(False)
 
-    def __on_check_fifty_weeks_above_thirty_to_fourty():   
+    def __on_check_fifty_weeks_above_thirty_to_fourty(self, evt):   
         self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_thirty_fourty(evt.IsChecked())
         self.__mcbMoverFiftyWeeksAboveZero.SetValue(False)
         self.__mcbMoverFiftyWeeksAboveFifty.SetValue(False)
@@ -1049,7 +1105,7 @@ class SearchStockPanel(BasePanel):
         self.__mcbMoverFiftyWeeksBelowTwentyThirty.SetValue(False)
         self.__mcbMoverFiftyWeeksBelowThirtyFourty.SetValue(False)
 
-    def __on_check_fifty_weeks_below_zero_to_ten():       
+    def __on_check_fifty_weeks_below_zero_to_ten(self, evt):       
         self.__mFilterSearchStockPanel.set_mover_fifty_weeks_below_zero_to_ten(evt.IsChecked())
         self.__mcbMoverFiftyWeeksAboveZero.SetValue(False)
         self.__mcbMoverFiftyWeeksAboveFifty.SetValue(False)
@@ -1064,7 +1120,7 @@ class SearchStockPanel(BasePanel):
         self.__mcbMoverFiftyWeeksBelowTwentyThirty.SetValue(False)
         self.__mcbMoverFiftyWeeksBelowThirtyFourty.SetValue(False)
 
-    def __on_check_fifty_weeks_below_ten_to_twenty():     
+    def __on_check_fifty_weeks_below_ten_to_twenty(self, evt):     
         self.__mFilterSearchStockPanel.set_mover_fifty_weeks_below_ten_to_twenty(evt.IsChecked())
         self.__mcbMoverFiftyWeeksAboveZero.SetValue(False)
         self.__mcbMoverFiftyWeeksAboveFifty.SetValue(False)
@@ -1079,7 +1135,7 @@ class SearchStockPanel(BasePanel):
         self.__mcbMoverFiftyWeeksBelowTwentyThirty.SetValue(False)
         self.__mcbMoverFiftyWeeksBelowThirtyFourty.SetValue(False)
 
-    def __on_check_fifty_weeks_below_twenty_to_thirty():   
+    def __on_check_fifty_weeks_below_twenty_to_thirty(self, evt):   
         self.__mFilterSearchStockPanel.set_mover_below_twenty_to_thirty(evt.IsChecked())
         self.__mcbMoverFiftyWeeksAboveZero.SetValue(False)
         self.__mcbMoverFiftyWeeksAboveFifty.SetValue(False)
@@ -1094,7 +1150,7 @@ class SearchStockPanel(BasePanel):
         self.__mcbMoverFiftyWeeksBelowTenToTwenty.SetValue(False)
         self.__mcbMoverFiftyWeeksBelowThirtyFourty.SetValue(False)
 
-    def __on_check_fifty_weeks_below_thirty_to_fourty():   
+    def __on_check_fifty_weeks_below_thirty_to_fourty(self, evt):   
         self.__mFilterSearchStockPanel.set_mover_fifty_weeks_below_thirty_fourty(evt.IsChecked())
         self.__mcbMoverFiftyWeeksAboveZero.SetValue(False)
         self.__mcbMoverFiftyWeeksAboveFifty.SetValue(False)
@@ -1109,6 +1165,25 @@ class SearchStockPanel(BasePanel):
         self.__mcbMoverFiftyWeeksBelowTenToTwenty.SetValue(False)
         self.__mcbMoverFiftyWeeksBelowTwentyThirty.SetValue(False)
 
+    def __on_check_dividend_only(self, evt):   
+        self.__mFilterSearchStockPanel.set_dividend_only(evt.IsChecked())
+        self.__mcbNoDividendOnly.SetValue(False)
+
+    def __on_check_no_dividend_only(self, evt):   
+        self.__mFilterSearchStockPanel.set_no_dividend_only(evt.IsChecked())
+        self.__mcbDividendOnly.SetValue(False)
+
+    def __on_check_dividend_date_min(self, evt):   
+        self.__mFilterSearchStockPanel.set_dividend_date_min(evt.IsChecked())
+        self.__mFilterSearchStockPanel.set_dividend_only(evt.IsChecked())
+        if not self.__mcbDividendYeldMax.IsChecked():
+            self.__mcbDividendOnly.SetValue(evt.IsChecked())
+
+    def __on_check_dividend_yeld_max(self, evt):   
+        self.__mFilterSearchStockPanel.set_dividend_yeld_max(evt.IsChecked())
+        self.__mFilterSearchStockPanel.set_dividend_only(evt.IsChecked())
+        if not self.__mcbDividendDateMin.IsChecked():
+            self.__mcbDividendOnly.SetValue(evt.IsChecked())
 #endregion
 
     def __send_data(self):

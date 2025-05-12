@@ -644,7 +644,10 @@ class ViewStocksPanel(BasePanel):
         WxUtils.set_font_size(st, 15)
         hbs.Add(st, 0, wx.ALL|wx.EXPAND)
         hbs.AddSpacer(5)
-        st = wx.StaticText(panel, label = TextUtils.convert_number_to_millions_form(self.__mStockViewData.get_stock().get_enterprise_value()), style = wx.ALIGN_RIGHT)
+        if self.__mStockViewData.get_stock().get_enterprise_value() is not None:
+            st = wx.StaticText(panel, label = TextUtils.convert_number_to_millions_form(self.__mStockViewData.get_stock().get_enterprise_value()), style = wx.ALIGN_RIGHT)
+        else:
+            st = wx.StaticText(panel, label = Strings.STR_UNDEFINED, style = wx.ALIGN_RIGHT)
         WxUtils.set_font_size(st, 15)
         hbs.Add(st, 0, wx.ALL|wx.EXPAND)
 

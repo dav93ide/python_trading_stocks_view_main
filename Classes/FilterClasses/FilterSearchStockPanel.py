@@ -48,6 +48,12 @@ class FilterSearchStockPanel(object):
     __mMoverFiftyWeeksBelowTwentyThirty = None
     __mMoverFiftyWeeksBelowThirtyFourty = None
 
+    __mDividendOnly = None
+    __mNoDividendOnly = None
+    __mDividendYeldMax = None
+    __mDividendDateMin = None
+    
+
     #region - Get Methods
     def get_max_price(self):
         return self.__mMaxPrice
@@ -162,6 +168,18 @@ class FilterSearchStockPanel(object):
 
     def get_mover_fifty_weeks_below_thirty_to_fourty(self):
         return self.__mMoverFiftyWeeksBelowThirtyFourty
+
+    def get_dividend_only(self):
+	    return self.__mDividendOnly
+
+    def get_no_dividend_only(self):
+        return self.__mNoDividendOnly
+
+    def get_dividend_yeld_max(self):
+        return self.__mDividendYeldMax
+
+    def get_dividend_date_min(self):
+        return self.__mDividendDateMin
     #endregion
 
     #region - Set Methods
@@ -278,6 +296,18 @@ class FilterSearchStockPanel(object):
 
     def set_mover_fifty_weeks_below_thirty_to_fourty(self, moverFiftyWeeksBelowThirtyFourty):
         self.__mMoverFiftyWeeksBelowThirtyFourty  = moverFiftyWeeksBelowThirtyFourty 
+
+    def set_dividend_only(self, dividendOnly):
+	    self.__mDividendOnly = dividendOnly
+
+    def set_no_dividend_only(self, noDividendOnly):
+        self.__mNoDividendOnly = noDividendOnly
+
+    def set_dividend_yeld_max(self, dividendYeldMax):
+        self.__mDividendYeldMax = dividendYeldMax
+
+    def set_dividend_date_min(self, dividendDateMin):
+        self.__mDividendDateMin = dividendDateMin
     #endregion
 
 #region Public Methods
@@ -308,7 +338,9 @@ class FilterSearchStockPanel(object):
                 "mMoverFiftyWeeksAboveTwentyThirty": self.__mMoverFiftyWeeksAboveTwentyThirty, "mMoverFiftyWeeksAboveThirtyFourty": self.__mMoverFiftyWeeksAboveThirtyFourty,
 
                 "mMoverFiftyWeeksBelowZeroToTen": self.__mMoverFiftyWeeksBelowZeroToTen, "mMoverFiftyWeeksBelowTenToTwenty": self.__mMoverFiftyWeeksBelowTenToTwenty,
-                "mMoverFiftyWeeksBelowTwentyThirty": self.__mMoverFiftyWeeksBelowTwentyThirty, "mMoverFiftyWeeksBelowThirtyFourty": self.__mMoverFiftyWeeksBelowThirtyFourty
+                "mMoverFiftyWeeksBelowTwentyThirty": self.__mMoverFiftyWeeksBelowTwentyThirty, "mMoverFiftyWeeksBelowThirtyFourty": self.__mMoverFiftyWeeksBelowThirtyFourty,
+                
+                "mDividendOnly": self.__mDividendOnly, "mNoDividendOnly": self.__mNoDividendOnly, "mDividendYeldMax": self.__mDividendYeldMax, "mDividendDateMin": self.__mDividendDateMin
                 }
 
     def from_json(self, json):
@@ -350,6 +382,10 @@ class FilterSearchStockPanel(object):
         self.set_mover_fifty_weeks_below_ten_to_twenty(json["mMoverFiftyWeeksBelowTenToTwenty"])
         self.set_mover_fifty_weeks_below_twenty_to_thirty(json["mMoverFiftyWeeksBelowTwentyThirty"])
         self.set_mover_fifty_weeks_below_thirty_to_fourty(json["mMoverFiftyWeeksBelowThirtyFourty"])
+        self.set_dividend_only(json["mDividendOnly"])
+        self.set_no_dividend_only(json["mNoDividendOnly"])
+        self.set_dividend_yeld_max(json["mDividendYeldMax"])
+        self.set_dividend_date_min(json["mDividendDateMin"])
 #enderegion
 
     # To String
@@ -393,4 +429,8 @@ class FilterSearchStockPanel(object):
                 f"#- __mMoverFiftyWeeksBelowTenToTwenty: {self.__mMoverFiftyWeeksBelowTenToTwenty}\n"\
                 f"#- __mMoverFiftyWeeksBelowTwentyThirty: {self.__mMoverFiftyWeeksBelowTwentyThirty}\n"\
                 f"#- __mMoverFiftyWeeksBelowThirtyFourty: {self.__mMoverFiftyWeeksBelowThirtyFourty}\n"\
+                f"#- __mDividendOnly: {self.__mDividendOnly}\n"\
+                f"#- __mNoDividendOnly: {self.__mNoDividendOnly}\n"\
+                f"#- __mDividendYeldMax: {self.__mDividendYeldMax}\n"\
+                f"#- __mDividendDateMin: {self.__mDividendDateMin}\n"\
                 "####################\n"

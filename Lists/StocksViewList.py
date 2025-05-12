@@ -1,5 +1,6 @@
 import wx
 import math
+import time
 from Classes.Stock import Stock
 from Classes.FilterClasses.FilterSearchStockPanel import FilterSearchStockPanel
 
@@ -152,6 +153,32 @@ class StocksViewList(wx.ListCtrl):
                 self.__mFilteredItems[i] = one
                 self.__mFilteredItems[pos] = temp
 
+        if self.__mFilterData.get_dividend_yeld_max():
+            pos = -1
+            for i in range(0, len(self.__mFilteredItems)):
+                one = self.__mFilteredItems[i]
+                for j in range(i + 1, len(self.__mFilteredItems)):
+                    two = self.__mFilteredItems[j]
+                    if one.get_trailing_annual_dividend_yeld() < two.get_trailing_annual_dividend_yeld():
+                        one = two
+                        pos = j
+                temp = self.__mFilteredItems[i]
+                self.__mFilteredItems[i] = one
+                self.__mFilteredItems[pos] = temp
+
+        if self.__mFilterData.get_dividend_date_min():
+            pos = -1
+            for i in range(0, len(self.__mFilteredItems)):
+                one = self.__mFilteredItems[i]
+                for j in range(i + 1, len(self.__mFilteredItems)):
+                    two = self.__mFilteredItems[j]
+                    if one.get_dividend_date() > two.get_dividend_date():
+                        one = two
+                        pos = j
+                temp = self.__mFilteredItems[i]
+                self.__mFilteredItems[i] = one
+                self.__mFilteredItems[pos] = temp
+
     def filter_values(self):
         if self.__mFilterData is not None:
             items = []
@@ -260,7 +287,6 @@ class StocksViewList(wx.ListCtrl):
                         items.append(item)
                 elif self.__mFilterData.get_fifty_value_min_mover() is not None and self.__mFilterData.get_fifty_value_min_mover():
                     if item.get_fifty_two_weeks_perc_change() and float(item.get_fifty_two_weeks_perc_change()) >= float(self.__mFilterData.get_fifty_value_min_mover()):
-                        print("HERE")
                         items.append(item)
 
                 if self.__mFilterData.get_mover_fifty_weeks_above_zero() is not None and self.__mFilterData.get_mover_fifty_weeks_above_zero():
@@ -327,6 +353,14 @@ class StocksViewList(wx.ListCtrl):
                     if item.get_fifty_two_weeks_perc_change() and float(item.get_fifty_two_weeks_perc_change()) < -30 and float(item.get_fifty_two_weeks_perc_change()) > -40:
                         items.append(item)
                         
+                if self.__mFilterData.get_dividend_only() is not None and self.__mFilterData.get_dividend_only():
+                    if item.get_dividend_date() is not None and item.get_dividend_date() > time.time() and item.get_trailing_annual_dividend_yeld() > 0:
+                        items.append(item)
+
+                if self.__mFilterData.get_no_dividend_only() is not None and self.__mFilterData.get_no_dividend_only():
+                    if item.get_dividend_date() is None and item.get_dividend_date() > time.time():
+                        items.append(item)
+
             if len(items) > 0:
                 self.__mFilteredItems = items
         else:
