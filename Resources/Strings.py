@@ -3,42 +3,14 @@ from enum import Enum
 class Strings(object):
 
     STR_MAIN_FRAME = "Main Frame"
-    STR_TRADING_BOT = "Trading Bot"
+    STR_TRADING_STOCKS_VIEW = "Trading Stocks View"
 
 #region - Strings Menu
     STR_MAIN_MENU = "Main Menu"
-    STR_MENU_SETTINGS = "Settings"
-    STR_MENU_VIEW = "View"
-    STR_MENU_TRADING_STRATEGY = "Trading Strategy"
-    STR_MENU_BOT = "Bot"
     STR_MENU_STOCKS = "Stocks"
-
-#region - Strings Menu Settings
-    STR_MENU_SETTINGS_PLATFORM_DATA = "Platform Data"
-    STR_MENU_SETTINGS_BOTS = "Bots"
-    STR_MENU_SETTINGS_SIMULATIONS = "Simulations"
-#endregion
-
-#region - Strings Menu View
-    STR_MENU_VIEW_ASSETS = "View Assets"
-    STR_MENU_VIEW_BOTS = "View Bots"
-    STR_MENU_VIEW_SIMULATIONS = "View Simulations"
-    STR_MENU_VIEW_CHARTS = "View Charts"
-#endregion
-
-#region - Strings Menu Trading Strategy
-    STR_MENU_TRADING_STRATEGY_NEW_TRADING_STRATEGY = "New Trading Strategy"
-    STR_MENU_TRADING_STRATEGY_NEW_DIVIDEND_STRATEGY = "New Dividend Strategy"
-    STR_MENU_TRADING_STRATEGY_NEW_COPY_TRADER_STRATEGY = "New Copy Trader Strategy"
-#endregion
-
-#region - Strings Menu Bot
-    STR_MENU_BOT_NEW_BOT = "New Bot"
-#endregion  
 
 #region - Strings Menu Stocks
     STR_MENU_STOCKS_VIEW = "View Stocks"
-    STR_MENU_ADD_STOCK_APPLICATION = "Add Stocks Application"
 #endregion  
 #endregion
 

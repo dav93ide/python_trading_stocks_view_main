@@ -18,7 +18,7 @@ class MainFrame(wx.Frame):
     __mProgressDialog: wx.ProgressDialog = None
 
     def __init__(self):
-        wx.Frame.__init__(self, None, wx.ID_ANY, title=Strings.STR_TRADING_BOT, size=Constants.DISPLAY_SIZE_MAIN_FRAME)
+        wx.Frame.__init__(self, None, wx.ID_ANY, title=Strings.STR_TRADING_STOCKS_VIEW, size=Constants.DISPLAY_SIZE_MAIN_FRAME)
         wx.Frame.CenterOnScreen(self)
         self.Maximize(True)
         self.Show()
