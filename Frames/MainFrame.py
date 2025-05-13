@@ -4,7 +4,6 @@ from Resources.Constants import *
 from Panels.ViewStocksPanel import ViewStocksPanel
 from Resources.Strings import Strings
 from Utils.RegexUtils import RegexUtils
-from Classes.ConfigurationData import ConfigurationData
 from Networking.DataSynchronization import DataSynchronization
 
 class MainFrame(wx.Frame):
@@ -20,7 +19,7 @@ class MainFrame(wx.Frame):
         wx.Frame.CenterOnScreen(self)
         self.Maximize(True)
         self.Show()
-        self.__check_configuration()
+        self.__init_layout()
 
     def OnCloseMe(self, event):
         self.Close(True)
@@ -49,7 +48,7 @@ class MainFrame(wx.Frame):
 #region - Init Panels Methods
     def __init_view_stocks_panel(self):
         self.__remove_all_panels()
-        self.__mViewStocksPanel = ViewStocksPanel(self, wx.DisplaySize(), None)
+        self.__mViewStocksPanel = ViewStocksPanel(self, wx.DisplaySize(), [], None)
         self.__mViewStocksPanel.Show()
 #endregion
 
@@ -65,18 +64,5 @@ class MainFrame(wx.Frame):
 #region - On Click Methods
     def __on_click_menu_stocks_view(self, evt):
         self.__init_view_stocks_panel()
-#endregion
-
-#region - Check Configuration Methods
-    def __check_configuration(self):
-        configuration = Environment().get_configuration()
-        if not configuration:
-            configuration = ConfigurationData(uuid.uuid4())
-        if not configuration.get_is_initialized():
-            self.__mProgressDialog = wx.ProgressDialog(Strings.STR_INITIAL_SYNCHRONIZATION, "", maximum=100, parent=None, style=wx.PD_APP_MODAL|wx.PD_AUTO_HIDE|wx.PD_ELAPSED_TIME)
-            if DataSynchronization.sync_initial_all_stocks_and_symbols(self.__mProgressDialog):
-                configuration.set_is_initialized(True)
-                configuration.store_data()
-        self.__init_layout()
 #endregion
 #endregion

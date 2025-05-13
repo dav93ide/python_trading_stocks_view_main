@@ -1,7 +1,6 @@
 import json
 import uuid
 import time
-from Utils.StoredDataUtils import StoredDataUtils
 from Resources.Constants import DataFilenames
 from Networking.Networking import Networking
 from Networking.API import API
@@ -13,7 +12,6 @@ from Classes.ViewClasses.StockView import StockView
 from Resources.Strings import Strings
 from Utils.DateUtils import DateUtils
 from Utils.TextUtils import TextUtils
-from Utils.StoredDataUtils import StoredDataUtils
 from Environment import Environment
 from datetime import datetime
 import requests
@@ -21,36 +19,36 @@ import requests
 class DataSynchronization(object):
 
 #region - Public Methods
-    def sync_initial_all_stocks_and_symbols(progressDialog):               
+    def sync_all_stocks_and_symbols():
+        stocks = []            
         try:
-            progressDialog.Show()
-            DataSynchronization.__sync_initial_all_stocks_symbols(progressDialog)
+            symbols = DataSynchronization.__sync_get_all_stocks_symbols()
             cookie = DataSynchronization.__get_cookie_yahoo_finance_fake_request()
             crumb = DataSynchronization.__get_crumb_yahoo_finance(cookie)
-            DataSynchronization.__sync_initial_all_stocks_data(crumb, progressDialog)
-            progressDialog.Destroy()
+            stocks = DataSynchronization.__sync_initial_all_stocks_data(symbols, crumb)
         except:
-            return False
-        return True
+            return stocks
+        return stocks
 
-    def sync_single_stock_full_data(id, symbol):
-        stock = StoredDataUtils.get_obj_from_id(id, Stock, DataFilenames.FILENAME_STOCK_DATA)
+    def sync_single_stock_full_data(stock):
         stockView = StockView()
-        DataSynchronization.__sync_single_get_fundamentals_series_stock_data(symbol, stockView, stock)
-        DataSynchronization.__sync_chart(symbol, APIConstants.VALUE_1D, APIConstants.VALUE_1M, stockView)
+        DataSynchronization.__sync_single_get_fundamentals_series_stock_data(stockView, stock)
+        DataSynchronization.__sync_chart(stock.get_sign(), APIConstants.VALUE_1D, APIConstants.VALUE_1M, stockView)
 
         cookie = DataSynchronization.__get_cookie_yahoo_finance_fake_request()
         crumb = DataSynchronization.__get_crumb_yahoo_finance(cookie)
-        DataSynchronization.__sync_quote_of_stock(symbol, crumb, stock)
-        StoredDataUtils.override_obj_from_id(id, stock, DataFilenames.FILENAME_STOCK_DATA)
+        DataSynchronization.__sync_quote_of_stock(stock.get_sign(), crumb, stock)
+
         stockView.set_stock(stock)
         return stockView
 
-    def sync_update_all_stocks():
-        DataSynchronization.__update_all_stocks_data()
-
-    def sync_update_all_stocks():
-        DataSynchronization.__update_all_stocks_data()
+    def sync_update_all_stocks(stocks):
+        ss = DataSynchronization.__update_all_stocks_data(stocks)
+        data = []
+        for s in ss:
+            if s is not None:
+                data.append(s)
+        return data
 
     def sync_get_chart(symbol, rnge, interval):
         stockView = StockView()
@@ -60,20 +58,14 @@ class DataSynchronization(object):
 
 #region - Private Methods
 #region - Initial Stock Sync Methods
-    def __sync_initial_all_stocks_symbols(progressDialog):
-        progressDialog.Update(0, Strings.STR_PD_INITIAL_DOWNLOAD_SYMBOLS)
+    def __sync_get_all_stocks_symbols():
         j = json.loads(Networking.download_all_stock_analysis_symbols(APIConstants.HEADERS_ONE))
         symbols = []
-
         if j[APIConstants.FIELD_STATUS] == 200:
             for d in j[APIConstants.FIELD_DATA][APIConstants.FIELD_DATA]:
                 if d[APIConstants.FIELD_S] not in symbols:
                     symbols.append(d[APIConstants.FIELD_S])
 
-        #######################################################################################
-        # COMMENTED BECAUSE OTHERWISE THE ORDERING AND FILTERING OF ALL STOCKS TAKES TOO MUCH #
-        #######################################################################################
-        #
         # jj = json.loads(Networking.download_gov_all_stock_symbols(APIConstants.HEADERS_ONE))
         # if jj:
         #     for i in range(0, 100000):
@@ -82,42 +74,26 @@ class DataSynchronization(object):
         #                 symbols.append(jj[str(i)]["ticker"])
         #         else:
         #             break
-        #
-        #######################################################################################
 
-        StoredDataUtils.store_data(symbols, DataFilenames.FILENAME_STOCK_SYMBOLS)
+        return symbols
 
         
-    def __sync_initial_all_stocks_data(crumb, progressDialog):
-        progressDialog.Update(0, Strings.STR_PD_INITIAL_DOWNLOAD_STOCK_DATA)
-        
-        totSymbols = StoredDataUtils.get_stored_data(DataFilenames.FILENAME_STOCK_SYMBOLS)
-
+    def __sync_initial_all_stocks_data(symbols, crumb):
         arrStocks = []
-        arrExchanges = []
-        arrCompanies = []
-        arrCurrencies = []
 
-        arrCompaniesNames = []
-        arrExchangesNames = []
-        
-        for i in range(0, len(totSymbols), 500):
-            DataSynchronization.__sync_initial_stocks_data(crumb, totSymbols[i:i+500], arrStocks, arrExchanges, arrCompanies, arrCurrencies, arrCompaniesNames, arrExchangesNames)
-            progressDialog.Update(round((i * 100) / len(totSymbols)))
+        for i in range(0, len(symbols), 500):
+            DataSynchronization.__sync_initial_stocks_data(crumb, symbols[i:i+500], arrStocks)
 
         
-        if len(totSymbols) % 500 != 0:
-            DataSynchronization.__sync_initial_stocks_data(crumb, totSymbols[-(len(totSymbols) % 500):], arrStocks, arrExchanges, arrCompanies, arrCurrencies, arrCompaniesNames, arrExchangesNames)
-        progressDialog.Update(100)
+        if len(symbols) % 500 != 0:
+            DataSynchronization.__sync_initial_stocks_data(crumb, symbols[-(len(symbols) % 500):], arrStocks)
 
-        StoredDataUtils.store_data(arrStocks, DataFilenames.FILENAME_STOCK_DATA)
-        StoredDataUtils.store_data(arrExchanges, DataFilenames.FILENAME_EXCHANGES)
-        StoredDataUtils.store_data(arrCompanies, DataFilenames.FILENAME_COMPANIES)
-        StoredDataUtils.store_data(arrCurrencies, DataFilenames.FILENAME_CURRENCIES)
+        return arrStocks
 
-    def __sync_initial_stocks_data(crumb, symbols, arrStocks, arrExchanges, arrCompanies, arrCurrencies, arrCompaniesNames, arrExchangesNames):
+    def __sync_initial_stocks_data(crumb, symbols, arrStocks):
         jj = json.loads(Networking.download_quote_of_stock(",".join(symbols), crumb, APIConstants.HEADERS_ONE))
-        if jj is not None and APIConstants.FIELD_QUOTE_RESPONSE in jj and APIConstants.FIELD_RESULT in jj[APIConstants.FIELD_QUOTE_RESPONSE]:
+
+        if jj is not None:
             for j in jj[APIConstants.FIELD_QUOTE_RESPONSE][APIConstants.FIELD_RESULT]:
                 
                 company = Company(uuid.uuid4())
@@ -148,7 +124,7 @@ class DataSynchronization(object):
                     exchange.set_currency(j[APIConstants.FIELD_CURRENCY])
                 elif APIConstants.FIELD_FINANCIAL_CURRENCY in j:
                     exchange.set_currency(j[APIConstants.FIELD_FINANCIAL_CURRENCY])
-
+                
                 if APIConstants.FIELD_EXCHANGE in j:
                     exchange.set_name(j[APIConstants.FIELD_EXCHANGE])
 
@@ -156,9 +132,6 @@ class DataSynchronization(object):
                     exchange.set_full_name(j[APIConstants.FIELD_FULL_EXCHANGE_NAME])
 
                 stock.set_exchange(exchange)
-
-                if APIConstants.FIELD_REGULAR_MARKET_CHANGE_PERCENT in j:
-                    stock.set_market_change_percent(j[APIConstants.FIELD_REGULAR_MARKET_CHANGE_PERCENT])
 
                 if APIConstants.FIELD_PRE_MARKET_CHANGE_PERCENT in j:
                     stock.set_pre_market_change_percent(j[APIConstants.FIELD_PRE_MARKET_CHANGE_PERCENT])
@@ -245,6 +218,8 @@ class DataSynchronization(object):
 
                 if APIConstants.FIELD_POST_MARKET_PRICE in j:
                     stock.set_post_market_price(j[APIConstants.FIELD_POST_MARKET_PRICE])
+                else:
+                    stock.set_post_market_price(None)
 
                 if APIConstants.FIELD_EARNINGS_TIMESTAMP in j:
                     stock.set_earnings_timestamp(j[APIConstants.FIELD_EARNINGS_TIMESTAMP])
@@ -282,24 +257,12 @@ class DataSynchronization(object):
                 if APIConstants.FIELD_DIVIDEND_RATE in j:
                     stock.set_dividend_rate(j[APIConstants.FIELD_DIVIDEND_RATE])
 
-                
-                if company.get_name not in arrCompaniesNames:
-                    arrCompanies.append(company)
-                    arrCompaniesNames.append(company.get_name())
-
-                if exchange.get_name() not in arrExchangesNames:
-                    arrExchanges.append(exchange)
-                    arrExchangesNames.append(exchange.get_name())
-
-                if exchange.get_currency not in arrCurrencies:
-                    arrCurrencies.append(exchange.get_currency())
-
                 arrStocks.append(stock)
 #endregion
 
 #region - Single Stock Sync Methods
-    def __sync_single_get_fundamentals_series_stock_data(symbol, stockView, stock):
-        j = json.loads(Networking.download_fundamentals_timeseries_stock_data(symbol, 
+    def __sync_single_get_fundamentals_series_stock_data(stockView, stock):
+        j = json.loads(Networking.download_fundamentals_timeseries_stock_data(stock.get_sign(), 
             TextUtils.remove_point_and_before_point(str(DateUtils.convert_date_to_unix_date_format_dash_ymdHMs(str(DateUtils.get_diff_date_years(DateUtils.get_current_date(), 1))))),
             TextUtils.remove_point_and_before_point(str(DateUtils.get_current_date_unix_time())), 
             ",".join(APIConstants.FIELDS_API_GET_FUNDAMENTALS_SERIES_STOCK), APIConstants.HEADERS_ONE))
@@ -322,7 +285,7 @@ class DataSynchronization(object):
                             try:
                                 stock.set_enterprise_value(jj[attr][len(jj[attr]) - 1][APIConstants.FIELD_REPORTED_VALUE][APIConstants.FIELD_RAW])
                             except:
-                                Environment().get_logger().error(DataSynchronization.__name__ + " - " + Strings.STR_ERROR_JSON)
+                                print("Json Exception")
 
                         case APIConstants.FIELD_QUARTERLY_PE_RATIO:
                             stockView.set_quarterly_pe_ratio(DataSynchronization.__init_and_elaborate_value_dictionary_single_stock_full_data(jj[attr]))
@@ -332,7 +295,7 @@ class DataSynchronization(object):
                             try:
                                 stock.set_pe_ratio(jj[attr][len(jj[attr]) - 1][APIConstants.FIELD_REPORTED_VALUE][APIConstants.FIELD_RAW])
                             except:
-                                Environment().get_logger().error(DataSynchronization.__name__ + " - " + Strings.STR_ERROR_JSON)
+                                print("Json Exception")
 
                         case APIConstants.FIELD_QUARTERLY_FORWARD_PE_RATIO:
                             stockView.set_quarterly_forward_pe_ratio(DataSynchronization.__init_and_elaborate_value_dictionary_single_stock_full_data(jj[attr]))
@@ -348,7 +311,7 @@ class DataSynchronization(object):
                             try:
                                 stock.set_peg_ratio(jj[attr][len(jj[attr]) - 1][APIConstants.FIELD_REPORTED_VALUE][APIConstants.FIELD_RAW])
                             except:
-                                Environment().get_logger().error(DataSynchronization.__name__ + " - " + Strings.STR_ERROR_JSON)
+                                print("Json Exception")
 
                         case APIConstants.FIELD_QUARTERLY_PS_RATIO:
                             stockView.set_quarterly_ps_ratio(DataSynchronization.__init_and_elaborate_value_dictionary_single_stock_full_data(jj[attr]))
@@ -364,7 +327,7 @@ class DataSynchronization(object):
                             try:
                                 stock.set_pb_ratio(jj[attr][len(jj[attr]) - 1][APIConstants.FIELD_REPORTED_VALUE][APIConstants.FIELD_RAW])
                             except:
-                                Environment().get_logger().error(DataSynchronization.__name__ + " - " + Strings.STR_ERROR_JSON)
+                                print("Json Exception")
 
                         case APIConstants.FIELD_QUARTERLY_ENTERPRISES_VALUE_REVENUE_RATIO:
                             stockView.set_quarterly_enterprises_value_revenue_ratio(DataSynchronization.__init_and_elaborate_value_dictionary_single_stock_full_data(jj[attr]))
@@ -374,7 +337,7 @@ class DataSynchronization(object):
                             try:
                                 stock.set_enterprises_value_revenue_ratio(jj[attr][len(jj[attr]) - 1][APIConstants.FIELD_REPORTED_VALUE][APIConstants.FIELD_RAW])
                             except:
-                                Environment().get_logger().error(DataSynchronization.__name__ + " - " + Strings.STR_ERROR_JSON)
+                                print("Json Exception")
 
                         case APIConstants.FIELD_QUARTERLY_ENTERPRISES_VALUE_EBITDA_RATIO:
                             stockView.set_quarterly_enterprises_value_ebitda_ratio(DataSynchronization.__init_and_elaborate_value_dictionary_single_stock_full_data(jj[attr]))
@@ -384,7 +347,7 @@ class DataSynchronization(object):
                             try:
                                 stock.set_enterprises_value_ebitda_ratio(jj[attr][len(jj[attr]) - 1][APIConstants.FIELD_REPORTED_VALUE][APIConstants.FIELD_RAW])
                             except:
-                                Environment().get_logger().error(DataSynchronization.__name__ + " - " + Strings.STR_ERROR_JSON)
+                                print("Json Exception")
 
     def __sync_chart(symbol, rnge, interval, stockView):
         jj = json.loads(Networking.download_chart(symbol, rnge, interval, APIConstants.HEADERS_ONE))
@@ -456,13 +419,13 @@ class DataSynchronization(object):
 
                 if APIConstants.FIELD_BID_SIZE in j:
                     stock.set_bid_size(j[APIConstants.FIELD_BID_SIZE])
-
+                    
                 if APIConstants.FIELD_AVG_DAILY_VOLUME_TEN_DAYS in j:
                     stock.set_avg_volume_ten_days(j[APIConstants.FIELD_AVG_DAILY_VOLUME_TEN_DAYS])
-                    
+
                 if APIConstants.FIELD_AVG_DAILY_VOLUME_THREE_MONTH in j:
                     stock.set_avg_volume_three_months(j[APIConstants.FIELD_AVG_DAILY_VOLUME_THREE_MONTH])
-                
+
                 if APIConstants.FIELD_FIFTY_TWO_WEEK_RANGE in j:
                     stock.set_fifty_two_weeks_range(j[APIConstants.FIELD_FIFTY_TWO_WEEK_RANGE])
 
@@ -475,8 +438,11 @@ class DataSynchronization(object):
                 if APIConstants.FIELD_FIFTY_TWO_WEEK_CHANGE_PERCENT in j:
                     stock.set_fifty_two_weeks_perc_change(j[APIConstants.FIELD_FIFTY_TWO_WEEK_CHANGE_PERCENT])
 
-                stock.set_shares_outstanding(j[APIConstants.FIELD_SHARES_OUTSTANDING])
-                stock.set_price_to_book(j[APIConstants.FIELD_PRICE_TO_BOOK])
+                if APIConstants.FIELD_SHARES_OUTSTANDING in j:
+                    stock.set_shares_outstanding(j[APIConstants.FIELD_SHARES_OUTSTANDING])
+
+                if APIConstants.FIELD_PRICE_TO_BOOK in j:
+                    stock.set_price_to_book(j[APIConstants.FIELD_PRICE_TO_BOOK])
 
                 stock.set_market_cap(j[APIConstants.FIELD_MARKET_CAP])
 
@@ -485,13 +451,13 @@ class DataSynchronization(object):
 
                 stock.set_market_change_percent(j[APIConstants.FIELD_REGULAR_MARKET_CHANGE_PERCENT])
 
-                if APIConstants.FIELD_PRE_MARKET_CHANGE_PERCENT in j:
-                    stock.set_pre_market_change_percent(j[APIConstants.FIELD_PRE_MARKET_CHANGE_PERCENT])
-
                 if APIConstants.FIELD_PRE_MARKET_PRICE in j:
                     stock.set_pre_market_price(j[APIConstants.FIELD_PRE_MARKET_PRICE])
                 else:
                     stock.set_pre_market_price(None)
+
+                if APIConstants.FIELD_PRE_MARKET_CHANGE_PERCENT in j:
+                    stock.set_pre_market_change_percent(j[APIConstants.FIELD_PRE_MARKET_CHANGE_PERCENT])
 
                 if APIConstants.FIELD_POST_MARKET_CHANGE_PERCENT in j:
                     stock.set_post_market_change_percent(j[APIConstants.FIELD_POST_MARKET_CHANGE_PERCENT])
@@ -501,6 +467,8 @@ class DataSynchronization(object):
                 
                 if APIConstants.FIELD_POST_MARKET_PRICE in j:
                     stock.set_post_market_price(j[APIConstants.FIELD_POST_MARKET_PRICE])
+                else:
+                    stock.set_post_market_price(None)
 
                 if APIConstants.FIELD_EARNINGS_TIMESTAMP in j:
                     stock.set_earnings_timestamp(j[APIConstants.FIELD_EARNINGS_TIMESTAMP])
@@ -536,9 +504,7 @@ class DataSynchronization(object):
 #endregion
 
 #region - Sync All Stocks Data Methods
-    def __update_all_stocks_data():
-        stocks = Stock.get_stored_data()
-        
+    def __update_all_stocks_data(stocks):        
         cookie = DataSynchronization.__get_cookie_yahoo_finance_fake_request()
         crumb = DataSynchronization.__get_crumb_yahoo_finance(cookie)
 
@@ -548,19 +514,20 @@ class DataSynchronization(object):
         if len(stocks) % 500 != 0:
             DataSynchronization.__update_stock_data(crumb, stocks[-(len(stocks) % 500):])
 
-        StoredDataUtils.remove_stored_data(DataFilenames.FILENAME_STOCK_DATA)
-        StoredDataUtils.store_data(stocks, DataFilenames.FILENAME_STOCK_DATA)
+        return stocks
 
     def __update_stock_data(crumb, stocks):
         symbols = []
         for s in stocks:
-            symbols.append(s.get_sign())
+            if s is not None:
+                symbols.append(s.get_sign())
 
         jj = json.loads(Networking.download_quote_of_stock(",".join(symbols), crumb, APIConstants.HEADERS_ONE))
 
         if jj is not None:
             for i in range(0, len(jj[APIConstants.FIELD_QUOTE_RESPONSE][APIConstants.FIELD_RESULT])):
                 stock = stocks[i]
+
                 j = jj[APIConstants.FIELD_QUOTE_RESPONSE][APIConstants.FIELD_RESULT][i]
 
                 if APIConstants.FIELD_PRE_MARKET_PRICE in j:
@@ -598,6 +565,9 @@ class DataSynchronization(object):
                 if APIConstants.FIELD_BID_SIZE in j:
                     stock.set_bid_size(j[APIConstants.FIELD_BID_SIZE])
                     
+                if APIConstants.FIELD_PRE_MARKET_CHANGE_PERCENT in j:
+                    stock.set_pre_market_change_percent(j[APIConstants.FIELD_PRE_MARKET_CHANGE_PERCENT])
+
                 if APIConstants.FIELD_AVG_DAILY_VOLUME_TEN_DAYS in j:
                     stock.set_avg_volume_ten_days(j[APIConstants.FIELD_AVG_DAILY_VOLUME_TEN_DAYS])
 

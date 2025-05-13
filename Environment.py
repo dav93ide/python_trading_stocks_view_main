@@ -1,12 +1,9 @@
 import os, logging, uuid
-from Classes.ConfigurationData import ConfigurationData
 from Resources import *
 from Utils.FileUtils import FileUtils
-from Utils.StoredDataUtils import StoredDataUtils
 
 class Environment():
 
-    __mConfigurationData: ConfigurationData = None
     __mLogger = None
 
     def __new__(cls):
@@ -24,21 +21,13 @@ class Environment():
 
 #region - Public Methods
     def init(self):
-        self.__init_directories()
-        self.__init_configuration_data()
         self.__init_logger()
 #endregion
 
 #region - Private Methods
-    def __init_configuration_data(self):
-        self.__mConfigurationData = ConfigurationData.get_stored_data()
-            
     def __init_logger(self):
         logging.basicConfig(level=logging.INFO)
         self.__mLogger = logging.getLogger()
-
-    def __init_directories(self):
-        StoredDataUtils.check_make_stored_data_dir_exists()
 #endregion
 
     # To String

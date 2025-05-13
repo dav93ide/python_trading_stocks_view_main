@@ -22,7 +22,6 @@ from Resources.Constants import Icons
 from Networking.DataSynchronization import DataSynchronization
 from Utils.WxUtils import WxUtils
 from Utils.TextUtils import TextUtils
-from Utils.StoredDataUtils import StoredDataUtils
 from Resources.Constants import Colors
 from Utils.NumberUtils import NumberUtils
 from Networking.APIConstants import APIConstants
@@ -101,8 +100,9 @@ class ViewStocksPanel(BasePanel):
 
     __mFilterSearchStockPanel = FilterSearchStockPanel()
 
-    def __init__(self, parent, size, stock):
+    def __init__(self, parent, size, stocks, stock):
         super().__init__(parent, size)
+        self.__mStocks = stocks
         self.init_threads()
         self.Bind(wx.EVT_WINDOW_DESTROY, self.__on_destroy_self)
         pub.subscribe(self.listen_filter_stock_panel, LISTEN_FILTER_STOCK_PANEL)
@@ -165,13 +165,16 @@ class ViewStocksPanel(BasePanel):
         hbs.Add(searchButton, 0, wx.EXPAND)
 
         vbs.Add(hbs, 0)
-
         main.Add(vbs, 0)
         main.AddSpacer(15)
         self.__mList = StocksViewList(self.__mRightPanel, wx.ID_ANY, wx.EXPAND|wx.LC_REPORT|wx.SUNKEN_BORDER, self.GetSize()[0], self.__on_click_item_list)
         main.Add(self.__mList, 1, wx.EXPAND)
         self.__mList.init_layout()
-        self.__mList.add_items_and_populate(Stock.get_stored_data())
+
+        if self.__mStocks is None or len(self.__mStocks) == 0x0:
+            self.__mStocks = DataSynchronization.sync_all_stocks_and_symbols()
+
+        self.__mList.add_items_and_populate(self.__mStocks)
 
         self.__mRightPanel.SetSizer(main)
         self.__mRightPanel.Fit()
@@ -183,6 +186,7 @@ class ViewStocksPanel(BasePanel):
         self.__mLeftPanel = wx.lib.scrolledpanel.ScrolledPanel(self.__mMainSplitter, wx.ID_ANY)
         self.__mLeftPanel.Fit()
         self.__mLeftPanel.SetupScrolling()
+        self.__mLeftPanel.Layout()
 #endregion
 
 #region - Event Handler Methods
@@ -196,7 +200,7 @@ class ViewStocksPanel(BasePanel):
         self.__mList.filter_items_by_name(evt.GetString())
 
     def __on_click_item_list(self, item):
-        self.__mStockViewData = DataSynchronization.sync_single_stock_full_data(item.get_id(), item.get_sign())
+        self.__mStockViewData = DataSynchronization.sync_single_stock_full_data(item)
         self.__mIsShowingChart5d = False
         self.__mIsShowingChart1Mo = False
         self.__mIsShowingChart3Mo = False
@@ -218,8 +222,8 @@ class ViewStocksPanel(BasePanel):
             stockView = DataSynchronization.sync_get_chart(self.__mStockViewData.get_stock().get_sign(), APIConstants.VALUE_5D, APIConstants.VALUE_1M)
             self.__mGraphsSizer.Add(self.__get_chart_row(self.__mDataPanel, Strings.STR_5D_VALUES, Strings.STR_5D_VOLUME, stockView.get_timestamps(), stockView.get_opens(), stockView.get_closes(), stockView.get_volumes()), 0, wx.EXPAND)
             self.__mLeftPanel.SetupScrolling()
-            self.__mIsShowingChart5d = True
-        
+            self.__mIsShowingChart5d = True        
+
     def __on_click_one_month_chart(self, evt):
         if not self.__mIsShowingChart1Mo:
             stockView = DataSynchronization.sync_get_chart(self.__mStockViewData.get_stock().get_sign(), APIConstants.VALUE_1MO, APIConstants.VALUE_5M)
@@ -285,70 +289,91 @@ class ViewStocksPanel(BasePanel):
 
     def __on_click_open_one_day_chart(self, evt):
         stockView = DataSynchronization.sync_get_chart(self.__mStockViewData.get_stock().get_sign(), APIConstants.VALUE_1D, APIConstants.VALUE_1M)
-        self.__mGraphOneDayPlot = ChartFrame(Strings.STR_1D_VALUES, stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float))
+        self.__mGraphOneDayPlot = ChartFrame("One Day Chart", stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float))
         self.__mGraphOneDayPlot.Show(True)
         self.__mGraphOneDayPlot.Bind(wx.EVT_WINDOW_DESTROY, self.__on_destroy_graph_one_day_plot)
 
     def __on_click_open_five_day_chart(self, evt):
         stockView = DataSynchronization.sync_get_chart(self.__mStockViewData.get_stock().get_sign(), APIConstants.VALUE_5D, APIConstants.VALUE_1M)
-        ChartFrame(Strings.STR_5D_VALUES, stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float)).Show(True)
+        cf = ChartFrame("Five Days Chart", stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float))
+        cf.Show(True)
         
     def __on_click_open_one_month_chart(self, evt):
         stockView = DataSynchronization.sync_get_chart(self.__mStockViewData.get_stock().get_sign(), APIConstants.VALUE_1MO, APIConstants.VALUE_5M)
-        ChartFrame(Strings.STR_1MO_VALUES, stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float)).Show(True)
+        cf = ChartFrame("One Month Chart", stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float))
+        cf.Show(True)
 
     def __on_click_open_three_month_chart(self, evt):
         stockView = DataSynchronization.sync_get_chart(self.__mStockViewData.get_stock().get_sign(), APIConstants.VALUE_3MO, APIConstants.VALUE_1H)
-        ChartFrame(Strings.STR_3MO_VALUES, stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float)).Show(True)
+        cf = ChartFrame("Three Months Chart", stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float))
+        cf.Show(True)
 
     def __on_click_open_six_month_chart(self, evt):
         stockView = DataSynchronization.sync_get_chart(self.__mStockViewData.get_stock().get_sign(), APIConstants.VALUE_6MO, APIConstants.VALUE_1H)
-        ChartFrame(Strings.STR_6MO_VALUES, stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float)).Show(True)
+        cf = ChartFrame("Six Months Chart", stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float))
+        cf.Show(True)
 
     def __on_click_open_one_year_chart(self, evt):
         stockView = DataSynchronization.sync_get_chart(self.__mStockViewData.get_stock().get_sign(), APIConstants.VALUE_1Y, APIConstants.VALUE_1H)
-        ChartFrame(Strings.STR_1Y_VALUES, stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float)).Show(True)
+        cf = ChartFrame("One Year Chart", stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float))
+        cf.Show(True)
 
     def __on_click_open_two_year_chart(self, evt):
         stockView = DataSynchronization.sync_get_chart(self.__mStockViewData.get_stock().get_sign(), APIConstants.VALUE_2Y, APIConstants.VALUE_1H)
-        ChartFrame(Strings.STR_2Y_VALUES, stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float)).Show(True)
+        cf = ChartFrame("Two Years Chart", stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float))
+        cf.Show(True)
 
     def __on_click_open_five_year_chart(self, evt):
         stockView = DataSynchronization.sync_get_chart(self.__mStockViewData.get_stock().get_sign(), APIConstants.VALUE_5Y, APIConstants.VALUE_1D)
-        ChartFrame(Strings.STR_5Y_VALUES, stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float)).Show(True)
+        cf = ChartFrame("Five Years Chart", stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float))
+        cf.Show(True)
 
     def __on_click_open_ten_year_chart(self, evt):
         stockView = DataSynchronization.sync_get_chart(self.__mStockViewData.get_stock().get_sign(), APIConstants.VALUE_10Y, APIConstants.VALUE_1D)
-        ChartFrame(Strings.STR_10Y_VALUES, stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float)).Show(True)
+        cf = ChartFrame("Ten Years Chart", stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float))
+        cf.Show(True)
 
     def __on_click_open_ytd_chart(self, evt):
         stockView = DataSynchronization.sync_get_chart(self.__mStockViewData.get_stock().get_sign(), APIConstants.VALUE_YTD, APIConstants.VALUE_1H)
-        ChartFrame(Strings.STR_YTD_VALUES, stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float)).Show(True)
+        cf = ChartFrame("YTD Chart", stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float))
+        cf.Show(True)
 
     def __on_click_open_max_chart(self, evt):
         stockView = DataSynchronization.sync_get_chart(self.__mStockViewData.get_stock().get_sign(), APIConstants.VALUE_MAX, APIConstants.VALUE_1D)
-        ChartFrame(Strings.STR_MAX_VALUES, stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float)).Show(True)
+        cf = ChartFrame("Max Chart", stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float))
+        cf.Show(True)
 
     def __on_click_open_in_new_window(self, evt):
-        frame = ViewStocksFrame(self.__mStockViewData.get_stock().get_name(), self.__mStockViewData.get_stock())
+        stocks = []
+        for s in self.__mStocks:
+            if s is not None:
+                stocks.append(s)
+        frame = ViewStocksFrame(self.__mStockViewData.get_stock().get_name(), stocks, self.__mStockViewData.get_stock())
         frame.Show()
 
     def __repopulate_list(self, event):
-        list_total = self.__mList.GetItemCount()
-        list_top = self.__mList.GetTopItem()
-        list_pp = self.__mList.GetCountPerPage()
-        list_bottom = min(list_top + list_pp, list_total - 1)
-        self.__mList.add_items_and_populate(Stock.get_stored_data())
-        if list_bottom != 0:
-            self.__mList.EnsureVisible((list_bottom - 1))
-        filtered = self.__mList.get_filtered_items()
-        if filtered is not None and len(filtered) > 0:
-            for i in range(0, len(filtered)):
-                if self.__mStockViewData is not None and self.__mStockViewData.get_stock().get_id() == filtered[i].get_id():
-                    self.__mList.unbind_listener()
-                    self.__mList.Select(i)
-                    self.__mList.bind_listener()
-                    break 
+        if self.__mStocks is not None and len(self.__mStocks) > 0:
+            stocks = []
+            for s in self.__mStocks:
+                if s is not None:
+                    stocks.append(s)
+            self.__mStocks = stocks
+            list_total = self.__mList.GetItemCount()
+            list_top = self.__mList.GetTopItem()
+            list_pp = self.__mList.GetCountPerPage()
+            list_bottom = min(list_top + list_pp, list_total - 1)
+            self.__mList.add_items_and_populate(self.__mStocks)
+            if list_bottom != 0:
+                self.__mList.EnsureVisible((list_bottom - 1))
+            filtered = self.__mList.get_filtered_items()
+            if filtered is not None and len(filtered) > 0:
+                for i in range(0, len(filtered)):
+                    if self.__mStockViewData is not None and self.__mStockViewData.get_stock().get_id() == filtered[i].get_id():
+                        self.__mList.unbind_listener()
+                        self.__mList.Select(i)
+                        self.__mList.bind_listener()
+                        break
+            self.__mLeftPanel.Layout()
         
     def __update_left_panel_data(self, event):
         if self.__mStockViewData is not None:
@@ -372,6 +397,7 @@ class ViewStocksPanel(BasePanel):
             self.__mstVolume.SetLabel(str(self.__mStockViewData.get_stock().get_volume()))
             self.__mstAvgVolumeTenDays.SetLabel(str(self.__mStockViewData.get_stock().get_avg_volume_ten_days()))
             self.__mstAvgVolumeThreeMonths.SetLabel(str(NumberUtils.safe_round(self.__mStockViewData.get_stock().get_avg_volume_three_months(), 2)))
+            self.__mLeftPanel.Layout()
 
     def __on_destroy_graph_one_day_plot(self, event):
         self.__mGraphOneDayPlot = None
@@ -398,9 +424,11 @@ class ViewStocksPanel(BasePanel):
 
                 self.__mGraphAxValues.fill_between(stockView.get_timestamps(), min(opens), opens, alpha=0.5)
                 self.__mGraphLastValue = opens[len(opens) - 1]
+                self.__mGraphAxValues.set_title(Strings.STR_1D_VALUES)
 
                 self.__mGraphAxVolume.clear()
                 self.__mGraphAxVolume.stem(stockView.get_timestamps(), stockView.get_volumes())
+                self.__mGraphAxVolume.set_title(Strings.STR_1D_VOLUME)
 
                 self.__mGraphOneDayCanvas.draw()
                 self.__mGraphOneDayCanvas.flush_events()
@@ -412,10 +440,20 @@ class ViewStocksPanel(BasePanel):
 
     def __update_list_thread(self):
         while not self.__mThreadUpdateList.stopped():
-            DataSynchronization.sync_update_all_stocks()
+            stocks = []
+            for s in self.__mStocks:
+                if s is not None:
+                    stocks.append(s)
+            self.__mStocks = DataSynchronization.sync_update_all_stocks(stocks)
+
             if self.__mStockViewData is not None:
-                stock = StoredDataUtils.get_obj_from_id(self.__mStockViewData.get_stock().get_id(), Stock, DataFilenames.FILENAME_STOCK_DATA)
-                self.__mStockViewData.set_stock(stock)
+                stock = None
+                for s in stocks:
+                    if self.__mStockViewData.get_stock().get_sign() == s.get_sign():
+                        stock = s
+                        break 
+                if s is not None:
+                    self.__mStockViewData.set_stock(stock)
             time.sleep(30)
 #endregion
 
@@ -474,6 +512,8 @@ class ViewStocksPanel(BasePanel):
         if not self.__mThreadUpdateGraph.is_alive():
             self.__mThreadUpdateGraph.start()
 
+        self.__mLeftPanel.Layout()
+
     def __get_layout_nome_azienda(self):
         panel = wx.Panel(self.__mLeftPanel)
 
@@ -527,7 +567,7 @@ class ViewStocksPanel(BasePanel):
 
     def __get_layout_data_one(self):
         self.__mDataPanel = wx.Panel(self.__mLeftPanel)
-
+        
         vbs = wx.BoxSizer(wx.VERTICAL)
         vbs.AddSpacer(10)
         self.__mGraphsSizer = wx.BoxSizer(wx.VERTICAL)
@@ -1107,10 +1147,12 @@ class ViewStocksPanel(BasePanel):
 
         p.SetSizer(hbs)
         return p
+
 #endregion
 
     def listen_filter_stock_panel(self, message, arg= None):
         self.__mFilterSearchStockPanel.from_json(message)
         self.__mList.set_filter_data(self.__mFilterSearchStockPanel)
         self.__mList.filter_items()
+
 #endregion

@@ -309,6 +309,32 @@ class StocksViewList(wx.ListCtrl):
                 self.__mFilteredItems[i] = one
                 self.__mFilteredItems[pos] = temp
 
+        if self.__mFilterData.get_price_to_book_max() and not self.__mFilterData.get_book_value_share_max():
+            pos = -1
+            for i in range(0, len(self.__mFilteredItems)):
+                one = self.__mFilteredItems[i]
+                for j in range(i + 1, len(self.__mFilteredItems)):
+                    two = self.__mFilteredItems[j]
+                    if one.get_price_to_book() and two.get_price_to_book() and one.get_price_to_book() < two.get_price_to_book():
+                        one = two
+                        pos = j
+                temp = self.__mFilteredItems[i]
+                self.__mFilteredItems[i] = one
+                self.__mFilteredItems[pos] = temp
+
+        if self.__mFilterData.get_book_value_share_max() and not self.__mFilterData.get_price_to_book_max():
+            pos = -1
+            for i in range(0, len(self.__mFilteredItems)):
+                one = self.__mFilteredItems[i]
+                for j in range(i + 1, len(self.__mFilteredItems)):
+                    two = self.__mFilteredItems[j]
+                    if one.get_book_value_per_share() and two.get_book_value_per_share() and one.get_book_value_per_share() < two.get_book_value_per_share():
+                        one = two
+                        pos = j
+                temp = self.__mFilteredItems[i]
+                self.__mFilteredItems[i] = one
+                self.__mFilteredItems[pos] = temp
+
     def filter_values(self):
         if self.__mFilterData is not None:
             items = []
