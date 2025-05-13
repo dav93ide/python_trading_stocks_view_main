@@ -64,20 +64,21 @@ class DataSynchronization(object):
 
         if j[APIConstants.FIELD_STATUS] == 200:
             for d in j[APIConstants.FIELD_DATA][APIConstants.FIELD_DATA]:
-                symbols.append(d[APIConstants.FIELD_S])
+                if d[APIConstants.FIELD_S] not in symbols:
+                    symbols.append(d[APIConstants.FIELD_S])
 
         #######################################################################################
         # COMMENTED BECAUSE OTHERWISE THE ORDERING AND FILTERING OF ALL STOCKS TAKES TOO MUCH #
         #######################################################################################
         #
-        # jj = json.loads(Networking.download_gov_all_stock_symbols(APIConstants.HEADERS_ONE))
-        # if jj:
-        #     for i in range(0, 9690):
-        #         if str(i) in jj.keys():
-        #             if jj[str(i)]["ticker"] not in symbols:
-        #                 symbols.append(jj[str(i)]["ticker"])
-        #         else:
-        #             break
+        jj = json.loads(Networking.download_gov_all_stock_symbols(APIConstants.HEADERS_ONE))
+        if jj:
+            for i in range(0, 100000):
+                if str(i) in jj.keys():
+                    if jj[str(i)]["ticker"] not in symbols:
+                        symbols.append(jj[str(i)]["ticker"])
+                else:
+                    break
         #
         #######################################################################################
 
@@ -444,9 +445,14 @@ class DataSynchronization(object):
                 if APIConstants.FIELD_ASK in j:
                     stock.set_ask(j[APIConstants.FIELD_ASK])
                     
-                stock.set_ask_size(j[APIConstants.FIELD_ASK_SIZE])
-                stock.set_bid(j[APIConstants.FIELD_BID])
-                stock.set_bid_size(j[APIConstants.FIELD_BID_SIZE])
+                if APIConstants.FIELD_ASK_SIZE in j:
+                    stock.set_ask_size(j[APIConstants.FIELD_ASK_SIZE])
+
+                if APIConstants.FIELD_BID in j:
+                    stock.set_bid(j[APIConstants.FIELD_BID])
+
+                if APIConstants.FIELD_BID_SIZE in j:
+                    stock.set_bid_size(j[APIConstants.FIELD_BID_SIZE])
 
                 if APIConstants.FIELD_AVG_DAILY_VOLUME_TEN_DAYS in j:
                     stock.set_avg_volume_ten_days(j[APIConstants.FIELD_AVG_DAILY_VOLUME_TEN_DAYS])
