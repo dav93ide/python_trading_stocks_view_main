@@ -59,10 +59,10 @@ class StocksViewList(wx.ListCtrl):
         if self.__mFilteredItems:
             for i in range(0, len(self.__mFilteredItems)):
                 item = self.__mFilteredItems[i]
-                if float(item.get_market_change_percent()) is not None and float(item.get_market_change_percent()) > 0:
+                if item.get_market_change_percent() is not None and float(item.get_market_change_percent()) > 0:
                     self.InsertItem(i, "+" + str(round(float(item.get_market_change_percent()), 2)))
                 else:
-                    if float(item.get_market_change_percent()) is not None:
+                    if item.get_market_change_percent() is not None:
                         self.InsertItem(i, str(round(float(item.get_market_change_percent()), 2)))
                     else:
                         self.InsertItem(i, str(0))
@@ -173,6 +173,136 @@ class StocksViewList(wx.ListCtrl):
                 for j in range(i + 1, len(self.__mFilteredItems)):
                     two = self.__mFilteredItems[j]
                     if one.get_dividend_date() > two.get_dividend_date():
+                        one = two
+                        pos = j
+                temp = self.__mFilteredItems[i]
+                self.__mFilteredItems[i] = one
+                self.__mFilteredItems[pos] = temp
+
+        if self.__mFilterData.get_trailing_price_earnings_max() and not self.__mFilterData.get_forward_price_earnings_max():
+            pos = -1
+            for i in range(0, len(self.__mFilteredItems)):
+                one = self.__mFilteredItems[i]
+                for j in range(i + 1, len(self.__mFilteredItems)):
+                    two = self.__mFilteredItems[j]
+                    if one.get_trailing_price_earnings() and two.get_trailing_price_earnings() and one.get_trailing_price_earnings() < two.get_trailing_price_earnings():
+                        one = two
+                        pos = j
+                temp = self.__mFilteredItems[i]
+                self.__mFilteredItems[i] = one
+                self.__mFilteredItems[pos] = temp
+
+        if self.__mFilterData.get_forward_price_earnings_max() and not self.__mFilterData.get_trailing_price_earnings_max():
+            pos = -1
+            for i in range(0, len(self.__mFilteredItems)):
+                one = self.__mFilteredItems[i]
+                for j in range(i + 1, len(self.__mFilteredItems)):
+                    two = self.__mFilteredItems[j]
+                    if one.get_forward_price_earnings() and two.get_forward_price_earnings() and one.get_forward_price_earnings() < two.get_forward_price_earnings():
+                        one = two
+                        pos = j
+                temp = self.__mFilteredItems[i]
+                self.__mFilteredItems[i] = one
+                self.__mFilteredItems[pos] = temp
+
+        if self.__mFilterData.get_trailing_price_earnings_max() and self.__mFilterData.get_forward_price_earnings_max():
+            pos = -1
+            for i in range(0, len(self.__mFilteredItems)):
+                one = self.__mFilteredItems[i]
+                for j in range(i + 1, len(self.__mFilteredItems)):
+                    two = self.__mFilteredItems[j]
+                    if one.get_trailing_price_earnings() and two.get_trailing_price_earnings() and one.get_forward_price_earnings() and two.get_forward_price_earnings() and one.get_trailing_price_earnings() < two.get_trailing_price_earnings() and one.get_forward_price_earnings() < two.get_forward_price_earnings():
+                        one = two
+                        pos = j
+                temp = self.__mFilteredItems[i]
+                self.__mFilteredItems[i] = one
+                self.__mFilteredItems[pos] = temp
+
+        if self.__mFilterData.get_pe_ratio_max() and not self.__mFilterData.get_peg_ratio_max() and not self.__mFilterData.get_pb_ratio_max():
+            pos = -1
+            for i in range(0, len(self.__mFilteredItems)):
+                one = self.__mFilteredItems[i]
+                for j in range(i + 1, len(self.__mFilteredItems)):
+                    two = self.__mFilteredItems[j]
+                    if one.get_pe_ratio() and two.get_pe_ratio() and one.get_pe_ratio() < two.get_pe_ratio():
+                        one = two
+                        pos = j
+                temp = self.__mFilteredItems[i]
+                self.__mFilteredItems[i] = one
+                self.__mFilteredItems[pos] = temp
+
+        if self.__mFilterData.get_peg_ratio_max() and not self.__mFilterData.get_pe_ratio_max() and not self.__mFilterData.get_pb_ratio_max():
+            pos = -1
+            for i in range(0, len(self.__mFilteredItems)):
+                one = self.__mFilteredItems[i]
+                for j in range(i + 1, len(self.__mFilteredItems)):
+                    two = self.__mFilteredItems[j]
+                    if one.get_peg_ratio() and two.get_peg_ratio() and one.get_peg_ratio() < two.get_peg_ratio():
+                        one = two
+                        pos = j
+                temp = self.__mFilteredItems[i]
+                self.__mFilteredItems[i] = one
+                self.__mFilteredItems[pos] = temp
+
+        if self.__mFilterData.get_pb_ratio_max() and not self.__mFilterData.get_pe_ratio_max() and not self.__mFilterData.get_peg_ratio_max():
+            pos = -1
+            for i in range(0, len(self.__mFilteredItems)):
+                one = self.__mFilteredItems[i]
+                for j in range(i + 1, len(self.__mFilteredItems)):
+                    two = self.__mFilteredItems[j]
+                    if one.get_pb_ratio() and two.get_pb_ratio() and one.get_pb_ratio() < two.get_pb_ratio():
+                        one = two
+                        pos = j
+                temp = self.__mFilteredItems[i]
+                self.__mFilteredItems[i] = one
+                self.__mFilteredItems[pos] = temp
+
+        if self.__mFilterData.get_pb_ratio_max() and self.__mFilterData.get_pe_ratio_max() and not self.__mFilterData.get_peg_ratio_max():
+            pos = -1
+            for i in range(0, len(self.__mFilteredItems)):
+                one = self.__mFilteredItems[i]
+                for j in range(i + 1, len(self.__mFilteredItems)):
+                    two = self.__mFilteredItems[j]
+                    if one.get_pe_ratio() and two.get_pe_ratio() and one.get_pb_ratio() and two.get_pb_ratio() and one.get_pb_ratio() < two.get_pb_ratio() and one.get_pe_ratio() < two.get_pe_ratio():
+                        one = two
+                        pos = j
+                temp = self.__mFilteredItems[i]
+                self.__mFilteredItems[i] = one
+                self.__mFilteredItems[pos] = temp
+
+        if self.__mFilterData.get_pb_ratio_max() and self.__mFilterData.get_peg_ratio_max() and not self.__mFilterData.get_pe_ratio_max():
+            pos = -1
+            for i in range(0, len(self.__mFilteredItems)):
+                one = self.__mFilteredItems[i]
+                for j in range(i + 1, len(self.__mFilteredItems)):
+                    two = self.__mFilteredItems[j]
+                    if one.get_peg_ratio() and two.get_peg_ratio() and one.get_pb_ratio() and two.get_pb_ratio() and one.get_pb_ratio() < two.get_pb_ratio() and one.get_peg_ratio() < two.get_peg_ratio():
+                        one = two
+                        pos = j
+                temp = self.__mFilteredItems[i]
+                self.__mFilteredItems[i] = one
+                self.__mFilteredItems[pos] = temp
+
+        if self.__mFilterData.get_pe_ratio_max() and self.__mFilterData.get_peg_ratio_max() and not self.__mFilterData.get_pb_ratio_max():
+            pos = -1
+            for i in range(0, len(self.__mFilteredItems)):
+                one = self.__mFilteredItems[i]
+                for j in range(i + 1, len(self.__mFilteredItems)):
+                    two = self.__mFilteredItems[j]
+                    if one.get_peg_ratio() and two.get_peg_ratio() and one.get_pe_ratio() and two.get_pe_ratio() and one.get_pe_ratio() < two.get_pe_ratio() and one.get_peg_ratio() < two.get_peg_ratio():
+                        one = two
+                        pos = j
+                temp = self.__mFilteredItems[i]
+                self.__mFilteredItems[i] = one
+                self.__mFilteredItems[pos] = temp
+
+        if self.__mFilterData.get_pe_ratio_max() and self.__mFilterData.get_peg_ratio_max() and self.__mFilterData.get_pb_ratio_max():
+            pos = -1
+            for i in range(0, len(self.__mFilteredItems)):
+                one = self.__mFilteredItems[i]
+                for j in range(i + 1, len(self.__mFilteredItems)):
+                    two = self.__mFilteredItems[j]
+                    if one.get_pb_ratio() and two.get_pb_ratio() and one.get_peg_ratio() and two.get_peg_ratio() and one.get_pe_ratio() and two.get_pe_ratio() and one.get_pe_ratio() < two.get_pe_ratio() and one.get_peg_ratio() < two.get_peg_ratio() and one.get_pb_ratio() < two.get_pb_ratio():
                         one = two
                         pos = j
                 temp = self.__mFilteredItems[i]

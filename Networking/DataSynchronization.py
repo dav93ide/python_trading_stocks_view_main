@@ -49,6 +49,9 @@ class DataSynchronization(object):
     def sync_update_all_stocks():
         DataSynchronization.__update_all_stocks_data()
 
+    def sync_update_all_stocks():
+        DataSynchronization.__update_all_stocks_data()
+
     def sync_get_chart(symbol, rnge, interval):
         stockView = StockView()
         DataSynchronization.__sync_chart(symbol, rnge, interval, stockView)
@@ -71,14 +74,14 @@ class DataSynchronization(object):
         # COMMENTED BECAUSE OTHERWISE THE ORDERING AND FILTERING OF ALL STOCKS TAKES TOO MUCH #
         #######################################################################################
         #
-        jj = json.loads(Networking.download_gov_all_stock_symbols(APIConstants.HEADERS_ONE))
-        if jj:
-            for i in range(0, 100000):
-                if str(i) in jj.keys():
-                    if jj[str(i)]["ticker"] not in symbols:
-                        symbols.append(jj[str(i)]["ticker"])
-                else:
-                    break
+        # jj = json.loads(Networking.download_gov_all_stock_symbols(APIConstants.HEADERS_ONE))
+        # if jj:
+        #     for i in range(0, 100000):
+        #         if str(i) in jj.keys():
+        #             if jj[str(i)]["ticker"] not in symbols:
+        #                 symbols.append(jj[str(i)]["ticker"])
+        #         else:
+        #             break
         #
         #######################################################################################
 
@@ -457,11 +460,20 @@ class DataSynchronization(object):
                 if APIConstants.FIELD_AVG_DAILY_VOLUME_TEN_DAYS in j:
                     stock.set_avg_volume_ten_days(j[APIConstants.FIELD_AVG_DAILY_VOLUME_TEN_DAYS])
                     
-                stock.set_avg_volume_three_months(j[APIConstants.FIELD_AVG_DAILY_VOLUME_THREE_MONTH])
-                stock.set_fifty_two_weeks_range(j[APIConstants.FIELD_FIFTY_TWO_WEEK_RANGE])
-                stock.set_fifty_two_weeks_high(j[APIConstants.FIELD_FIFTY_TWO_WEEK_HIGH])
-                stock.set_fifty_two_weeks_low(j[APIConstants.FIELD_FIFTY_TWO_WEEK_LOW])
-                stock.set_fifty_two_weeks_perc_change(j[APIConstants.FIELD_FIFTY_TWO_WEEK_CHANGE_PERCENT])
+                if APIConstants.FIELD_AVG_DAILY_VOLUME_THREE_MONTH in j:
+                    stock.set_avg_volume_three_months(j[APIConstants.FIELD_AVG_DAILY_VOLUME_THREE_MONTH])
+                
+                if APIConstants.FIELD_FIFTY_TWO_WEEK_RANGE in j:
+                    stock.set_fifty_two_weeks_range(j[APIConstants.FIELD_FIFTY_TWO_WEEK_RANGE])
+
+                if APIConstants.FIELD_FIFTY_TWO_WEEK_HIGH in j:
+                    stock.set_fifty_two_weeks_high(j[APIConstants.FIELD_FIFTY_TWO_WEEK_HIGH])
+
+                if APIConstants.FIELD_FIFTY_TWO_WEEK_LOW in j:
+                    stock.set_fifty_two_weeks_low(j[APIConstants.FIELD_FIFTY_TWO_WEEK_LOW])
+
+                if APIConstants.FIELD_FIFTY_TWO_WEEK_CHANGE_PERCENT in j:
+                    stock.set_fifty_two_weeks_perc_change(j[APIConstants.FIELD_FIFTY_TWO_WEEK_CHANGE_PERCENT])
 
                 stock.set_shares_outstanding(j[APIConstants.FIELD_SHARES_OUTSTANDING])
                 stock.set_price_to_book(j[APIConstants.FIELD_PRICE_TO_BOOK])

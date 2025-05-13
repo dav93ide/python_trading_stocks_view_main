@@ -1,7 +1,6 @@
 import wx, os, uuid
 from Environment import Environment
 from Resources.Constants import *
-from Panels.MainPanel import MainPanel
 from Panels.ViewStocksPanel import ViewStocksPanel
 from Resources.Strings import Strings
 from Utils.RegexUtils import RegexUtils
@@ -10,7 +9,6 @@ from Networking.DataSynchronization import DataSynchronization
 
 class MainFrame(wx.Frame):
 
-    __mMainPanel: MainPanel = None
     __mViewStocksPanel: ViewStocksPanel = None
 
     __mMenubar: wx.MenuBar = None
@@ -33,7 +31,7 @@ class MainFrame(wx.Frame):
 #region - Private Methods
     def __init_layout(self):
         self.__init_menubar()
-        self.__init_main_panel()
+        self.__init_view_stocks_panel()
         
 #region - Init Menu Methods
     def __init_menubar(self):
@@ -49,11 +47,6 @@ class MainFrame(wx.Frame):
 #endregion
 
 #region - Init Panels Methods
-    def __init_main_panel(self):
-        self.__remove_all_panels()
-        self.__mMainPanel = MainPanel(self, wx.DisplaySize())
-        self.__mMainPanel.Show()
-
     def __init_view_stocks_panel(self):
         self.__remove_all_panels()
         self.__mViewStocksPanel = ViewStocksPanel(self, wx.DisplaySize(), None)
@@ -62,12 +55,7 @@ class MainFrame(wx.Frame):
 
 #region - Remove Panel Methods
     def __remove_all_panels(self):
-        self.__remove_main_panel()
         self.__remove_view_stocks_panel()
-
-    def __remove_main_panel(self):
-        if self.__mMainPanel:
-            self.__mMainPanel.Destroy()
 
     def __remove_view_stocks_panel(self):
         if self.__mViewStocksPanel:
@@ -75,9 +63,6 @@ class MainFrame(wx.Frame):
 #endregion
 
 #region - On Click Methods
-    def __on_click_menu_main_menu(self, evt):
-        self.__init_main_panel()
-
     def __on_click_menu_stocks_view(self, evt):
         self.__init_view_stocks_panel()
 #endregion

@@ -53,6 +53,15 @@ class FilterSearchStockPanel(object):
     __mDividendYeldMax = None
     __mDividendDateMin = None
     
+    __mTrailingPriceEarningsMax = None
+    __mForwardPriceEarningsMax = None
+    __mPERatioMax = None
+    __mPEGRatioMax = None
+    __mPBRatioMax = None
+    __mPriceToBookMax = None
+    __mBookValueShareMax = None
+    __mEnterpriseValueRevenueMax = None
+    __mEnterpriseValueEBITDAMax = None
 
     #region - Get Methods
     def get_max_price(self):
@@ -180,6 +189,33 @@ class FilterSearchStockPanel(object):
 
     def get_dividend_date_min(self):
         return self.__mDividendDateMin
+
+    def get_trailing_price_earnings_max(self):
+	    return self.__mTrailingPriceEarningsMax
+
+    def get_forward_price_earnings_max(self):
+        return self.__mForwardPriceEarningsMax
+
+    def get_pe_ratio_max(self):
+        return self.__mPERatioMax
+
+    def get_peg_ratio_max(self):
+        return self.__mPEGRatioMax
+
+    def get_pb_ratio_max(self):
+        return self.__mPBRatioMax
+
+    def get_price_to_book_max(self):
+        return self.__mPriceToBookMax
+
+    def get_book_value_share_max(self):
+        return self.__mBookValueShareMax
+
+    def get_enterprise_value_revenue_max(self):
+        return self.__mEnterpriseValueRevenueMax
+
+    def get_enterprise_value_ebitda_max(self):
+        return self.__mEnterpriseValueEBITDAMax
     #endregion
 
     #region - Set Methods
@@ -308,6 +344,33 @@ class FilterSearchStockPanel(object):
 
     def set_dividend_date_min(self, dividendDateMin):
         self.__mDividendDateMin = dividendDateMin
+
+    def set_trailing_price_earnings_max(self, trailingPriceEarningsMax):
+        self.__mTrailingPriceEarningsMax = trailingPriceEarningsMax
+
+    def set_forward_price_earnings_max(self, forwardPriceEarningsMax):
+        self.__mForwardPriceEarningsMax = forwardPriceEarningsMax
+
+    def set_pe_ratio_max(self, pERatioMax):
+        self.__mPERatioMax = pERatioMax
+
+    def set_peg_ratio_max(self, pEGRatioMax):
+        self.__mPEGRatioMax = pEGRatioMax
+
+    def set_pb_ratio_max(self, pBRatioMax):
+        self.__mPBRatioMax = pBRatioMax
+
+    def set_price_to_book_max(self, priceToBookMax):
+        self.__mPriceToBookMax = priceToBookMax
+
+    def set_book_value_share_max(self, bookValueShareMax):
+        self.__mBookValueShareMax = bookValueShareMax
+
+    def set_enterprise_value_revenue_max(self, enterpriseValueRevenueMax):
+        self.__mEnterpriseValueRevenueMax = enterpriseValueRevenueMax
+
+    def set_enterprise_value_ebitda_max(self, enterpriseValueEBITDAMax):
+        self.__mEnterpriseValueEBITDAMax = enterpriseValueEBITDAMax
     #endregion
 
 #region Public Methods
@@ -340,7 +403,13 @@ class FilterSearchStockPanel(object):
                 "mMoverFiftyWeeksBelowZeroToTen": self.__mMoverFiftyWeeksBelowZeroToTen, "mMoverFiftyWeeksBelowTenToTwenty": self.__mMoverFiftyWeeksBelowTenToTwenty,
                 "mMoverFiftyWeeksBelowTwentyThirty": self.__mMoverFiftyWeeksBelowTwentyThirty, "mMoverFiftyWeeksBelowThirtyFourty": self.__mMoverFiftyWeeksBelowThirtyFourty,
                 
-                "mDividendOnly": self.__mDividendOnly, "mNoDividendOnly": self.__mNoDividendOnly, "mDividendYeldMax": self.__mDividendYeldMax, "mDividendDateMin": self.__mDividendDateMin
+                "mDividendOnly": self.__mDividendOnly, "mNoDividendOnly": self.__mNoDividendOnly, "mDividendYeldMax": self.__mDividendYeldMax, "mDividendDateMin": self.__mDividendDateMin,
+                
+                "mTrailingPriceEarningsMax": self.__mTrailingPriceEarningsMax, "mForwardPriceEarningsMax": self.__mForwardPriceEarningsMax,
+                "mPERatioMax": self.__mPERatioMax, "mPEGRatioMax": self.__mPEGRatioMax, "mPBRatioMax": self.__mPBRatioMax,
+                "mPriceToBookMax": self.__mPriceToBookMax, "mBookValueShareMax": self.__mBookValueShareMax,
+                "mEnterpriseValueRevenueMax": self.__mEnterpriseValueRevenueMax, "mEnterpriseValueEBITDAMax": self.__mEnterpriseValueEBITDAMax
+
                 }
 
     def from_json(self, json):
@@ -386,6 +455,15 @@ class FilterSearchStockPanel(object):
         self.set_no_dividend_only(json["mNoDividendOnly"])
         self.set_dividend_yeld_max(json["mDividendYeldMax"])
         self.set_dividend_date_min(json["mDividendDateMin"])
+        self.set_trailing_price_earnings_max(json["mTrailingPriceEarningsMax"])
+        self.set_forward_price_earnings_max(json["mForwardPriceEarningsMax"])
+        self.set_pe_ratio_max(json["mPERatioMax"])
+        self.set_peg_ratio_max(json["mPEGRatioMax"])
+        self.set_pb_ratio_max(json["mPBRatioMax"])
+        self.set_price_to_book_max(json["mPriceToBookMax"])
+        self.set_book_value_share_max(json["mBookValueShareMax"])
+        self.set_enterprise_value_revenue_max(json["mEnterpriseValueRevenueMax"])
+        self.set_enterprise_value_ebitda_max(json["mEnterpriseValueEBITDAMax"])
 #enderegion
 
     # To String
@@ -433,4 +511,13 @@ class FilterSearchStockPanel(object):
                 f"#- __mNoDividendOnly: {self.__mNoDividendOnly}\n"\
                 f"#- __mDividendYeldMax: {self.__mDividendYeldMax}\n"\
                 f"#- __mDividendDateMin: {self.__mDividendDateMin}\n"\
+                f"#- __mTrailingPriceEarningsMax: {self.__mTrailingPriceEarningsMax}\n"\
+                f"#- __mForwardPriceEarningsMax: {self.__mForwardPriceEarningsMax}\n"\
+                f"#- __mPERatioMax: {self.__mPERatioMax}\n"\
+                f"#- __mPEGRatioMax: {self.__mPEGRatioMax}\n"\
+                f"#- __mPBRatioMax: {self.__mPBRatioMax}\n"\
+                f"#- __mPriceToBookMax: {self.__mPriceToBookMax}\n"\
+                f"#- __mBookValueShareMax: {self.__mBookValueShareMax}\n"\
+                f"#- __mEnterpriseValueRevenueMax: {self.__mEnterpriseValueRevenueMax}\n"\
+                f"#- __mEnterpriseValueEBITDAMax: {self.__mEnterpriseValueEBITDAMax}\n"\
                 "####################\n"
