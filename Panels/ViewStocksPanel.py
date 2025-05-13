@@ -594,17 +594,19 @@ class ViewStocksPanel(BasePanel):
         vbs.AddSpacer(10)
         vbs.Add(self.__get_nineth_row_info(self.__mDataPanel), 0, wx.EXPAND)
         vbs.AddSpacer(10)
-        vbs.Add(self.__get_ten_row_info(self.__mDataPanel), 0, wx.EXPAND)
+        vbs.Add(self.__get_tenth_row_info(self.__mDataPanel), 0, wx.EXPAND)
         vbs.AddSpacer(10)
-        vbs.Add(self.__get_eleven_row_info(self.__mDataPanel), 0, wx.EXPAND)
+        vbs.Add(self.__get_panel_open_in_new_window(self.__mDataPanel), 0, wx.EXPAND)
         vbs.AddSpacer(10)
-        vbs.Add(self.__get_twelve_row_info(self.__mDataPanel), 0, wx.EXPAND)
+        vbs.Add(self.__get_panel_one_charts(self.__mDataPanel), 0, wx.EXPAND)
         vbs.AddSpacer(10)
-        vbs.Add(self.__get_thirteen_row_info(self.__mDataPanel), 0, wx.EXPAND)
+        vbs.Add(self.__get_panel_two_charts(self.__mDataPanel), 0, wx.EXPAND)
         vbs.AddSpacer(10)
-        vbs.Add(self.__get_fourteen_row_info(self.__mDataPanel), 0, wx.EXPAND)
+        vbs.Add(self.__get_panel_three_charts(self.__mDataPanel), 0, wx.EXPAND)
         vbs.AddSpacer(10)
-        vbs.Add(self.__get_fiveteen_row_info(self.__mDataPanel), 0, wx.EXPAND)
+        vbs.Add(self.__get_panel_four_charts(self.__mDataPanel), 0, wx.EXPAND)
+        vbs.AddSpacer(10)
+        vbs.Add(self.__get_panel_five_charts(self.__mDataPanel), 0, wx.EXPAND)
         vbs.AddSpacer(10)
 
 
@@ -1049,8 +1051,51 @@ class ViewStocksPanel(BasePanel):
 
         panel.SetSizer(hbs)
         return panel
+    
+    def __get_tenth_row_info(self, parent):
+        panel = wx.Panel(parent)
+        hbs = wx.BoxSizer(wx.HORIZONTAL)
+        hbs.AddSpacer(10)
 
-    def __get_ten_row_info(self, parent):
+        st = wx.StaticText(panel, label = Strings.STR_FIELD_EPS_CURRENT_YEAR, style = wx.ALIGN_LEFT)
+        font = WxUtils.set_font_size(st, 15)
+        hbs.Add(st, 0, wx.ALL|wx.EXPAND)
+        hbs.AddSpacer(5)
+        st2 = wx.StaticText(panel, label = str(NumberUtils.safe_round(self.__mStockViewData.get_stock().get_eps_current_year(), 3)), style = wx.ALIGN_RIGHT)
+        WxUtils.set_font_size(st2, 15)
+        hbs.Add(st2, 0, wx.ALL|wx.EXPAND)
+
+        dc = wx.ScreenDC()
+        dc.SetFont(font)
+        w, h = dc.GetTextExtent(st.GetLabel() + st2.GetLabel())
+
+        hbs.AddSpacer(350 - w)
+
+        st = wx.StaticText(panel, label = Strings.STR_FIELD_EPS_TRAILING_TWELVE_MONTHS, style = wx.ALIGN_LEFT)
+        font = WxUtils.set_font_size(st, 15)
+        hbs.Add(st, 0, wx.ALL|wx.EXPAND)
+        hbs.AddSpacer(5)
+        st2 = wx.StaticText(panel, label = str(NumberUtils.safe_round(self.__mStockViewData.get_stock().get_eps_trailing_twelve_months(), 3)), style = wx.ALIGN_RIGHT)
+        WxUtils.set_font_size(st2, 15)
+        hbs.Add(st2, 0, wx.ALL|wx.EXPAND)
+
+        dc = wx.ScreenDC()
+        dc.SetFont(font)
+        w, h = dc.GetTextExtent(st.GetLabel() + st2.GetLabel())
+
+        hbs.AddSpacer(350 - w)
+
+        st = wx.StaticText(panel, label = Strings.STR_FIELD_EPS_FORWARD, style = wx.ALIGN_LEFT)
+        WxUtils.set_font_size(st, 15)
+        hbs.Add(st, 0, wx.ALL|wx.EXPAND)
+        st = wx.StaticText(panel, label = str(NumberUtils.safe_round(self.__mStockViewData.get_stock().get_eps_forward(), 3)), style = wx.ALIGN_RIGHT)
+        WxUtils.set_font_size(st, 15)
+        hbs.Add(st, 0, wx.ALL|wx.EXPAND)
+
+        panel.SetSizer(hbs)
+        return panel
+
+    def __get_panel_open_in_new_window(self, parent):
         p = wx.Panel(parent)
         hbs = wx.BoxSizer(wx.HORIZONTAL)
         
@@ -1061,7 +1106,7 @@ class ViewStocksPanel(BasePanel):
         p.SetSizer(hbs)
         return p
 
-    def __get_eleven_row_info(self, parent):
+    def __get_panel_one_charts(self, parent):
         p = wx.Panel(parent)
         hbs = wx.BoxSizer(wx.HORIZONTAL)
         
@@ -1080,7 +1125,7 @@ class ViewStocksPanel(BasePanel):
         p.SetSizer(hbs)
         return p
 
-    def __get_twelve_row_info(self, parent):
+    def __get_panel_two_charts(self, parent):
         p = wx.Panel(parent)
         hbs = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -1099,7 +1144,7 @@ class ViewStocksPanel(BasePanel):
         p.SetSizer(hbs)
         return p
 
-    def __get_thirteen_row_info(self, parent):
+    def __get_panel_three_charts(self, parent):
         p = wx.Panel(parent)
         hbs = wx.BoxSizer(wx.HORIZONTAL)
         
@@ -1116,7 +1161,7 @@ class ViewStocksPanel(BasePanel):
         p.SetSizer(hbs)
         return p
 
-    def __get_fourteen_row_info(self, parent):
+    def __get_panel_four_charts(self, parent):
         p = wx.Panel(parent)
         hbs = wx.BoxSizer(wx.HORIZONTAL)
         
@@ -1133,7 +1178,7 @@ class ViewStocksPanel(BasePanel):
         p.SetSizer(hbs)
         return p
 
-    def __get_fiveteen_row_info(self, parent):
+    def __get_panel_five_charts(self, parent):
         p = wx.Panel(parent)
         hbs = wx.BoxSizer(wx.HORIZONTAL)
         

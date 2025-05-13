@@ -137,6 +137,9 @@ class Strings(object):
     STR_STOCK_DATA = "Stock Data"
     STR_DIVIDEND_DATA = "Dividend Data"
     STR_UNDEFINED = "Undefined"
+    STR_FIELD_EPS_CURRENT_YEAR = "EPS Current Year:"
+    STR_FIELD_EPS_TRAILING_TWELVE_MONTHS = "EPS Trailing 12 Months:"
+    STR_FIELD_EPS_FORWARD = "EPS Forward:"
 
     STR_SPECIFICS_BOT = "Specifics of the BOT:"
     STR_DATA_MAKING_BOT = [

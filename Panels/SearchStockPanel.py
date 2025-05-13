@@ -49,12 +49,12 @@ class SearchStockPanel(BasePanel):
     __mcbTrailingPriceEarningsMax = None
     __mcbForwardPriceEarningsMax = None
 
-    __mcbPERatioMax = None
-    __mcbPEGRatioMax = None
-    __mcbPBRatioMax = None
-
     __mcbPriceToBookMax = None
     __mcbBookValuePerShareMax = None
+
+    __mcbEPSCurrentYearMax = None
+    __mcbEPSTrailingTwelveMonthsMax = None
+    __mcbEPSForwardMax = None
 
     __mstFiftyWeeksData = None
 
@@ -111,11 +111,11 @@ class SearchStockPanel(BasePanel):
         vbs.AddSpacer(10)
         vbs.Add(self.__get_panels_two_percentage_movers(), 0, wx.EXPAND)
         vbs.AddSpacer(10)
-        vbs.Add(self.__get_panels_price_earnings_max(), 0, wx.EXPAND)        
-        vbs.AddSpacer(10)
-        vbs.Add(self.__get_panels_pe_peg_pg_ratio_max(), 0, wx.EXPAND)
+        vbs.Add(self.__get_panels_price_earnings_max(), 0, wx.EXPAND)
         vbs.AddSpacer(10)
         vbs.Add(self.__get_panels_price_book_value_share_max(), 0, wx.EXPAND)
+        vbs.AddSpacer(10)
+        vbs.Add(self.__get_panels_eps_max(), 0, wx.EXPAND)
         vbs.AddSpacer(30)
         vbs.Add(self.__get_panel_text_fifty_weeks_data(), 0, wx.EXPAND)
         vbs.AddSpacer(10)
@@ -510,60 +510,6 @@ class SearchStockPanel(BasePanel):
         return panel
 #endregion
 
-#region - PE PEG PB Ratio Max Methods
-    def __get_panels_pe_peg_pg_ratio_max(self):
-        panel = wx.Panel(self)
-        main = wx.BoxSizer(wx.HORIZONTAL)
-
-        main.Add(self.__get_panel_pe_ratio_max(panel), 1, wx.EXPAND)
-        main.AddSpacer(50)
-        main.Add(self.__get_panel_peg_ratio_max(panel), 1, wx.EXPAND)
-        main.AddSpacer(50)
-        main.Add(self.__get_panel_pb_ratio_max(panel), 1, wx.EXPAND)
-
-        panel.SetSizer(main)
-        return panel
-
-    def __get_panel_pe_ratio_max(self, parent):
-        panel = wx.Panel(parent)
-        main = wx.BoxSizer(wx.HORIZONTAL)
-
-        self.__mcbPERatioMax = wx.CheckBox(panel, wx.ID_ANY, label = "PE Ratio Max")
-        self.__mcbPERatioMax.Bind(wx.EVT_CHECKBOX, self.__on_check_pe_ratio_max)
-        main.Add(self.__mcbPERatioMax, 1, wx.EXPAND)
-        if self.__mFilterSearchStockPanel.get_pe_ratio_max():
-            self.__mcbPERatioMax.SetValue(True)
-
-        panel.SetSizer(main)
-        return panel
-
-    def __get_panel_peg_ratio_max(self, parent):
-        panel = wx.Panel(parent)
-        main = wx.BoxSizer(wx.HORIZONTAL)
-
-        self.__mcbPEGRatioMax = wx.CheckBox(panel, wx.ID_ANY, label = "PEG Ratio Max")
-        self.__mcbPEGRatioMax.Bind(wx.EVT_CHECKBOX, self.__on_check_peg_ratio_max)
-        main.Add(self.__mcbPEGRatioMax, 1, wx.EXPAND)
-        if self.__mFilterSearchStockPanel.get_peg_ratio_max():
-            self.__mcbPEGRatioMax.SetValue(True)
-
-        panel.SetSizer(main)
-        return panel
-    
-    def __get_panel_pb_ratio_max(self, parent):
-        panel = wx.Panel(parent)
-        main = wx.BoxSizer(wx.HORIZONTAL)
-
-        self.__mcbPBRatioMax = wx.CheckBox(panel, wx.ID_ANY, label = "PB Ratio Max")
-        self.__mcbPBRatioMax.Bind(wx.EVT_CHECKBOX, self.__on_check_pb_ratio_max)
-        main.Add(self.__mcbPBRatioMax, 1, wx.EXPAND)
-        if self.__mFilterSearchStockPanel.get_pb_ratio_max():
-            self.__mcbPBRatioMax.SetValue(True)
-
-        panel.SetSizer(main)
-        return panel
-#endregion
-
 #region - Price To Book and Book Value per Share Max Methods
     def __get_panels_price_book_value_share_max(self):
         panel = wx.Panel(self)
@@ -598,6 +544,60 @@ class SearchStockPanel(BasePanel):
         main.Add(self.__mcbBookValuePerShareMax, 1, wx.EXPAND)
         if self.__mFilterSearchStockPanel.get_book_value_share_max():
             self.__mcbBookValuePerShareMax.SetValue(True)
+
+        panel.SetSizer(main)
+        return panel
+#endregion
+
+#region - EPS - EPS Trailing Twelve Months - EPS Forward Max Methods
+    def __get_panels_eps_max(self):
+        panel = wx.Panel(self)
+        main = wx.BoxSizer(wx.HORIZONTAL)
+
+        main.Add(self.__get_panel_eps_current_year_max(panel), 1, wx.EXPAND)
+        main.AddSpacer(25)
+        main.Add(self.__get_panel_eps_trailing_twelve_months_max(panel), 1, wx.EXPAND)
+        main.AddSpacer(25)
+        main.Add(self.__get_panel_eps_forward(panel), 1, wx.EXPAND)
+
+        panel.SetSizer(main)
+        return panel
+
+    def __get_panel_eps_current_year_max(self, parent):
+        panel = wx.Panel(parent)
+        main = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.__mcbEPSCurrentYearMax = wx.CheckBox(panel, wx.ID_ANY, label = "EPS Current Year Max")
+        self.__mcbEPSCurrentYearMax.Bind(wx.EVT_CHECKBOX, self.__on_check_eps_current_year_max)
+        main.Add(self.__mcbEPSCurrentYearMax, 1, wx.EXPAND)
+        if self.__mFilterSearchStockPanel.get_eps_current_year_max():
+            self.__mcbEPSCurrentYearMax.SetValue(True)
+
+        panel.SetSizer(main)
+        return panel
+
+    def __get_panel_eps_trailing_twelve_months_max(self, parent):
+        panel = wx.Panel(parent)
+        main = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.__mcbEPSTrailingTwelveMonthsMax = wx.CheckBox(panel, wx.ID_ANY, label = "EPS Trailing 12 Months Max")
+        self.__mcbEPSTrailingTwelveMonthsMax.Bind(wx.EVT_CHECKBOX, self.__on_check_eps_trailing_twelve_months_max)
+        main.Add(self.__mcbEPSTrailingTwelveMonthsMax, 1, wx.EXPAND)
+        if self.__mFilterSearchStockPanel.get_eps_trailing_twelve_months_max():
+            self.__mcbEPSTrailingTwelveMonthsMax.SetValue(True)
+
+        panel.SetSizer(main)
+        return panel
+
+    def __get_panel_eps_forward(self, parent):
+        panel = wx.Panel(parent)
+        main = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.__mcbEPSForwardMax = wx.CheckBox(panel, wx.ID_ANY, label = "EPS Forward Max")
+        self.__mcbEPSForwardMax.Bind(wx.EVT_CHECKBOX, self.__on_check_eps_forward_max)
+        main.Add(self.__mcbEPSForwardMax, 1, wx.EXPAND)
+        if self.__mFilterSearchStockPanel.get_eps_forward_max():
+            self.__mcbEPSForwardMax.SetValue(True)
 
         panel.SetSizer(main)
         return panel
@@ -892,9 +892,6 @@ class SearchStockPanel(BasePanel):
         self.__mcbMaxVolumeMover.SetValue(False)
         self.__mcbTrailingPriceEarningsMax.SetValue(False)
         self.__mcbForwardPriceEarningsMax.SetValue(False)
-        self.__mcbPERatioMax.SetValue(False)
-        self.__mcbPEGRatioMax.SetValue(False)
-        self.__mcbPBRatioMax.SetValue(False)
 
     def __on_check_min_mover(self, evt):
         self.__mFilterSearchStockPanel.set_min_price_mover(evt.IsChecked())
@@ -903,9 +900,6 @@ class SearchStockPanel(BasePanel):
         self.__mcbMaxVolumeMover.SetValue(False)
         self.__mcbTrailingPriceEarningsMax.SetValue(False)
         self.__mcbForwardPriceEarningsMax.SetValue(False)
-        self.__mcbPERatioMax.SetValue(False)
-        self.__mcbPEGRatioMax.SetValue(False)
-        self.__mcbPBRatioMax.SetValue(False)
 
     def __on_check_max_volume(self, evt):
         self.__mFilterSearchStockPanel.set_max_volume_mover(evt.IsChecked())
@@ -914,9 +908,6 @@ class SearchStockPanel(BasePanel):
         self.__mcbMinPriceMover.SetValue(False)
         self.__mcbTrailingPriceEarningsMax.SetValue(False)
         self.__mcbForwardPriceEarningsMax.SetValue(False)
-        self.__mcbPERatioMax.SetValue(False)
-        self.__mcbPEGRatioMax.SetValue(False)
-        self.__mcbPBRatioMax.SetValue(False)
 
     def __on_check_min_volume(self, evt):
         self.__mFilterSearchStockPanel.set_min_volume_mover(evt.IsChecked())
@@ -925,9 +916,6 @@ class SearchStockPanel(BasePanel):
         self.__mcbMinPriceMover.SetValue(False)
         self.__mcbTrailingPriceEarningsMax.SetValue(False)
         self.__mcbForwardPriceEarningsMax.SetValue(False)
-        self.__mcbPERatioMax.SetValue(False)
-        self.__mcbPEGRatioMax.SetValue(False)
-        self.__mcbPBRatioMax.SetValue(False)
 
     def __on_check_above_zero(self, evt):
         self.__mFilterSearchStockPanel.set_mover_above_zero(evt.IsChecked())
@@ -1125,7 +1113,6 @@ class SearchStockPanel(BasePanel):
 
     def __on_check_trailing_price_earnings_max(self, evt):
         self.__mFilterSearchStockPanel.set_trailing_price_earnings_max(evt.IsChecked())
-        self.__mcbPERatioMax.SetValue(False)
         self.__mcbPEGRatioMax.SetValue(False)
         self.__mcbPBRatioMax.SetValue(False)
         self.__mcbMaxPriceMover.SetValue(False)
@@ -1135,36 +1122,8 @@ class SearchStockPanel(BasePanel):
 
     def __on_check_forward_price_earnings_max(self, evt):
         self.__mFilterSearchStockPanel.set_forward_price_earnings_max(evt.IsChecked())
-        self.__mcbPERatioMax.SetValue(False)
         self.__mcbPEGRatioMax.SetValue(False)
         self.__mcbPBRatioMax.SetValue(False)
-        self.__mcbMaxPriceMover.SetValue(False)
-        self.__mcbMinPriceMover.SetValue(False)
-        self.__mcbMaxVolumeMover.SetValue(False)
-        self.__mcbMinVolumeMover.SetValue(False)
-
-    def __on_check_pe_ratio_max(self, evt):
-        self.__mFilterSearchStockPanel.set_pe_ratio_max(evt.IsChecked())
-        self.__mcbTrailingPriceEarningsMax.SetValue(False)
-        self.__mcbForwardPriceEarningsMax.SetValue(False)
-        self.__mcbMaxPriceMover.SetValue(False)
-        self.__mcbMinPriceMover.SetValue(False)
-        self.__mcbMaxVolumeMover.SetValue(False)
-        self.__mcbMinVolumeMover.SetValue(False)
-
-    def __on_check_peg_ratio_max(self, evt):
-        self.__mFilterSearchStockPanel.set_peg_ratio_max(evt.IsChecked())
-        self.__mcbTrailingPriceEarningsMax.SetValue(False)
-        self.__mcbForwardPriceEarningsMax.SetValue(False)
-        self.__mcbMaxPriceMover.SetValue(False)
-        self.__mcbMinPriceMover.SetValue(False)
-        self.__mcbMaxVolumeMover.SetValue(False)
-        self.__mcbMinVolumeMover.SetValue(False)
-
-    def __on_check_pb_ratio_max(self, evt):
-        self.__mFilterSearchStockPanel.set_pb_ratio_max(evt.IsChecked())
-        self.__mcbTrailingPriceEarningsMax.SetValue(False)
-        self.__mcbForwardPriceEarningsMax.SetValue(False)
         self.__mcbMaxPriceMover.SetValue(False)
         self.__mcbMinPriceMover.SetValue(False)
         self.__mcbMaxVolumeMover.SetValue(False)
@@ -1179,9 +1138,6 @@ class SearchStockPanel(BasePanel):
         self.__mcbMinVolumeMover.SetValue(False)
         self.__mcbTrailingPriceEarningsMax.SetValue(False)
         self.__mcbForwardPriceEarningsMax.SetValue(False)
-        self.__mcbPERatioMax.SetValue(False)
-        self.__mcbPEGRatioMax.SetValue(False)
-        self.__mcbPBRatioMax.SetValue(False)
 
     def __on_check_book_value_share_max(self, evt):
         self.__mFilterSearchStockPanel.set_book_value_share_max(evt.IsChecked())
@@ -1192,9 +1148,45 @@ class SearchStockPanel(BasePanel):
         self.__mcbMinVolumeMover.SetValue(False)
         self.__mcbTrailingPriceEarningsMax.SetValue(False)
         self.__mcbForwardPriceEarningsMax.SetValue(False)
-        self.__mcbPERatioMax.SetValue(False)
-        self.__mcbPEGRatioMax.SetValue(False)
-        self.__mcbPBRatioMax.SetValue(False)
+
+    def __on_check_eps_current_year_max(self, evt):
+        self.__mFilterSearchStockPanel.set_eps_current_year_max(evt.IsChecked())
+        self.__mcbMaxPriceMover.SetValue(False)
+        self.__mcbMinPriceMover.SetValue(False)
+        self.__mcbMaxVolumeMover.SetValue(False)
+        self.__mcbMinVolumeMover.SetValue(False)
+        self.__mcbTrailingPriceEarningsMax.SetValue(False)
+        self.__mcbForwardPriceEarningsMax.SetValue(False)
+        self.__mcbPriceToBookMax.SetValue(False)
+        self.__mcbBookValuePerShareMax.SetValue(False)
+        self.__mcbEPSTrailingTwelveMonthsMax.SetValue(False)
+        self.__mcbEPSForwardMax.SetValue(False)
+
+    def __on_check_eps_trailing_twelve_months_max(self, evt):
+        self.__mFilterSearchStockPanel.set_eps_trailing_twelve_months_max(evt.IsChecked())
+        self.__mcbMaxPriceMover.SetValue(False)
+        self.__mcbMinPriceMover.SetValue(False)
+        self.__mcbMaxVolumeMover.SetValue(False)
+        self.__mcbMinVolumeMover.SetValue(False)
+        self.__mcbTrailingPriceEarningsMax.SetValue(False)
+        self.__mcbForwardPriceEarningsMax.SetValue(False)
+        self.__mcbPriceToBookMax.SetValue(False)
+        self.__mcbBookValuePerShareMax.SetValue(False)
+        self.__mcbEPSCurrentYearMax.SetValue(False)
+        self.__mcbEPSForwardMax.SetValue(False)
+
+    def __on_check_eps_forward_max(self, evt):
+        self.__mFilterSearchStockPanel.set_eps_forward_max(evt.IsChecked())
+        self.__mcbMaxPriceMover.SetValue(False)
+        self.__mcbMinPriceMover.SetValue(False)
+        self.__mcbMaxVolumeMover.SetValue(False)
+        self.__mcbMinVolumeMover.SetValue(False)
+        self.__mcbTrailingPriceEarningsMax.SetValue(False)
+        self.__mcbForwardPriceEarningsMax.SetValue(False)
+        self.__mcbPriceToBookMax.SetValue(False)
+        self.__mcbBookValuePerShareMax.SetValue(False)
+        self.__mcbEPSCurrentYearMax.SetValue(False)
+        self.__mcbEPSTrailingTwelveMonthsMax.SetValue(False)
 
     def __on_check_fifty_weeks_above_zero(self, evt):
         self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_zero(evt.IsChecked())

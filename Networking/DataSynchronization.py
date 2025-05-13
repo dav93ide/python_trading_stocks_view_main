@@ -285,7 +285,7 @@ class DataSynchronization(object):
                             try:
                                 stock.set_enterprise_value(jj[attr][len(jj[attr]) - 1][APIConstants.FIELD_REPORTED_VALUE][APIConstants.FIELD_RAW])
                             except:
-                                print("Json Exception")
+                                Environment().get_logger().error(DataSynchronization.__name__ + " - " + Strings.STR_ERROR_JSON)
 
                         case APIConstants.FIELD_QUARTERLY_PE_RATIO:
                             stockView.set_quarterly_pe_ratio(DataSynchronization.__init_and_elaborate_value_dictionary_single_stock_full_data(jj[attr]))
@@ -295,7 +295,7 @@ class DataSynchronization(object):
                             try:
                                 stock.set_pe_ratio(jj[attr][len(jj[attr]) - 1][APIConstants.FIELD_REPORTED_VALUE][APIConstants.FIELD_RAW])
                             except:
-                                print("Json Exception")
+                                Environment().get_logger().error(DataSynchronization.__name__ + " - " + Strings.STR_ERROR_JSON)
 
                         case APIConstants.FIELD_QUARTERLY_FORWARD_PE_RATIO:
                             stockView.set_quarterly_forward_pe_ratio(DataSynchronization.__init_and_elaborate_value_dictionary_single_stock_full_data(jj[attr]))
@@ -311,7 +311,7 @@ class DataSynchronization(object):
                             try:
                                 stock.set_peg_ratio(jj[attr][len(jj[attr]) - 1][APIConstants.FIELD_REPORTED_VALUE][APIConstants.FIELD_RAW])
                             except:
-                                print("Json Exception")
+                                Environment().get_logger().error(DataSynchronization.__name__ + " - " + Strings.STR_ERROR_JSON)
 
                         case APIConstants.FIELD_QUARTERLY_PS_RATIO:
                             stockView.set_quarterly_ps_ratio(DataSynchronization.__init_and_elaborate_value_dictionary_single_stock_full_data(jj[attr]))
@@ -327,7 +327,7 @@ class DataSynchronization(object):
                             try:
                                 stock.set_pb_ratio(jj[attr][len(jj[attr]) - 1][APIConstants.FIELD_REPORTED_VALUE][APIConstants.FIELD_RAW])
                             except:
-                                print("Json Exception")
+                                Environment().get_logger().error(DataSynchronization.__name__ + " - " + Strings.STR_ERROR_JSON)
 
                         case APIConstants.FIELD_QUARTERLY_ENTERPRISES_VALUE_REVENUE_RATIO:
                             stockView.set_quarterly_enterprises_value_revenue_ratio(DataSynchronization.__init_and_elaborate_value_dictionary_single_stock_full_data(jj[attr]))
@@ -337,7 +337,7 @@ class DataSynchronization(object):
                             try:
                                 stock.set_enterprises_value_revenue_ratio(jj[attr][len(jj[attr]) - 1][APIConstants.FIELD_REPORTED_VALUE][APIConstants.FIELD_RAW])
                             except:
-                                print("Json Exception")
+                                Environment().get_logger().error(DataSynchronization.__name__ + " - " + Strings.STR_ERROR_JSON)
 
                         case APIConstants.FIELD_QUARTERLY_ENTERPRISES_VALUE_EBITDA_RATIO:
                             stockView.set_quarterly_enterprises_value_ebitda_ratio(DataSynchronization.__init_and_elaborate_value_dictionary_single_stock_full_data(jj[attr]))
@@ -347,7 +347,7 @@ class DataSynchronization(object):
                             try:
                                 stock.set_enterprises_value_ebitda_ratio(jj[attr][len(jj[attr]) - 1][APIConstants.FIELD_REPORTED_VALUE][APIConstants.FIELD_RAW])
                             except:
-                                print("Json Exception")
+                                Environment().get_logger().error(DataSynchronization.__name__ + " - " + Strings.STR_ERROR_JSON)
 
     def __sync_chart(symbol, rnge, interval, stockView):
         jj = json.loads(Networking.download_chart(symbol, rnge, interval, APIConstants.HEADERS_ONE))

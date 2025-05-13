@@ -218,98 +218,7 @@ class StocksViewList(wx.ListCtrl):
                 self.__mFilteredItems[i] = one
                 self.__mFilteredItems[pos] = temp
 
-        if self.__mFilterData.get_pe_ratio_max() and not self.__mFilterData.get_peg_ratio_max() and not self.__mFilterData.get_pb_ratio_max():
-            pos = -1
-            for i in range(0, len(self.__mFilteredItems)):
-                one = self.__mFilteredItems[i]
-                for j in range(i + 1, len(self.__mFilteredItems)):
-                    two = self.__mFilteredItems[j]
-                    if one.get_pe_ratio() and two.get_pe_ratio() and one.get_pe_ratio() < two.get_pe_ratio():
-                        one = two
-                        pos = j
-                temp = self.__mFilteredItems[i]
-                self.__mFilteredItems[i] = one
-                self.__mFilteredItems[pos] = temp
-
-        if self.__mFilterData.get_peg_ratio_max() and not self.__mFilterData.get_pe_ratio_max() and not self.__mFilterData.get_pb_ratio_max():
-            pos = -1
-            for i in range(0, len(self.__mFilteredItems)):
-                one = self.__mFilteredItems[i]
-                for j in range(i + 1, len(self.__mFilteredItems)):
-                    two = self.__mFilteredItems[j]
-                    if one.get_peg_ratio() and two.get_peg_ratio() and one.get_peg_ratio() < two.get_peg_ratio():
-                        one = two
-                        pos = j
-                temp = self.__mFilteredItems[i]
-                self.__mFilteredItems[i] = one
-                self.__mFilteredItems[pos] = temp
-
-        if self.__mFilterData.get_pb_ratio_max() and not self.__mFilterData.get_pe_ratio_max() and not self.__mFilterData.get_peg_ratio_max():
-            pos = -1
-            for i in range(0, len(self.__mFilteredItems)):
-                one = self.__mFilteredItems[i]
-                for j in range(i + 1, len(self.__mFilteredItems)):
-                    two = self.__mFilteredItems[j]
-                    if one.get_pb_ratio() and two.get_pb_ratio() and one.get_pb_ratio() < two.get_pb_ratio():
-                        one = two
-                        pos = j
-                temp = self.__mFilteredItems[i]
-                self.__mFilteredItems[i] = one
-                self.__mFilteredItems[pos] = temp
-
-        if self.__mFilterData.get_pb_ratio_max() and self.__mFilterData.get_pe_ratio_max() and not self.__mFilterData.get_peg_ratio_max():
-            pos = -1
-            for i in range(0, len(self.__mFilteredItems)):
-                one = self.__mFilteredItems[i]
-                for j in range(i + 1, len(self.__mFilteredItems)):
-                    two = self.__mFilteredItems[j]
-                    if one.get_pe_ratio() and two.get_pe_ratio() and one.get_pb_ratio() and two.get_pb_ratio() and one.get_pb_ratio() < two.get_pb_ratio() and one.get_pe_ratio() < two.get_pe_ratio():
-                        one = two
-                        pos = j
-                temp = self.__mFilteredItems[i]
-                self.__mFilteredItems[i] = one
-                self.__mFilteredItems[pos] = temp
-
-        if self.__mFilterData.get_pb_ratio_max() and self.__mFilterData.get_peg_ratio_max() and not self.__mFilterData.get_pe_ratio_max():
-            pos = -1
-            for i in range(0, len(self.__mFilteredItems)):
-                one = self.__mFilteredItems[i]
-                for j in range(i + 1, len(self.__mFilteredItems)):
-                    two = self.__mFilteredItems[j]
-                    if one.get_peg_ratio() and two.get_peg_ratio() and one.get_pb_ratio() and two.get_pb_ratio() and one.get_pb_ratio() < two.get_pb_ratio() and one.get_peg_ratio() < two.get_peg_ratio():
-                        one = two
-                        pos = j
-                temp = self.__mFilteredItems[i]
-                self.__mFilteredItems[i] = one
-                self.__mFilteredItems[pos] = temp
-
-        if self.__mFilterData.get_pe_ratio_max() and self.__mFilterData.get_peg_ratio_max() and not self.__mFilterData.get_pb_ratio_max():
-            pos = -1
-            for i in range(0, len(self.__mFilteredItems)):
-                one = self.__mFilteredItems[i]
-                for j in range(i + 1, len(self.__mFilteredItems)):
-                    two = self.__mFilteredItems[j]
-                    if one.get_peg_ratio() and two.get_peg_ratio() and one.get_pe_ratio() and two.get_pe_ratio() and one.get_pe_ratio() < two.get_pe_ratio() and one.get_peg_ratio() < two.get_peg_ratio():
-                        one = two
-                        pos = j
-                temp = self.__mFilteredItems[i]
-                self.__mFilteredItems[i] = one
-                self.__mFilteredItems[pos] = temp
-
-        if self.__mFilterData.get_pe_ratio_max() and self.__mFilterData.get_peg_ratio_max() and self.__mFilterData.get_pb_ratio_max():
-            pos = -1
-            for i in range(0, len(self.__mFilteredItems)):
-                one = self.__mFilteredItems[i]
-                for j in range(i + 1, len(self.__mFilteredItems)):
-                    two = self.__mFilteredItems[j]
-                    if one.get_pb_ratio() and two.get_pb_ratio() and one.get_peg_ratio() and two.get_peg_ratio() and one.get_pe_ratio() and two.get_pe_ratio() and one.get_pe_ratio() < two.get_pe_ratio() and one.get_peg_ratio() < two.get_peg_ratio() and one.get_pb_ratio() < two.get_pb_ratio():
-                        one = two
-                        pos = j
-                temp = self.__mFilteredItems[i]
-                self.__mFilteredItems[i] = one
-                self.__mFilteredItems[pos] = temp
-
-        if self.__mFilterData.get_price_to_book_max() and not self.__mFilterData.get_book_value_share_max():
+        if self.__mFilterData.get_price_to_book_max():
             pos = -1
             for i in range(0, len(self.__mFilteredItems)):
                 one = self.__mFilteredItems[i]
@@ -322,13 +231,52 @@ class StocksViewList(wx.ListCtrl):
                 self.__mFilteredItems[i] = one
                 self.__mFilteredItems[pos] = temp
 
-        if self.__mFilterData.get_book_value_share_max() and not self.__mFilterData.get_price_to_book_max():
+        if self.__mFilterData.get_book_value_share_max():
             pos = -1
             for i in range(0, len(self.__mFilteredItems)):
                 one = self.__mFilteredItems[i]
                 for j in range(i + 1, len(self.__mFilteredItems)):
                     two = self.__mFilteredItems[j]
                     if one.get_book_value_per_share() and two.get_book_value_per_share() and one.get_book_value_per_share() < two.get_book_value_per_share():
+                        one = two
+                        pos = j
+                temp = self.__mFilteredItems[i]
+                self.__mFilteredItems[i] = one
+                self.__mFilteredItems[pos] = temp
+
+        if self.__mFilterData.get_eps_current_year_max():
+            pos = -1
+            for i in range(0, len(self.__mFilteredItems)):
+                one = self.__mFilteredItems[i]
+                for j in range(i + 1, len(self.__mFilteredItems)):
+                    two = self.__mFilteredItems[j]
+                    if one.get_eps_current_year() and two.get_eps_current_year() and one.get_eps_current_year() < two.get_eps_current_year():
+                        one = two
+                        pos = j
+                temp = self.__mFilteredItems[i]
+                self.__mFilteredItems[i] = one
+                self.__mFilteredItems[pos] = temp
+
+        if self.__mFilterData.get_eps_trailing_twelve_months_max():
+            pos = -1
+            for i in range(0, len(self.__mFilteredItems)):
+                one = self.__mFilteredItems[i]
+                for j in range(i + 1, len(self.__mFilteredItems)):
+                    two = self.__mFilteredItems[j]
+                    if one.get_eps_trailing_twelve_months() and two.get_eps_trailing_twelve_months() and one.get_eps_trailing_twelve_months() < two.get_eps_trailing_twelve_months():
+                        one = two
+                        pos = j
+                temp = self.__mFilteredItems[i]
+                self.__mFilteredItems[i] = one
+                self.__mFilteredItems[pos] = temp
+
+        if self.__mFilterData.get_eps_forward_max():
+            pos = -1
+            for i in range(0, len(self.__mFilteredItems)):
+                one = self.__mFilteredItems[i]
+                for j in range(i + 1, len(self.__mFilteredItems)):
+                    two = self.__mFilteredItems[j]
+                    if one.get_eps_forward() and two.get_eps_forward() and one.get_eps_forward() < two.get_eps_forward():
                         one = two
                         pos = j
                 temp = self.__mFilteredItems[i]
