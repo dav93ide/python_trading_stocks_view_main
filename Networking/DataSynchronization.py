@@ -6,6 +6,7 @@ from Networking.Networking import Networking
 from Networking.API import API
 from Networking.APIConstants import APIConstants
 from Classes.Stock import Stock
+from Classes.Cryptocurrency import Cryptocurrency
 from Classes.Company import Company
 from Classes.Exchange import Exchange
 from Classes.ViewClasses.StockView import StockView
@@ -54,6 +55,9 @@ class DataSynchronization(object):
         stockView = StockView()
         DataSynchronization.__sync_chart(symbol, rnge, interval, stockView)
         return stockView
+
+    def sync_all_crypto():
+        return DataSynchronization.__sync_get_all_cryptos()
 #endregion
 
 #region - Private Methods
@@ -647,5 +651,75 @@ class DataSynchronization(object):
 
                 if APIConstants.FIELD_DIVIDEND_RATE in j:
                     stock.set_dividend_rate(j[APIConstants.FIELD_DIVIDEND_RATE])
+
+    def __sync_get_all_cryptos():
+        cryptos = []
+        total = 250
+        start = 0
+        while True:
+            jj = json.loads(Networking.download_cryptocurrencies(start, APIConstants.HEADERS_ONE))
+
+            if jj is not None:
+                total = int(jj[APIConstants.FIELD_FINANCE][APIConstants.FIELD_RESULT][0][APIConstants.FIELD_TOTAL])
+                for i in range(0, len(jj[APIConstants.FIELD_FINANCE][APIConstants.FIELD_RESULT][0][APIConstants.FIELD_QUOTES])):
+                    j = jj[APIConstants.FIELD_FINANCE][APIConstants.FIELD_RESULT][0][APIConstants.FIELD_QUOTES][i]
+                    
+                    crypto = Cryptocurrency(uuid.uuid4())
+                    exchange = Exchange(uuid.uuid4())
+
+                    exchange.set_full_name(j[APIConstants.FIELD_FULL_EXCHANGE_NAME])
+                    crypto.set_exchange(exchange)
+                    crypto.set_sign(j[APIConstants.FIELD_SYMBOL])
+
+                    if APIConstants.FIELD_COIN_IMAGE_URL in j:
+                        crypto.set_image_url(j[APIConstants.FIELD_COIN_IMAGE_URL])
+
+                    if APIConstants.FIELD_REGULAR_MARKET_CHANGE_PERCENT in j:
+                        crypto.set_market_change_percent(j[APIConstants.FIELD_REGULAR_MARKET_CHANGE_PERCENT][APIConstants.FIELD_FMT])
+
+                    if APIConstants.FIELD_FIFTY_TWO_WEEK_LOW_CHANGE_PERCENT in j:
+                        crypto.set_fifty_two_week_low_change_percent(j[APIConstants.FIELD_FIFTY_TWO_WEEK_LOW_CHANGE_PERCENT][APIConstants.FIELD_FMT])
+
+                    if APIConstants.FIELD_FIFTY_TWO_WEEK_HIGH_CHANGE_PERCENT in j:
+                        crypto.set_fifty_two_week_high_change_percent(j[APIConstants.FIELD_FIFTY_TWO_WEEK_HIGH_CHANGE_PERCENT][APIConstants.FIELD_FMT])
+
+                    if APIConstants.FIELD_FIFTY_TWO_WEEK_LOW_CHANGE in j:
+                        crypto.set_fifty_two_week_low_change(j[APIConstants.FIELD_FIFTY_TWO_WEEK_LOW_CHANGE][APIConstants.FIELD_RAW])
+
+                    if APIConstants.FIELD_FIFTY_TWO_WEEK_HIGH_CHANGE in j:
+                        crypto.set_fifty_two_week_high_change(j[APIConstants.FIELD_FIFTY_TWO_WEEK_HIGH_CHANGE][APIConstants.FIELD_RAW])
+
+                    if APIConstants.FIELD_FIFTY_TWO_WEEK_LOW in j:
+                        crypto.set_fifty_two_weeks_low(j[APIConstants.FIELD_FIFTY_TWO_WEEK_LOW][APIConstants.FIELD_RAW])
+
+                    if APIConstants.FIELD_FIFTY_TWO_WEEK_HIGH in j:
+                        crypto.set_fifty_two_weeks_high(j[APIConstants.FIELD_FIFTY_TWO_WEEK_HIGH][APIConstants.FIELD_RAW])
+
+                    if APIConstants.FIELD_FIFTY_TWO_WEEK_CHANGE_PERCENT in j:
+                        crypto.set_fifty_two_weeks_perc_change(j[APIConstants.FIELD_FIFTY_TWO_WEEK_CHANGE_PERCENT][APIConstants.FIELD_FMT])
+
+                    if APIConstants.FIELD_CIRCULATING_SUPPLY in j:
+                        crypto.set_circulating_supply(j[APIConstants.FIELD_CIRCULATING_SUPPLY][APIConstants.FIELD_FMT])
+
+                    if APIConstants.FIELD_REGULAR_MARKET_DAY_RANGE in j:
+                        crypto.set_regular_market_day_range(j[APIConstants.FIELD_REGULAR_MARKET_DAY_RANGE][APIConstants.FIELD_FMT])
+
+                    if APIConstants.FIELD_REGULAR_MARKET_PRICE in j:
+                        crypto.set_price(j[APIConstants.FIELD_REGULAR_MARKET_PRICE][APIConstants.FIELD_RAW])
+
+                    if APIConstants.FIELD_REGULAR_MARKET_VOLUME in j:
+                        crypto.set_volume(j[APIConstants.FIELD_REGULAR_MARKET_VOLUME][APIConstants.FIELD_RAW])
+
+                    cryptos.append(crypto)
+
+            if start >= total:
+                break
+            elif start + 250 >= total:
+                start += total % 250
+            else:
+                start += 250
+
+        return cryptos
+
 #endregion
 #endregion

@@ -161,3 +161,18 @@ class APIConstants(object):
     FIELD_CLOSE = "close"
     FIELD_OPEN = "open"
 #endregion
+
+#region - URL_API_YAHOO_FINANCE_SCREENER_CRYPTOCURRENCIES - Json Fields
+    FIELD_FINANCE = "finance"
+    FIELD_QUOTES = "quotes"
+    FIELD_TOTAL = "total"
+    FIELD_COIN_IMAGE_URL = "coinImageUrl"
+    FIELD_FIFTY_TWO_WEEK_LOW_CHANGE_PERCENT = "fiftyTwoWeekLowChangePercent"
+    FIELD_FIFTY_TWO_WEEK_HIGH_CHANGE_PERCENT = "fiftyTwoWeekHighChangePercent"
+    FIELD_FIFTY_TWO_WEEK_LOW_CHANGE = "fiftyTwoWeekLowChange"
+    FIELD_FIFTY_TWO_WEEK_HIGH_CHANGE = "fiftyTwoWeekHighChange"
+    FIELD_FIFTY_TWO_WEEK_LOW = "fiftyTwoWeekLow"
+    FIELD_FIFTY_TWO_WEEK_HIGH = "fiftyTwoWeekHigh"
+    FIELD_CIRCULATING_SUPPLY = "circulatingSupply"
+    FIELD_REGULAR_MARKET_DAY_RANGE = "regularMarketDayRange"
+#endregion

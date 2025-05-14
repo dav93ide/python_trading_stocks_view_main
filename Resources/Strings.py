@@ -8,9 +8,10 @@ class Strings(object):
 #region - Strings Menu
     STR_MAIN_MENU = "Main Menu"
     STR_MENU_STOCKS = "Stocks"
+    STR_MENU_CRYPTO = "Crypto"
 
 #region - Strings Menu Stocks
-    STR_MENU_STOCKS_VIEW = "View Stocks"
+    STR_MENU_ASSETS_VIEW = "View Assets"
 #endregion  
 #endregion
 

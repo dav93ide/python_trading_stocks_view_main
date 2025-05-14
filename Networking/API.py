@@ -15,6 +15,7 @@ class API(object):
     URL_API_YAHOO_FINANCE_QUOTE = "https://query2.finance.yahoo.com/v7/finance/quote?lang=en-US&region=US&corsDomain=finance.yahoo.com&symbols={symbols}&crumb={crumb}"
     URL_API_YAHOO_FINANCE_GET_QUOTE_SUMMARY = "https://query2.finance.yahoo.com/v10/finance/quoteSummary/{symbol}?crumb={crumb}&modules={modules}"
     URL_API_YAHOO_OPTIONS = "https://query2.finance.yahoo.com/v7/finance/options/{symbol}?crumb={crumb}"
+    URL_API_YAHOO_FINANCE_SCREENER_CRYPTOCURRENCIES = "https://query1.finance.yahoo.com/v1/finance/screener/predefined/saved?count=250&formatted=true&scrIds=ALL_CRYPTOCURRENCIES_US&sortField=intradaymarketcap&sortType=DESC&start={start}&useRecordsResponse=false&fields=ticker%2ClogoUrl%2Csymbol%2ClongName%2Csparkline%2CshortName%2CregularMarketPrice%2CregularMarketChange%2CregularMarketChangePercent%2CmarketCap%2CregularMarketVolume%2Cvolume24Hr%2CvolumeAllCurrencies%2CcirculatingSupply%2CfiftyTwoWeekChangePercent%2CfiftyTwoWeekRange&lang=en-US&region=US"
 #endregion
 
 

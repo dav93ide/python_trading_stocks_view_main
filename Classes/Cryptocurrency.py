@@ -1,7 +1,8 @@
-from Classes import BaseAsset
+from Classes.BaseClasses.BaseAsset import BaseAsset
 
 class Cryptocurrency(BaseAsset):
 
+    __mImageUrl = None
     __mCategory = None
     __mStartDate = None
     __mAlgorithm = None
@@ -9,11 +10,20 @@ class Cryptocurrency(BaseAsset):
     __mMaxSupply = None
     __mMarketDominance = None
     __mMarketRank = None
+    __mMarketChangePercent = None
+    __mFiftyTwoWeekLowChangePercent = None
+    __mFiftyTwoWeekHighChangePercent = None
+    __mFiftyTwoWeekLowChange = None
+    __mFiftyTwoWeekHighChange = None
+    __mRegularMarketDayRange = None
 
     def __init__(self, id):
         super().__init__(id)
 
 #region - Getter Methods
+    def get_img_url(self):
+        return self.__mImageUrl
+
     def get_category(self):
         return self.__mCategory 
 
@@ -34,9 +44,30 @@ class Cryptocurrency(BaseAsset):
 
     def get_market_rank(self):
         return self.__mMarketRank 
+
+    def get_market_change_percent(self):
+        return self.__mMarketChangePercent
+
+    def get_fifty_two_week_low_change_percent(self):
+        return self.__mstFifityTwoWeeksPercChange
+
+    def get_fifty_two_week_high_change_percent(self):
+        return self.__mFiftyTwoWeekHighChangePercent
+
+    def get_fifty_two_week_low_change(self):
+        return self.__mFiftyTwoWeekLowChange
+
+    def get_fifty_two_week_high_change(self):
+        return self.__mFiftyTwoWeekHighChange
+
+    def get_regular_market_day_range(self):
+        return self.__mRegularMarketDayRange
 #endregion
 
 #region - Setter Methods
+    def set_image_url(self, url):
+        self.__mImageUrl = url
+
     def set_category(self, category):
         self.__mCategory  = category 
 
@@ -57,6 +88,24 @@ class Cryptocurrency(BaseAsset):
 
     def set_market_rank(self, marketRank):
         self.__mMarketRank  = marketRank 
+
+    def set_market_change_percent(self, percent):
+        self.__mMarketChangePercent = percent
+
+    def set_fifty_two_week_low_change_percent(self, percent):
+        self.__mFiftyTwoWeekLowChangePercent = percent
+
+    def set_fifty_two_week_high_change_percent(self, percent):
+        self.__mFiftyTwoWeekHighChangePercent = percent
+
+    def set_fifty_two_week_low_change(self, change):
+        self.__mFiftyTwoWeekLowChange = change
+
+    def set_fifty_two_week_high_change(self, change):
+        self.__mFiftyTwoWeekHighChange = change
+
+    def set_regular_market_day_range(self, rng):
+        self.__mRegularMarketDayRange = rng
 #endregion
 
     # To String
@@ -64,6 +113,7 @@ class Cryptocurrency(BaseAsset):
         return  "####################\n"\
                 f"# {ETF.__name__}\n"\
                 f"{super().__str__()}\n"\
+                f"#- __mImageUrl: {self.__mImageUrl}\n"\
                 f"#- __mCategory: {self.__mCategory}\n"\
                 f"#- __mStartDate: {self.__mStartDate}\n"\
                 f"#- __mAlgorithm: {self.__mAlgorithm}\n"\
@@ -71,4 +121,10 @@ class Cryptocurrency(BaseAsset):
                 f"#- __mMaxSupply: {self.__mMaxSupply}\n"\
                 f"#- __mMarketDominance: {self.__mMarketDominance}\n"\
                 f"#- __mMarketRank: {self.__mMarketRank}\n"\
+                f"#- __mMarketChangePercent: {self.__mMarketChangePercent}\n"\
+                f"#- __mFiftyTwoWeekLowChangePercent: {self.__mFiftyTwoWeekLowChangePercent}\n"\
+                f"#- __mFiftyTwoWeekHighChangePercent: {self.__mFiftyTwoWeekHighChangePercent}\n"\
+                f"#- __mFiftyTwoWeekLowChange: {self.__mFiftyTwoWeekLowChange}\n"\
+                f"#- __mFiftyTwoWeekHighChange: {self.__mFiftyTwoWeekHighChange}\n"\
+                f"#- __mRegularMarketDayRange: {self.__mRegularMarketDayRange}\n"\
                 "####################"

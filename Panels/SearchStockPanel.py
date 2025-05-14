@@ -815,13 +815,13 @@ class SearchStockPanel(BasePanel):
         self.__mcbDividendOnly = wx.CheckBox(panel, wx.ID_ANY, label = "Dividend Only", style = wx.ALIGN_CENTRE)
         self.__mcbDividendOnly.Bind(wx.EVT_CHECKBOX, self.__on_check_dividend_only)
         main.Add(self.__mcbDividendOnly, 1, wx.EXPAND)
-        if self.__mFilterSearchStockPanel.get_value_max_mover():
+        if self.__mFilterSearchStockPanel.get_dividend_only():
             self.__mcbDividendOnly.SetValue(self.__mFilterSearchStockPanel.get_dividend_only())
 
         self.__mcbNoDividendOnly = wx.CheckBox(panel, wx.ID_ANY, label = "No Dividend Only", style = wx.ALIGN_CENTRE)
         self.__mcbNoDividendOnly.Bind(wx.EVT_CHECKBOX, self.__on_check_no_dividend_only)
         main.Add(self.__mcbNoDividendOnly, 1, wx.EXPAND)
-        if self.__mFilterSearchStockPanel.get_value_max_mover():
+        if self.__mFilterSearchStockPanel.get_no_dividend_only():
             self.__mcbNoDividendOnly.SetValue(self.__mFilterSearchStockPanel.get_no_dividend_only())
 
         panel.SetSizer(main)
@@ -834,13 +834,13 @@ class SearchStockPanel(BasePanel):
         self.__mcbDividendDateMin = wx.CheckBox(panel, wx.ID_ANY, label = "Dividend Date Min", style = wx.ALIGN_CENTRE)
         self.__mcbDividendDateMin.Bind(wx.EVT_CHECKBOX, self.__on_check_dividend_date_min)
         main.Add(self.__mcbDividendDateMin, 1, wx.EXPAND)
-        if self.__mFilterSearchStockPanel.get_value_min_mover():
+        if self.__mFilterSearchStockPanel.get_dividend_date_min():
             self.__mcbDividendDateMin.SetValue(self.__mFilterSearchStockPanel.get_dividend_date_min())
 
         self.__mcbDividendYeldMax = wx.CheckBox(panel, wx.ID_ANY, label = "Dividend Yeld Max", style = wx.ALIGN_CENTRE)
         self.__mcbDividendYeldMax.Bind(wx.EVT_CHECKBOX, self.__on_check_dividend_yeld_max)
         main.Add(self.__mcbDividendYeldMax, 1, wx.EXPAND)
-        if self.__mFilterSearchStockPanel.get_value_max_mover():
+        if self.__mFilterSearchStockPanel.get_dividend_yeld_max():
             self.__mcbDividendYeldMax.SetValue(self.__mFilterSearchStockPanel.get_dividend_yeld_max())
 
         panel.SetSizer(main)
@@ -1386,6 +1386,8 @@ class SearchStockPanel(BasePanel):
     def __on_check_dividend_only(self, evt):   
         self.__mFilterSearchStockPanel.set_dividend_only(evt.IsChecked())
         self.__mcbNoDividendOnly.SetValue(False)
+        self.__mcbDividendDateMin.SetValue(False)
+        self.__mcbDividendYeldMax.SetValue(False)
 
     def __on_check_no_dividend_only(self, evt):   
         self.__mFilterSearchStockPanel.set_no_dividend_only(evt.IsChecked())

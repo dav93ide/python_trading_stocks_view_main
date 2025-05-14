@@ -49,4 +49,9 @@ class Networking(object):
         session = HTMLSession()
         r = session.get(API.URL_API_YAHOO_FINANCE_GET_CHART.format(symbol = symbol, range = rangee, interval = interval), headers = headers)
         return r.content.decode("utf-8")
+
+    def download_cryptocurrencies(start, headers):
+        session = HTMLSession()
+        r = session.get(API.URL_API_YAHOO_FINANCE_SCREENER_CRYPTOCURRENCIES.format(start = str(start)), headers = headers)
+        return r.content.decode("utf-8")
 #endregion

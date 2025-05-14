@@ -8,18 +8,12 @@
         BaseClasses/
             BaseClass.py
             BaseAsset.py
-            BaseTradingStrategy.py
         ViewClasses/
             StockView.py
         FilterClasses/
             FilterSearchStockPanel.py
         BalanceSheet.py
         CurrencyAsset.py
-        PlatformData.py
-        DividedAsset.py
-        Platform.py
-        DividendStrategy.py
-        Portfolio.py
         CashFlow.py
         ETF.py
         PriceHistory.py
@@ -30,18 +24,9 @@
         Stock.py
         Company.py
         Index.py
-        TradingBot.py
-        CopyTraderStrategy.py
-        InvestmentPosition.py
-        TradingExecution.py
         CountDailyLongShort.py
-        Investment.py
-        TradingStrategy.py
         Country.py
-        Investor.py
         Cryptocurrency.py
-        MainUser.py
-        BotTradingStrategy.py
 
 
     Frames/
@@ -68,11 +53,9 @@
         Base/
             BasePanel.py
         MainPanel.py
-        NewTradingBotPanel.py
-        PlatformDataPanel.py
         ViewStocksPanel.py
-        AddStockApplicationData.py
         SearchStockPanel.py
+        ViewCryptosPanel.py
 
 
     Dialogs/
@@ -88,7 +71,6 @@
         WxUtils.py
         NumberUtils.py
         KeyboardEventUtils.py
-        StoredDataUtils.
         FileUtils.py
 
 
