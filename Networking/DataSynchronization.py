@@ -675,7 +675,7 @@ class DataSynchronization(object):
                         crypto.set_image_url(j[APIConstants.FIELD_COIN_IMAGE_URL])
 
                     if APIConstants.FIELD_REGULAR_MARKET_CHANGE_PERCENT in j:
-                        crypto.set_market_change_percent(j[APIConstants.FIELD_REGULAR_MARKET_CHANGE_PERCENT][APIConstants.FIELD_FMT])
+                        crypto.set_market_change_percent(j[APIConstants.FIELD_REGULAR_MARKET_CHANGE_PERCENT][APIConstants.FIELD_RAW])
 
                     if APIConstants.FIELD_FIFTY_TWO_WEEK_LOW_CHANGE_PERCENT in j:
                         crypto.set_fifty_two_week_low_change_percent(j[APIConstants.FIELD_FIFTY_TWO_WEEK_LOW_CHANGE_PERCENT][APIConstants.FIELD_FMT])

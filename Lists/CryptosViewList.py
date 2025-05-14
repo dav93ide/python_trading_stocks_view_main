@@ -1,10 +1,12 @@
 import wx
+import requests
+import io
 from Classes.Cryptocurrency import Cryptocurrency
 
 class CryptosViewList(wx.ListCtrl):
 
-    LIST_COLUMNS = ["%", "Symbol", "Name", "Price"]
-    LIST_COLUMNS_SIZES = [75, 75, 250, 100]
+    LIST_COLUMNS = ["%", "Symbol", "Price"]
+    LIST_COLUMNS_SIZES = [75, 250, 100]
 
     __mCallback = None
     __mFilterData = None
@@ -43,10 +45,9 @@ class CryptosViewList(wx.ListCtrl):
                     if item.get_market_change_percent() is not None:
                         self.InsertItem(i, str(round(float(item.get_market_change_percent()), 2)))
                     else:
-                        self.InsertItem(i, str(0))
+                        self.InsertItem(i, str(0))  
                 self.SetItem(i, 1, str(item.get_sign()))
-                self.SetItem(i, 2, str(item.get_company().get_name()))
-                self.SetItem(i, 3, str(item.get_price()))
+                self.SetItem(i, 2, str(item.get_price()))
 
     def on_item_selected(self, event):
         if self.__mCallback is not None:
@@ -68,6 +69,15 @@ class CryptosViewList(wx.ListCtrl):
             self.filter_values()
             self.filter_order()
         self.populate_list()
+
+    def filter_name(self):
+        if self.__mFilterName:
+            self.__mFilteredItems = []
+            for item in self.__mItems:
+                if self.__mFilterName.lower() in item.get_sign().lower():
+                    self.__mFilteredItems.append(item)
+        else:
+            self.__mFilteredItems = self.__mItems
 
     def filter_order(self):
         print("Filter")
