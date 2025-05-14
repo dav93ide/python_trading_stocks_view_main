@@ -43,6 +43,16 @@ class DataSynchronization(object):
         stockView.set_stock(stock)
         return stockView
 
+    def sync_single_crypto_full_data(crypto):
+        stockView = StockView()
+        DataSynchronization.__sync_chart(crypto.get_sign(), APIConstants.VALUE_1D, APIConstants.VALUE_1M, stockView)
+
+        # cookie = DataSynchronization.__get_cookie_yahoo_finance_fake_request()
+        # crumb = DataSynchronization.__get_crumb_yahoo_finance(cookie)
+
+        stockView.set_crypto(crypto)
+        return stockView
+
     def sync_update_all_stocks(stocks):
         ss = DataSynchronization.__update_all_stocks_data(stocks)
         data = []

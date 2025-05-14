@@ -8,32 +8,53 @@ from Lists.CryptosViewList import CryptosViewList
 from Networking.DataSynchronization import DataSynchronization
 from Utils.WxUtils import WxUtils
 from Resources.Constants import Colors
+import matplotlib.cm as cm
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
+from matplotlib.backends.backend_wxagg import NavigationToolbar2WxAgg as NavigationToolbar
+from matplotlib.figure import Figure
+from Threads.StoppableThread import StoppableThread
 
 class ViewCryptosPanel(BasePanel):
+
+    __mThreadUpdateGraph = None
 
     __mbsMainBox = None
     __mMainSplitter = None
     __mLeftPanel = None
     __mRightPanel = None
 
+    __mtxSearchList = None
+    __mList = None
+
     __mBoxSizerData = None
     __msbCryptoImage = None
     __mstMarketPercentage = None
 
-    __mtxSearchList = None
-    __mList = None
+    __mDataPanel = None
+    __mGraphsSizer = None
+
+    __mGraphOneDayCanvas = None
+    __mGraphAxValues = None
+    __mGraphAxVolume = None
+    __mGraphLastValue = None
 
     __mCryptos = None
-    __mCrypto = None
+    __mStockViewData = None
 
     def __init__(self, parent, size, cryptos, crypto):
         super().__init__(parent, size)
         self.__mCryptos = cryptos
+        self.__init_threads()
+        self.Bind(wx.EVT_WINDOW_DESTROY, self.__on_destroy_self)
         self.__init_layout()
 
         # if crypto is not None:
         #     self.__on_click_item_list(crypto)
 
+    def __init_threads(self):
+        self.__mThreadUpdateGraph = StoppableThread(None, self.__update_graph_thread)
 
     def __init_layout(self):
         self.__mbsMainBox = wx.BoxSizer(wx.HORIZONTAL)
@@ -93,6 +114,9 @@ class ViewCryptosPanel(BasePanel):
         self.__mLeftPanel.Layout()
 
 #region - Event Handler Methods
+    def __on_destroy_self(self, evt):
+        self.__mThreadUpdateGraph.stop()
+
     def __on_change_search_list_value(self, evt):
         self.__mList.filter_items_by_name(evt.GetString())
 
@@ -100,7 +124,7 @@ class ViewCryptosPanel(BasePanel):
         print("Search")
 
     def __on_click_item_list(self, item):
-        self.__mCrypto = item
+        self.__mStockViewData = DataSynchronization.sync_single_crypto_full_data(item)
         self.__update_left_panel()
 #endregion
 
@@ -114,34 +138,122 @@ class ViewCryptosPanel(BasePanel):
         self.__mBoxSizerData = wx.BoxSizer(wx.VERTICAL)
 
         self.__mBoxSizerData.Add(self.__get_layout_nome_crypto(), 0, wx.EXPAND)
+        self.__mBoxSizerData.Add(self.__get_layout_data_one(), 1, wx.EXPAND|wx.ALL)
+
+        if not self.__mThreadUpdateGraph.is_alive():
+            self.__mThreadUpdateGraph.start()
+
+        self.__mLeftPanel.SetSizer(self.__mBoxSizerData)
+        self.__mLeftPanel.Layout()
 
     def __get_layout_nome_crypto(self):
         panel = wx.Panel(self.__mLeftPanel)
 
         vbs = wx.BoxSizer(wx.VERTICAL)
-        st = wx.StaticText(panel, label = self.__mCrypto.get_sign(), style = wx.ALIGN_LEFT)
-        WxUtils.set_font_size_and_bold_and_roman(st, 30)
-        vbs.Add(st, 0, wx.EXPAND)
-
-        image = wx.ImageFromStream(io.BytesIO(requests.get(self.__mCrypto.get_img_url()).content)).ConvertToBitmap()
-        self.__msbCryptoImage = wx.StaticBitmap(panel, wx.ID_ANY, image, wx.DefaultPosition, wx.DefaultSize, 0)
-
-        hbs.Add(self.__msbCryptoImage, 0, wx.EXPAND)
         hbs = wx.BoxSizer(wx.HORIZONTAL)
-        self.__mstMarketPercentage = wx.StaticText(panel, label = str(round(self.__mCrypto.get_market_change_percent(), 2))  + "%")
+        image = wx.ImageFromStream(io.BytesIO(requests.get(self.__mStockViewData.get_crypto().get_img_url()).content)).ConvertToBitmap()
+        self.__msbCryptoImage = wx.StaticBitmap(panel, wx.ID_ANY, image, wx.DefaultPosition, wx.DefaultSize, 0)
+        hbs.Add(self.__msbCryptoImage, 0, wx.EXPAND)
+        hbs.AddSpacer(50)        
+        st = wx.StaticText(panel, label = self.__mStockViewData.get_crypto().get_sign(), style = wx.ALIGN_LEFT)
+        WxUtils.set_font_size_and_bold_and_roman(st, 30)
+        hbs.Add(st, 0, wx.EXPAND)
+        vbs.Add(hbs, 0, wx.EXPAND)
+
+        hbs = wx.BoxSizer(wx.HORIZONTAL)
+        self.__mstMarketPercentage = wx.StaticText(panel, label = str(round(self.__mStockViewData.get_crypto().get_market_change_percent(), 2))  + "%")
         WxUtils.set_font_size_and_bold_and_roman(self.__mstMarketPercentage, 20)
-        if self.__mCrypto.get_market_change_percent() is not None and self.__mCrypto.get_market_change_percent() > 0:
+        if self.__mStockViewData.get_crypto().get_market_change_percent() is not None and self.__mStockViewData.get_crypto().get_market_change_percent() > 0:
             self.__mstMarketPercentage.SetForegroundColour(Colors.GREEN)
         else:
             self.__mstMarketPercentage.SetForegroundColour(Colors.RED)
         
-        self.__mstPrice = wx.StaticText(panel, label = "$" + str(self.__mCrypto.get_price()))
+        self.__mstPrice = wx.StaticText(panel, label = "$" + str(self.__mStockViewData.get_crypto().get_price()))
         WxUtils.set_font_size_and_bold_and_roman(self.__mstPrice, 20)
         hbs.Add(self.__mstPrice, 0, wx.EXPAND)
         hbs.AddSpacer(50)
         hbs.Add(self.__mstMarketPercentage, 1, wx.EXPAND)
         
-        vbs.Add(hbs, 1, wx.EXPAND)
+        vbs.Add(hbs, 0, wx.EXPAND)
         panel.SetSizer(vbs)
         return panel
+
+    def __get_layout_data_one(self):
+        self.__mDataPanel = wx.Panel(self.__mLeftPanel)
+        
+        vbs = wx.BoxSizer(wx.VERTICAL)
+        vbs.AddSpacer(10)
+        self.__mGraphsSizer = wx.BoxSizer(wx.VERTICAL)
+        self.__mGraphsSizer.Add(self.__get_chart_row_thread_managed(self.__mDataPanel, Strings.STR_1D_VALUES, Strings.STR_1D_VOLUME, self.__mStockViewData.get_timestamps(), self.__mStockViewData.get_opens(), self.__mStockViewData.get_closes(), self.__mStockViewData.get_volumes()), 0, wx.EXPAND)
+        vbs.Add(self.__mGraphsSizer, 0, wx.EXPAND)
+        vbs.AddSpacer(10)
+
+        self.__mDataPanel.SetSizer(vbs)
+        return self.__mDataPanel
+
+    def __get_chart_row_thread_managed(self, parent, label1, label2, timestamps, opens, closes, volumes):
+        panel = wx.Panel(parent)
+        self.fig = Figure(figsize=(2, 4))
+        self.__mGraphOneDayCanvas = FigureCanvas(panel, -1, self.fig)
+        toolbar = NavigationToolbar(self.__mGraphOneDayCanvas)
+        toolbar.Realize()
+
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(self.__mGraphOneDayCanvas, 1, wx.EXPAND)
+        sizer.Add(toolbar, 0, wx.LEFT | wx.EXPAND)
+        panel.SetSizer(sizer)
+
+        timestamps = np.array(timestamps, dtype=str)
+        opens = np.array(opens, dtype=float)
+        volumes = np.array(volumes, dtype=float)
+
+        (self.__mGraphAxValues, self.__mGraphAxVolume) = self.fig.subplots(1, 2)
+        
+        self.__mGraphAxValues.set_title(label1)
+        if timestamps is not None and len(timestamps) > 0x0:
+            self.__mGraphAxValues.plot(timestamps, opens)
+            self.__mGraphAxValues.fill_between(timestamps, min(opens), opens, alpha=0.5)
+            self.__mGraphLastValue = opens[len(opens) - 1]
+
+        if timestamps is not None and len(timestamps) > 0x0:
+            self.__mGraphAxVolume.set_title(label2)
+            self.__mGraphAxVolume.stem(timestamps, volumes)
+
+        return panel
+#endregion
+
+#region - Thread Methods
+    def __update_graph_thread(self):
+        while not self.__mThreadUpdateGraph.stopped():
+            stockView = DataSynchronization.sync_get_chart(self.__mStockViewData.get_crypto().get_sign(), APIConstants.VALUE_1D, APIConstants.VALUE_1M)
+            opens = np.array(stockView.get_opens(), dtype=float)
+
+            if self.__mGraphAxValues is not None and stockView.get_timestamps() is not None and len(stockView.get_timestamps()) > 0x0:
+                self.__mGraphAxValues.clear()
+
+                if self.__mGraphLastValue != opens[len(opens) - 1]:
+                    if self.__mGraphLastValue <= opens[len(opens) - 1]:
+                        self.__mGraphAxValues.plot(stockView.get_timestamps(), opens, "g")
+                        self.__mGraphLastColor = "g"
+                    else:
+                        self.__mGraphAxValues.plot(stockView.get_timestamps(), opens, "r")
+                        self.__mGraphLastColor = "r"
+                else:
+                    self.__mGraphAxValues.plot(stockView.get_timestamps(), opens, self.__mGraphLastColor)
+
+                self.__mGraphAxValues.fill_between(stockView.get_timestamps(), min(opens), opens, alpha=0.5)
+                self.__mGraphLastValue = opens[len(opens) - 1]
+                self.__mGraphAxValues.set_title(Strings.STR_1D_VALUES)
+
+                self.__mGraphAxVolume.clear()
+                self.__mGraphAxVolume.stem(stockView.get_timestamps(), stockView.get_volumes())
+                self.__mGraphAxVolume.set_title(Strings.STR_1D_VOLUME)
+
+                self.__mGraphOneDayCanvas.draw()
+                self.__mGraphOneDayCanvas.flush_events()
+                
+                if self.__mGraphOneDayPlot is not None:
+                    self.__mGraphOneDayPlot.update_values_with_color(stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float), self.__mGraphLastColor)
+
+            time.sleep(30)
 #endregion

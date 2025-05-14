@@ -1,9 +1,11 @@
 import json, yaml
 from Classes.Stock import Stock
+from Classes.Cryptocurrency import Cryptocurrency
 
 class StockView(object):
     
     __mStock : Stock = None
+    __mCrypto : Cryptocurrency = None
     __mQuarterlyMarketCap = None
     __mTrailingMarketCap = None
     __mQuarterlyEnterpriseValue = None
@@ -31,6 +33,9 @@ class StockView(object):
 #region - Get Methods
     def get_stock(self):
         return self.__mStock
+
+    def get_crypto(self):
+        return self.__mCrypto
 
     def get_quarterly_market_cap(self):
         return self.__mQuarterlyMarketCap
@@ -111,6 +116,9 @@ class StockView(object):
 #region - Set Methods
     def set_stock(self, stock):
         self.__mStock = stock
+
+    def set_crypto(self, crypto):
+        self.__mCrypto = crypto
 
     def set_quarterly_market_cap(self, stockQuarterlyMarketCap):
         self.__mStock__mQuarterlyMarketCap = stockQuarterlyMarketCap
@@ -194,6 +202,7 @@ class StockView(object):
         return  "####################\n"\
                 f"# {StockView.__name__}\n"\
                 f"#- __mStock: {str(self.__mStock)}\n"\
+                f"#- __mCrypto: {str(self.__mCrypto)}\n"\
                 f"#- __mQuarterlyMarketCap:\t\t\t\t\t\t{yaml.dump(self.get_quarterly_market_cap())}\n"\
                 f"#- __mTrailingMarketCap:\t\t{yaml.dump(self.get_trailing_market_cap())}\n"\
                 f"#- __mQuarterlyEnterpriseValue:\t\t{yaml.dump(self.get_quarterly_enterprise_value())}\n"\
