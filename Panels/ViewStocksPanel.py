@@ -77,7 +77,6 @@ class ViewStocksPanel(BasePanel):
 
     __mThreadUpdateGraph: StoppableThread = None
     __mThreadUpdateList: StoppableThread = None
-    __mThreadUpdateGraphPlotOneDay: StoppableThread = None
 
     __mTimerUpdateList = None
     __mTimerUpdateLeftPanel = None
@@ -103,7 +102,7 @@ class ViewStocksPanel(BasePanel):
     def __init__(self, parent, size, stocks, stock):
         super().__init__(parent, size)
         self.__mStocks = stocks
-        self.init_threads()
+        self.__init_threads()
         self.Bind(wx.EVT_WINDOW_DESTROY, self.__on_destroy_self)
         pub.subscribe(self.listen_filter_stock_panel, LISTEN_FILTER_STOCK_PANEL)
         self.__init_timers()
@@ -114,7 +113,7 @@ class ViewStocksPanel(BasePanel):
 
 #region - Private Methods
 #region - Init Methods
-    def init_threads(self):
+    def __init_threads(self):
         self.__mThreadUpdateGraph = StoppableThread(None, self.__update_graph_thread)
         self.__mThreadUpdateList = StoppableThread(None, self.__update_list_thread)
 
