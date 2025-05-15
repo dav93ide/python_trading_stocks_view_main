@@ -20,6 +20,25 @@ class CryptosViewList(wx.ListCtrl):
         self.__mWidth = width
         self.__mItems = []
 
+#region - Get Methods
+    def get_items(self):
+        return self.__mItems
+
+    def set_items(self, items):
+        self.__mItems = items
+
+    def get_filtered_items(self):
+        return self.__mFilteredItems
+
+    def add_item(self, item):
+        self.__mItems.append(item)
+#endregion
+
+#region - Set Methods
+    def set_filter_data(self, filter):
+        self.__mFilterData = filter
+#enderegion
+
 #region - Public Methods
     def init_layout(self):
         for i in range(0, len(self.LIST_COLUMNS_SIZES)):
@@ -28,11 +47,34 @@ class CryptosViewList(wx.ListCtrl):
 
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_item_selected)
 
+    def get_item_position(self, item):
+        for i in range(0, len(self.__mFilteredItems)):
+            item = self.__mFilteredItems[i]
+            if item.get_id() == item.get_id():
+                return i
+        return -1
+
+    def get_filtered_item_position(self, item):
+        for i in range(0, len(self.__mFilteredItems)):
+            item = self.__mFilteredItems[i]
+            if item.get_id() == item.get_id():
+                return i
+        return -1
+
     def add_items_and_populate(self, items):
         self.__mItems = items
         self.__mFilteredItems = items
         self.filter_items()
         self.populate_list()
+
+    def add_specific_filtered_items(self, items, start, end):
+        j = 0
+        for i in range(start, end):
+            self.__mFilteredItems[i] = items[j]
+            item = self.__mFilteredItems[i]
+            j += 1
+            if j >= len(items):
+                break
 
     def populate_list(self):
         self.DeleteAllItems()
@@ -84,4 +126,10 @@ class CryptosViewList(wx.ListCtrl):
 
     def filter_values(self):
         print("Filter")
+
+    def unbind_listener(self):
+        self.Unbind(wx.EVT_LIST_ITEM_SELECTED)
+
+    def bind_listener(self):
+        self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_item_selected)
 #endregion

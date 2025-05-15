@@ -54,12 +54,10 @@ class DataSynchronization(object):
         return stockView
 
     def sync_update_all_stocks(stocks):
-        ss = DataSynchronization.__update_all_stocks_data(stocks)
-        data = []
-        for s in ss:
-            if s is not None:
-                data.append(s)
-        return data
+        return DataSynchronization.__update_all_stocks_data(stocks)
+
+    def sync_update_all_cryptos(cryptos):
+        return DataSynchronization.__update_all_cryptos_data(cryptos)
 
     def sync_get_chart(symbol, rnge, interval):
         stockView = StockView()
@@ -525,7 +523,7 @@ class DataSynchronization(object):
         for i in range(0, len(stocks), 500):
             DataSynchronization.__update_stock_data(crumb, stocks[i:i+500])
 
-        if len(stocks) % 500 != 0:
+        if len(stocks) > 500 and len(stocks) % 500 != 0:
             DataSynchronization.__update_stock_data(crumb, stocks[-(len(stocks) % 500):])
 
         return stocks
@@ -662,6 +660,9 @@ class DataSynchronization(object):
                 if APIConstants.FIELD_DIVIDEND_RATE in j:
                     stock.set_dividend_rate(j[APIConstants.FIELD_DIVIDEND_RATE])
 
+#endregion
+
+#region - Update Cryptos Methods
     def __sync_get_all_cryptos():
         cryptos = []
         total = 250
@@ -706,10 +707,10 @@ class DataSynchronization(object):
                         crypto.set_fifty_two_weeks_high(j[APIConstants.FIELD_FIFTY_TWO_WEEK_HIGH][APIConstants.FIELD_RAW])
 
                     if APIConstants.FIELD_FIFTY_TWO_WEEK_CHANGE_PERCENT in j:
-                        crypto.set_fifty_two_weeks_perc_change(j[APIConstants.FIELD_FIFTY_TWO_WEEK_CHANGE_PERCENT][APIConstants.FIELD_FMT])
+                        crypto.set_fifty_two_weeks_perc_change(j[APIConstants.FIELD_FIFTY_TWO_WEEK_CHANGE_PERCENT][APIConstants.FIELD_RAW])
 
                     if APIConstants.FIELD_CIRCULATING_SUPPLY in j:
-                        crypto.set_circulating_supply(j[APIConstants.FIELD_CIRCULATING_SUPPLY][APIConstants.FIELD_FMT])
+                        crypto.set_circulating_supply(j[APIConstants.FIELD_CIRCULATING_SUPPLY][APIConstants.FIELD_RAW])
 
                     if APIConstants.FIELD_REGULAR_MARKET_DAY_RANGE in j:
                         crypto.set_regular_market_day_range(j[APIConstants.FIELD_REGULAR_MARKET_DAY_RANGE][APIConstants.FIELD_FMT])
@@ -719,6 +720,24 @@ class DataSynchronization(object):
 
                     if APIConstants.FIELD_REGULAR_MARKET_VOLUME in j:
                         crypto.set_volume(j[APIConstants.FIELD_REGULAR_MARKET_VOLUME][APIConstants.FIELD_RAW])
+
+                    if APIConstants.FIELD_VOLUME_24H in j:
+                        crypto.set_volume_twenty_four_hours(j[APIConstants.FIELD_VOLUME_24H][APIConstants.FIELD_RAW])
+
+                    if APIConstants.FIELD_VOLUME_ALL_CURRENCIES in j:
+                        crypto.set_volume_all_currencies(j[APIConstants.FIELD_VOLUME_ALL_CURRENCIES][APIConstants.FIELD_RAW])
+
+                    if APIConstants.FIELD_MARKET_CAP in j:
+                        crypto.set_market_cap(j[APIConstants.FIELD_MARKET_CAP][APIConstants.FIELD_RAW])
+
+                    if APIConstants.FIELD_REGULAR_MARKET_DAY_HIGH in j:
+                        crypto.set_day_max(j[APIConstants.FIELD_REGULAR_MARKET_DAY_HIGH][APIConstants.FIELD_RAW])
+
+                    if APIConstants.FIELD_REGULAR_MARKET_DAY_LOW in j:
+                        crypto.set_day_min(j[APIConstants.FIELD_REGULAR_MARKET_DAY_LOW][APIConstants.FIELD_RAW])
+
+                    if APIConstants.FIELD_LONG_NAME in j:
+                        crypto.set_name(j[APIConstants.FIELD_LONG_NAME])
 
                     cryptos.append(crypto)
 
@@ -730,6 +749,91 @@ class DataSynchronization(object):
                 start += 250
 
         return cryptos
+
+    def __update_all_cryptos_data(cryptos):        
+        cookie = DataSynchronization.__get_cookie_yahoo_finance_fake_request()
+        crumb = DataSynchronization.__get_crumb_yahoo_finance(cookie)
+
+        for i in range(0, len(cryptos), 250):
+            DataSynchronization.__update_crypto_data(crumb, cryptos[i:i+500])
+
+        if len(cryptos) > 250 and len(cryptos) % 250 != 0:
+            DataSynchronization.__update_crypto_data(crumb, cryptos[-(len(cryptos) % 500):])
+
+        return cryptos
+
+    def __update_crypto_data(crumb, cryptos):
+        symbols = []
+        for s in cryptos:
+            if s is not None:
+                symbols.append(s.get_sign())
+
+        jj = json.loads(Networking.download_quote_of_stock(",".join(symbols), crumb, APIConstants.HEADERS_ONE))
+
+        if jj is not None:
+            for i in range(0, len(jj[APIConstants.FIELD_QUOTE_RESPONSE][APIConstants.FIELD_RESULT])):
+                crypto = cryptos[i]
+
+                j = jj[APIConstants.FIELD_QUOTE_RESPONSE][APIConstants.FIELD_RESULT][i]
+
+                if APIConstants.FIELD_COIN_IMAGE_URL in j:
+                    crypto.set_image_url(j[APIConstants.FIELD_COIN_IMAGE_URL])
+
+                if APIConstants.FIELD_REGULAR_MARKET_CHANGE_PERCENT in j:
+                    crypto.set_market_change_percent(j[APIConstants.FIELD_REGULAR_MARKET_CHANGE_PERCENT])
+
+                if APIConstants.FIELD_FIFTY_TWO_WEEK_LOW_CHANGE_PERCENT in j:
+                    crypto.set_fifty_two_week_low_change_percent(j[APIConstants.FIELD_FIFTY_TWO_WEEK_LOW_CHANGE_PERCENT])
+
+                if APIConstants.FIELD_FIFTY_TWO_WEEK_HIGH_CHANGE_PERCENT in j:
+                    crypto.set_fifty_two_week_high_change_percent(j[APIConstants.FIELD_FIFTY_TWO_WEEK_HIGH_CHANGE_PERCENT])
+
+                if APIConstants.FIELD_FIFTY_TWO_WEEK_LOW_CHANGE in j:
+                    crypto.set_fifty_two_week_low_change(j[APIConstants.FIELD_FIFTY_TWO_WEEK_LOW_CHANGE])
+
+                if APIConstants.FIELD_FIFTY_TWO_WEEK_HIGH_CHANGE in j:
+                    crypto.set_fifty_two_week_high_change(j[APIConstants.FIELD_FIFTY_TWO_WEEK_HIGH_CHANGE])
+
+                if APIConstants.FIELD_FIFTY_TWO_WEEK_LOW in j:
+                    crypto.set_fifty_two_weeks_low(j[APIConstants.FIELD_FIFTY_TWO_WEEK_LOW])
+
+                if APIConstants.FIELD_FIFTY_TWO_WEEK_HIGH in j:
+                    crypto.set_fifty_two_weeks_high(j[APIConstants.FIELD_FIFTY_TWO_WEEK_HIGH])
+
+                if APIConstants.FIELD_FIFTY_TWO_WEEK_CHANGE_PERCENT in j:
+                    crypto.set_fifty_two_weeks_perc_change(j[APIConstants.FIELD_FIFTY_TWO_WEEK_CHANGE_PERCENT])
+
+                if APIConstants.FIELD_CIRCULATING_SUPPLY in j:
+                    crypto.set_circulating_supply(j[APIConstants.FIELD_CIRCULATING_SUPPLY])
+
+                if APIConstants.FIELD_REGULAR_MARKET_DAY_RANGE in j:
+                    crypto.set_regular_market_day_range(j[APIConstants.FIELD_REGULAR_MARKET_DAY_RANGE])
+
+                if APIConstants.FIELD_REGULAR_MARKET_PRICE in j:
+                    crypto.set_price(j[APIConstants.FIELD_REGULAR_MARKET_PRICE])
+
+                if APIConstants.FIELD_REGULAR_MARKET_VOLUME in j:
+                    crypto.set_volume(j[APIConstants.FIELD_REGULAR_MARKET_VOLUME])
+
+                if APIConstants.FIELD_VOLUME_24H in j:
+                    crypto.set_volume_twenty_four_hours(j[APIConstants.FIELD_VOLUME_24H])
+
+                if APIConstants.FIELD_VOLUME_ALL_CURRENCIES in j:
+                    crypto.set_volume_all_currencies(j[APIConstants.FIELD_VOLUME_ALL_CURRENCIES])
+
+                if APIConstants.FIELD_MARKET_CAP in j:
+                    crypto.set_market_cap(j[APIConstants.FIELD_MARKET_CAP])
+
+                if APIConstants.FIELD_REGULAR_MARKET_DAY_HIGH in j:
+                    crypto.set_day_max(j[APIConstants.FIELD_REGULAR_MARKET_DAY_HIGH])
+
+                if APIConstants.FIELD_REGULAR_MARKET_DAY_LOW in j:
+                    crypto.set_day_min(j[APIConstants.FIELD_REGULAR_MARKET_DAY_LOW])
+
+                if APIConstants.FIELD_LONG_NAME in j:
+                    crypto.set_name(j[APIConstants.FIELD_LONG_NAME])
+
+                
 
 #endregion
 #endregion

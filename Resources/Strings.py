@@ -141,6 +141,9 @@ class Strings(object):
     STR_FIELD_EPS_CURRENT_YEAR = "EPS Current Year:"
     STR_FIELD_EPS_TRAILING_TWELVE_MONTHS = "EPS Trailing 12 Months:"
     STR_FIELD_EPS_FORWARD = "EPS Forward:"
+    STR_FIELD_CIRCULATING_SUPPLY = "Circulating Supply:"
+    STR_FIELD_VOLUME_24H = "Volume 24H:"
+    STR_FIELD_VOLUME_ALL_CURRENCIES = "Volume All Currencies:"
 
     STR_SPECIFICS_BOT = "Specifics of the BOT:"
     STR_DATA_MAKING_BOT = [
@@ -188,6 +191,7 @@ class Strings(object):
 
 #region - Error Strings
     STR_ERROR_JSON = "Json Error"
+    STR_ERROR_GRAPH = "Graph Error"
 #endregion
 
 #region - Messages Question Strings

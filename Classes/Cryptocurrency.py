@@ -16,6 +16,8 @@ class Cryptocurrency(BaseAsset):
     __mFiftyTwoWeekLowChange = None
     __mFiftyTwoWeekHighChange = None
     __mRegularMarketDayRange = None
+    __mVolumeTwentyFourHours = None
+    __mVolumeAllCurrencies = None
 
     def __init__(self, id):
         super().__init__(id)
@@ -62,6 +64,12 @@ class Cryptocurrency(BaseAsset):
 
     def get_regular_market_day_range(self):
         return self.__mRegularMarketDayRange
+        
+    def get_volume_twenty_four_hours(self):
+        return self.__mVolumeTwentyFourHours
+
+    def get_volume_all_currencies(self):
+        return self.__mVolumeAllCurrencies
 #endregion
 
 #region - Setter Methods
@@ -106,6 +114,12 @@ class Cryptocurrency(BaseAsset):
 
     def set_regular_market_day_range(self, rng):
         self.__mRegularMarketDayRange = rng
+
+    def set_volume_twenty_four_hours(self, volume):
+        self.__mVolumeTwentyFourHours = volume
+
+    def set_volume_all_currencies(self, volume):
+        self.__mVolumeAllCurrencies = volume
 #endregion
 
     # To String
@@ -127,4 +141,6 @@ class Cryptocurrency(BaseAsset):
                 f"#- __mFiftyTwoWeekLowChange: {self.__mFiftyTwoWeekLowChange}\n"\
                 f"#- __mFiftyTwoWeekHighChange: {self.__mFiftyTwoWeekHighChange}\n"\
                 f"#- __mRegularMarketDayRange: {self.__mRegularMarketDayRange}\n"\
+                f"#- __mVolumeTwentyFourHours: {self.__mVolumeTwentyFourHours}\n"\
+                f"#- __mVolumeAllCurrencies: {self.__mVolumeAllCurrencies}\n"\
                 "####################"

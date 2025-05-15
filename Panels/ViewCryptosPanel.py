@@ -8,6 +8,8 @@ from Resources.Constants import Icons
 from Lists.CryptosViewList import CryptosViewList
 from Networking.DataSynchronization import DataSynchronization
 from Utils.WxUtils import WxUtils
+from Utils.TextUtils import TextUtils
+from Utils.NumberUtils import NumberUtils
 from Resources.Constants import Colors
 import matplotlib.cm as cm
 import numpy as np
@@ -18,10 +20,16 @@ from matplotlib.figure import Figure
 from Threads.StoppableThread import StoppableThread
 from Networking.APIConstants import APIConstants
 from Frames.ViewCryptosFrame import ViewCryptosFrame
+from Environment import Environment
+from Frames.ChartFrame import ChartFrame
 
 class ViewCryptosPanel(BasePanel):
 
     __mThreadUpdateGraph: StoppableThread = None
+    __mThreadUpdateList: StoppableThread = None
+
+    __mTimerUpdateList = None
+    __mTimerUpdateLeftPanel = None
 
     __mbsMainBox = None
     __mMainSplitter = None
@@ -31,12 +39,20 @@ class ViewCryptosPanel(BasePanel):
     __mtxSearchList = None
     __mList = None
 
+    __mDataPanel = None
     __mBoxSizerData = None
     __msbCryptoImage = None
-    __mstMarketPercentage = None
-
-    __mDataPanel = None
     __mGraphsSizer = None
+    __mstMarketPercentage = None
+    __mstMarketCap = None
+    __mstDayMax = None
+    __mstDayMin = None
+    __mstFiftyTwoWeeksHigh = None
+    __mstFiftyTwoWeeksLow = None
+    __mstFifityTwoWeeksPercChange = None
+    __mstVolume = None
+    __mstVolumeTwentyFourHours = None
+    __mstVolumeAllCurrencies = None
 
     __mGraphOneDayPlot = None
     __mGraphOneDayCanvas = None
@@ -63,6 +79,7 @@ class ViewCryptosPanel(BasePanel):
         super().__init__(parent, size)
         self.__mCryptos = cryptos
         self.__init_threads()
+        self.__init_timers()
         self.Bind(wx.EVT_WINDOW_DESTROY, self.__on_destroy_self)
         self.__init_layout()
 
@@ -71,6 +88,17 @@ class ViewCryptosPanel(BasePanel):
 
     def __init_threads(self):
         self.__mThreadUpdateGraph = StoppableThread(None, self.__update_graph_thread)
+        self.__mThreadUpdateList = StoppableThread(None, self.__update_list_thread)
+
+    def __init_timers(self):
+        self.__mTimerUpdateList = wx.Timer(self, -1)
+        self.__mTimerUpdateList.Start(20000)
+
+        self.__mTimerUpdateLeftPanel = wx.Timer(self, -1)
+        self.__mTimerUpdateLeftPanel.Start(20000)
+
+        self.Bind(wx.EVT_TIMER, self.__repopulate_list, self.__mTimerUpdateList)
+        self.Bind(wx.EVT_TIMER, self.__update_left_panel_data, self.__mTimerUpdateLeftPanel)
 
     def __init_layout(self):
         self.__mbsMainBox = wx.BoxSizer(wx.HORIZONTAL)
@@ -123,6 +151,9 @@ class ViewCryptosPanel(BasePanel):
         self.__mRightPanel.SetSizer(main)
         self.__mRightPanel.Fit()
 
+        if not self.__mThreadUpdateList.is_alive():
+            self.__mThreadUpdateList.start()
+
     def __init_left_panel(self):
         self.__mLeftPanel = wx.lib.scrolledpanel.ScrolledPanel(self.__mMainSplitter, wx.ID_ANY)
         self.__mLeftPanel.Fit()
@@ -131,7 +162,10 @@ class ViewCryptosPanel(BasePanel):
 
 #region - Event Handler Methods
     def __on_destroy_self(self, evt):
+        self.__mTimerUpdateList.Stop()
+        self.__mTimerUpdateLeftPanel.Stop()
         self.__mThreadUpdateGraph.stop()
+        self.__mThreadUpdateList.stop()
 
     def __on_change_search_list_value(self, evt):
         self.__mList.filter_items_by_name(evt.GetString())
@@ -286,6 +320,42 @@ class ViewCryptosPanel(BasePanel):
                 cryptos.append(c)
         frame = ViewCryptosFrame(self.__mStockViewData.get_crypto().get_sign(), cryptos, self.__mStockViewData.get_crypto())
         frame.Show()
+
+    def __repopulate_list(self, event):
+        list_total = self.__mList.GetItemCount()
+        list_top = self.__mList.GetTopItem()
+        list_pp = self.__mList.GetCountPerPage()
+        list_bottom = min(list_top + list_pp, list_total - 1)
+        self.__mList.populate_list()
+        if list_bottom != 0:
+            self.__mList.EnsureVisible((list_bottom - 1))
+        filtered = self.__mList.get_filtered_items()
+        if filtered is not None and len(filtered) > 0:
+            for i in range(0, len(filtered)):
+                if self.__mStockViewData is not None and self.__mStockViewData.get_crypto() is not None and self.__mStockViewData.get_crypto().get_sign() == filtered[i].get_sign():
+                    self.__mList.unbind_listener()
+                    self.__mList.Select(i)
+                    self.__mList.bind_listener()
+                    break
+        self.__mLeftPanel.Layout()
+
+    def __update_left_panel_data(self, event):
+        if self.__mStockViewData is not None:
+            self.__mstMarketPercentage.SetLabel(str(round(self.__mStockViewData.get_crypto().get_market_change_percent(), 2))  + "%")
+            self.__mstPrice.SetLabel("$" + str(self.__mStockViewData.get_crypto().get_price()))
+            self.__mstMarketCap.SetLabel(TextUtils.convert_number_to_millions_form(self.__mStockViewData.get_crypto().get_market_cap()))
+            self.__mstDayMax.SetLabel(str(self.__mStockViewData.get_crypto().get_day_max()))
+            self.__mstDayMin.SetLabel(str(self.__mStockViewData.get_crypto().get_day_min()))
+            self.__mstFiftyTwoWeeksHigh.SetLabel(str(self.__mStockViewData.get_crypto().get_fifty_two_weeks_high()))
+            self.__mstFiftyTwoWeeksLow.SetLabel(str(self.__mStockViewData.get_crypto().get_fifty_two_weeks_low()))
+            self.__mstFifityTwoWeeksPercChange.SetLabel(str(NumberUtils.safe_round(self.__mStockViewData.get_crypto().get_fifty_two_weeks_perc_change(), 2)))
+            self.__mstVolume.SetLabel(TextUtils.convert_number_with_commas_form(self.__mStockViewData.get_crypto().get_volume()))
+            self.__mstVolumeTwentyFourHours.SetLabel(TextUtils.convert_number_with_commas_form(self.__mStockViewData.get_crypto().get_volume_twenty_four_hours()))
+            self.__mstVolumeAllCurrencies.SetLabel(TextUtils.convert_number_with_commas_form(self.__mStockViewData.get_crypto().get_volume_all_currencies()))
+            self.__mLeftPanel.Layout()
+
+    def __on_destroy_graph_one_day_plot(self, event):
+        self.__mGraphOneDayPlot = None
 #endregion
 
 #region - Private Methods
@@ -356,7 +426,11 @@ class ViewCryptosPanel(BasePanel):
         self.__msbCryptoImage = wx.StaticBitmap(panel, wx.ID_ANY, image, wx.DefaultPosition, wx.DefaultSize, 0)
         hbs.Add(self.__msbCryptoImage, 0, wx.EXPAND)
         hbs.AddSpacer(50)        
-        st = wx.StaticText(panel, label = self.__mStockViewData.get_crypto().get_sign(), style = wx.ALIGN_LEFT)
+        st = wx.StaticText(panel, label = "(" + self.__mStockViewData.get_crypto().get_sign() + ")", style = wx.ALIGN_LEFT)
+        WxUtils.set_font_size_and_bold_and_roman(st, 30)
+        hbs.Add(st, 0, wx.EXPAND)
+        hbs.AddSpacer(25)
+        st = wx.StaticText(panel, label = self.__mStockViewData.get_crypto().get_name(), style = wx.ALIGN_LEFT)
         WxUtils.set_font_size_and_bold_and_roman(st, 30)
         hbs.Add(st, 0, wx.EXPAND)
         vbs.Add(hbs, 0, wx.EXPAND)
@@ -387,6 +461,14 @@ class ViewCryptosPanel(BasePanel):
         self.__mGraphsSizer = wx.BoxSizer(wx.VERTICAL)
         self.__mGraphsSizer.Add(self.__get_chart_row_thread_managed(self.__mDataPanel, Strings.STR_1D_VALUES, Strings.STR_1D_VOLUME, self.__mStockViewData.get_timestamps(), self.__mStockViewData.get_opens(), self.__mStockViewData.get_closes(), self.__mStockViewData.get_volumes()), 0, wx.EXPAND)
         vbs.Add(self.__mGraphsSizer, 0, wx.EXPAND)
+        vbs.AddSpacer(10)
+        vbs.Add(self.__get_zero_row_info(self.__mDataPanel), 0, wx.EXPAND)
+        vbs.AddSpacer(10)
+        vbs.Add(self.__get_first_row_info(self.__mDataPanel), 0, wx.EXPAND)
+        vbs.AddSpacer(10)
+        vbs.Add(self.__get_second_row_info(self.__mDataPanel), 0, wx.EXPAND)
+        vbs.AddSpacer(10)
+        vbs.Add(self.__get_third_row_info(self.__mDataPanel), 0, wx.EXPAND)
         vbs.AddSpacer(10)
         vbs.Add(self.__get_panel_open_in_new_window(self.__mDataPanel), 0, wx.EXPAND)
         vbs.AddSpacer(10)
@@ -432,6 +514,189 @@ class ViewCryptosPanel(BasePanel):
             self.__mGraphAxVolume.set_title(label2)
             self.__mGraphAxVolume.stem(timestamps, volumes)
 
+        return panel
+
+    def __get_chart_row(self, parent, label1, label2, timestamps, opens, closes, volumes):
+        panel = wx.Panel(parent)
+        fig = Figure(figsize=(2, 4))
+        canvas = FigureCanvas(panel, -1, fig)
+        toolbar = NavigationToolbar(canvas)
+        toolbar.Realize()
+
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(canvas, 1, wx.EXPAND)
+        sizer.Add(toolbar, 0, wx.LEFT | wx.EXPAND)
+        panel.SetSizer(sizer)
+
+        opens = np.array(opens, dtype=float)
+
+        (ax1, ax2) = fig.subplots(1, 2)
+        ax1.set_title(label1)
+        ax1.plot(timestamps, opens)
+        ax1.fill_between(timestamps, min(opens), opens, alpha=0.5)
+
+        ax2.set_title(label2)
+        ax2.stem(timestamps, volumes)
+
+        return panel
+
+    def __get_zero_row_info(self, parent):
+        panel = wx.Panel(parent)
+        hbs = wx.BoxSizer(wx.HORIZONTAL)
+        hbs.AddSpacer(10)
+        
+        st = wx.StaticText(panel, label = Strings.STR_FIELD_MARKET_CAP, style = wx.ALIGN_LEFT)
+        WxUtils.set_font_size(st, 15)
+        hbs.Add(st, 0, wx.ALL|wx.EXPAND)
+        hbs.AddSpacer(5)
+        self.__mstMarketCap = wx.StaticText(panel, label = TextUtils.convert_number_to_millions_form(self.__mStockViewData.get_crypto().get_market_cap()), style = wx.ALIGN_RIGHT)
+        font = WxUtils.set_font_size(self.__mstMarketCap, 15)
+        hbs.Add(self.__mstMarketCap, 0, wx.ALL|wx.EXPAND)
+
+        dc = wx.ScreenDC()
+        dc.SetFont(font)
+        w, h = dc.GetTextExtent(st.GetLabel() + self.__mstMarketCap.GetLabel())
+
+        hbs.AddSpacer(350 - w)
+
+        st = wx.StaticText(panel, label = Strings.STR_FIELD_CIRCULATING_SUPPLY, style = wx.ALIGN_LEFT)
+        WxUtils.set_font_size(st, 15)
+        hbs.Add(st, 0, wx.ALL|wx.EXPAND)
+        hbs.AddSpacer(5)
+        if self.__mStockViewData.get_crypto().get_circulating_supply() is not None:
+            st = wx.StaticText(panel, label = TextUtils.convert_number_to_millions_form(int(self.__mStockViewData.get_crypto().get_circulating_supply())), style = wx.ALIGN_RIGHT)
+        else:
+            st = wx.StaticText(panel, label = Strings.STR_UNDEFINED, style = wx.ALIGN_RIGHT)
+        WxUtils.set_font_size(st, 15)
+        hbs.Add(st, 0, wx.ALL|wx.EXPAND)
+
+        panel.SetSizer(hbs)
+        return panel
+
+    def __get_first_row_info(self, parent):
+        panel = wx.Panel(parent)
+        hbs = wx.BoxSizer(wx.HORIZONTAL)
+        hbs.AddSpacer(10)
+
+        st = wx.StaticText(panel, label = Strings.STR_FIELD_DAY_MAX, style = wx.ALIGN_LEFT)
+        WxUtils.set_font_size(st, 15)
+        hbs.Add(st, 0, wx.ALL|wx.EXPAND)
+        hbs.AddSpacer(5)
+        self.__mstDayMax = wx.StaticText(panel, label = str(self.__mStockViewData.get_crypto().get_day_max()), style = wx.ALIGN_RIGHT)
+        self.__mstDayMax.SetForegroundColour(Colors.GREEN)
+        font = WxUtils.set_font_size(self.__mstDayMax, 15)
+        hbs.Add(self.__mstDayMax, 0, wx.ALL|wx.EXPAND)
+
+        dc = wx.ScreenDC()
+        dc.SetFont(font)
+        w, h = dc.GetTextExtent(st.GetLabel() + self.__mstDayMax.GetLabel())
+
+        hbs.AddSpacer(350 - w)
+
+        st = wx.StaticText(panel, label = Strings.STR_FIELD_DAY_MIN, style = wx.ALIGN_LEFT)
+        WxUtils.set_font_size(st, 15)
+        hbs.Add(st, 0, wx.ALL|wx.EXPAND)
+        hbs.AddSpacer(5)
+        self.__mstDayMin = wx.StaticText(panel, label = str(self.__mStockViewData.get_crypto().get_day_min()), style = wx.ALIGN_RIGHT)
+        self.__mstDayMin.SetForegroundColour(Colors.RED)
+        WxUtils.set_font_size(self.__mstDayMin, 15)
+        hbs.Add(self.__mstDayMin, 0, wx.ALL|wx.EXPAND)
+
+        panel.SetSizer(hbs)
+        return panel
+
+    def __get_second_row_info(self, parent):
+        panel = wx.Panel(parent)
+        hbs = wx.BoxSizer(wx.HORIZONTAL)
+        hbs.AddSpacer(10)
+
+        st = wx.StaticText(panel, label = Strings.STR_FIELD_52_WEEKS_MAX, style = wx.ALIGN_LEFT)
+        WxUtils.set_font_size(st, 15)
+        hbs.Add(st, 0, wx.ALL|wx.EXPAND)
+        hbs.AddSpacer(5)
+        self.__mstFiftyTwoWeeksHigh = wx.StaticText(panel, label = str(self.__mStockViewData.get_crypto().get_fifty_two_weeks_high()), style = wx.ALIGN_RIGHT)
+        font = WxUtils.set_font_size(self.__mstFiftyTwoWeeksHigh, 15)
+        self.__mstFiftyTwoWeeksHigh.SetForegroundColour(Colors.GREEN)
+        hbs.Add(self.__mstFiftyTwoWeeksHigh, 0, wx.ALL|wx.EXPAND)
+
+        dc = wx.ScreenDC()
+        dc.SetFont(font)
+        w, h = dc.GetTextExtent(st.GetLabel() + self.__mstFiftyTwoWeeksHigh.GetLabel())
+
+        hbs.AddSpacer(350 - w)
+
+        st = wx.StaticText(panel, label = Strings.STR_FIELD_52_WEEKS_MIN, style = wx.ALIGN_LEFT)
+        WxUtils.set_font_size(st, 15)
+        hbs.Add(st, 0, wx.ALL|wx.EXPAND)
+        hbs.AddSpacer(5)
+        self.__mstFiftyTwoWeeksLow = wx.StaticText(panel, label = str(self.__mStockViewData.get_crypto().get_fifty_two_weeks_low()), style = wx.ALIGN_RIGHT)
+        WxUtils.set_font_size(self.__mstFiftyTwoWeeksLow, 15)
+        self.__mstFiftyTwoWeeksLow.SetForegroundColour(Colors.RED)
+        hbs.Add(self.__mstFiftyTwoWeeksLow, 0, wx.ALL|wx.EXPAND)
+
+        dc = wx.ScreenDC()
+        dc.SetFont(font)
+        w, h = dc.GetTextExtent(st.GetLabel() + self.__mstFiftyTwoWeeksLow.GetLabel())
+
+        hbs.AddSpacer(350 - w)
+
+        st = wx.StaticText(panel, label = Strings.STR_FIELD_52_WEEKS_PERC_CHANGE, style = wx.ALIGN_LEFT)
+        WxUtils.set_font_size(st, 15)
+        hbs.Add(st, 0, wx.ALL|wx.EXPAND)
+        hbs.AddSpacer(5)
+        self.__mstFifityTwoWeeksPercChange = wx.StaticText(panel, label = str(NumberUtils.safe_round(self.__mStockViewData.get_crypto().get_fifty_two_weeks_perc_change(), 2)), style = wx.ALIGN_RIGHT)
+        WxUtils.set_font_size(self.__mstFifityTwoWeeksPercChange, 15)
+        if self.__mStockViewData.get_crypto().get_fifty_two_weeks_perc_change() > 0:
+            self.__mstFifityTwoWeeksPercChange.SetForegroundColour(Colors.GREEN)
+        else:
+            self.__mstFifityTwoWeeksPercChange.SetForegroundColour(Colors.RED)
+        hbs.Add(self.__mstFifityTwoWeeksPercChange, 0, wx.ALL|wx.EXPAND)
+
+        panel.SetSizer(hbs)
+        return panel
+
+    def __get_third_row_info(self, parent):
+        panel = wx.Panel(parent)
+        hbs = wx.BoxSizer(wx.HORIZONTAL)
+        hbs.AddSpacer(10)
+
+        st = wx.StaticText(panel, label = Strings.STR_FIELD_VOLUME, style = wx.ALIGN_LEFT)
+        WxUtils.set_font_size(st, 15)
+        hbs.Add(st, 0, wx.ALL|wx.EXPAND)
+        hbs.AddSpacer(5)
+        self.__mstVolume = wx.StaticText(panel, label = TextUtils.convert_number_with_commas_form(self.__mStockViewData.get_crypto().get_volume()), style = wx.ALIGN_RIGHT)
+        font = WxUtils.set_font_size(self.__mstVolume, 15)
+        hbs.Add(self.__mstVolume, 0, wx.ALL|wx.EXPAND)
+
+        dc = wx.ScreenDC()
+        dc.SetFont(font)
+        w, h = dc.GetTextExtent(st.GetLabel() + self.__mstVolume.GetLabel())
+
+        hbs.AddSpacer(350 - w)
+
+        st = wx.StaticText(panel, label = Strings.STR_FIELD_VOLUME_24H, style = wx.ALIGN_LEFT)
+        WxUtils.set_font_size(st, 15)
+        hbs.Add(st, 0, wx.ALL|wx.EXPAND)
+        hbs.AddSpacer(5)
+        self.__mstVolumeTwentyFourHours = wx.StaticText(panel, label = TextUtils.convert_number_with_commas_form(self.__mStockViewData.get_crypto().get_volume_twenty_four_hours()), style = wx.ALIGN_RIGHT)
+        WxUtils.set_font_size(self.__mstVolumeTwentyFourHours, 15)
+        hbs.Add(self.__mstVolumeTwentyFourHours, 0, wx.ALL|wx.EXPAND)
+
+        dc = wx.ScreenDC()
+        dc.SetFont(font)
+        w, h = dc.GetTextExtent(st.GetLabel() + self.__mstVolumeTwentyFourHours.GetLabel())
+
+        hbs.AddSpacer(350 - w)
+
+        st = wx.StaticText(panel, label = Strings.STR_FIELD_VOLUME_ALL_CURRENCIES, style = wx.ALIGN_LEFT)
+        WxUtils.set_font_size(st, 15)
+        hbs.Add(st, 0, wx.ALL|wx.EXPAND)
+        hbs.AddSpacer(5)
+        self.__mstVolumeAllCurrencies = wx.StaticText(panel, label = TextUtils.convert_number_with_commas_form(NumberUtils.safe_round(self.__mStockViewData.get_crypto().get_volume_all_currencies(), 2)), style = wx.ALIGN_RIGHT)
+        WxUtils.set_font_size(self.__mstVolumeAllCurrencies, 15)
+        hbs.Add(self.__mstVolumeAllCurrencies, 0, wx.ALL|wx.EXPAND)
+
+        panel.SetSizer(hbs)
         return panel
 
     def __get_panel_open_in_new_window(self, parent):
@@ -542,15 +807,18 @@ class ViewCryptosPanel(BasePanel):
             if self.__mGraphAxValues is not None and stockView.get_timestamps() is not None and len(stockView.get_timestamps()) > 0x0:
                 self.__mGraphAxValues.clear()
 
-                if self.__mGraphLastValue != opens[len(opens) - 1]:
-                    if self.__mGraphLastValue <= opens[len(opens) - 1]:
-                        self.__mGraphAxValues.plot(stockView.get_timestamps(), opens, "g")
-                        self.__mGraphLastColor = "g"
+                try:
+                    if self.__mGraphLastValue != opens[len(opens) - 1]:
+                        if self.__mGraphLastValue <= opens[len(opens) - 1]:
+                            self.__mGraphAxValues.plot(stockView.get_timestamps(), opens, "g")
+                            self.__mGraphLastColor = "g"
+                        else:
+                            self.__mGraphAxValues.plot(stockView.get_timestamps(), opens, "r")
+                            self.__mGraphLastColor = "r"
                     else:
-                        self.__mGraphAxValues.plot(stockView.get_timestamps(), opens, "r")
-                        self.__mGraphLastColor = "r"
-                else:
-                    self.__mGraphAxValues.plot(stockView.get_timestamps(), opens, self.__mGraphLastColor)
+                        self.__mGraphAxValues.plot(stockView.get_timestamps(), opens, self.__mGraphLastColor)
+                except:
+                    Environment().get_logger().error(ViewCryptosPanel.__name__ + " - " + Strings.STR_ERROR_GRAPH)
 
                 self.__mGraphAxValues.fill_between(stockView.get_timestamps(), min(opens), opens, alpha=0.5)
                 self.__mGraphLastValue = opens[len(opens) - 1]
@@ -566,5 +834,28 @@ class ViewCryptosPanel(BasePanel):
                 if self.__mGraphOneDayPlot is not None:
                     self.__mGraphOneDayPlot.update_values_with_color(stockView.get_timestamps(), np.array(stockView.get_opens(), dtype=float), self.__mGraphLastColor)
 
+            time.sleep(30)
+
+    def __update_list_thread(self):
+        while not self.__mThreadUpdateList.stopped():
+            list_top = self.__mList.GetTopItem()
+            pos = self.__mList.get_filtered_item_position(list_top)
+            list_pp = self.__mList.GetCountPerPage()
+            cryptos = []
+            filteredItems = self.__mList.get_filtered_items()
+            if pos + list_pp <= len(filteredItems):
+                for i in range(pos, pos + list_pp):
+                    s = filteredItems[i]
+                    if s is not None:
+                        cryptos.append(s)
+                cryptos = DataSynchronization.sync_update_all_cryptos(cryptos)
+                self.__mList.add_specific_filtered_items(cryptos, list_top, pos + list_pp)
+            else:
+                for i in range(pos, len(filteredItems)):
+                    s = filteredItems[i]
+                    if s is not None:
+                        cryptos.append(s)
+                cryptos = DataSynchronization.sync_update_all_cryptos(cryptos)
+                self.__mList.add_specific_filtered_items(cryptos, list_top, len(filteredItems))
             time.sleep(30)
 #endregion

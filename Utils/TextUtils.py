@@ -18,3 +18,13 @@ class TextUtils(object):
             return str(round(value / MILLION, 2)) + " m."
         else:
             return str(round(value / THOUSAND, 2)) + " k."
+
+    def convert_number_with_commas_form(value):
+        ret = ""
+        val = str(value)[::-1]
+        for i in range(0, len(val)):
+            c = val[i]
+            if i != 0 and i % 3 == 0:
+                ret += ","
+            ret += c
+        return ret[::-1]

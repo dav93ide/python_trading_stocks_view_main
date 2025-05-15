@@ -175,4 +175,6 @@ class APIConstants(object):
     FIELD_FIFTY_TWO_WEEK_HIGH = "fiftyTwoWeekHigh"
     FIELD_CIRCULATING_SUPPLY = "circulatingSupply"
     FIELD_REGULAR_MARKET_DAY_RANGE = "regularMarketDayRange"
+    FIELD_VOLUME_24H = "volume24Hr"
+    FIELD_VOLUME_ALL_CURRENCIES = "volumeAllCurrencies"
 #endregion
