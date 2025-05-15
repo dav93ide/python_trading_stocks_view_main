@@ -83,8 +83,8 @@ class ViewCryptosPanel(BasePanel):
         self.Bind(wx.EVT_WINDOW_DESTROY, self.__on_destroy_self)
         self.__init_layout()
 
-        # if crypto is not None:
-        #     self.__on_click_item_list(crypto)
+        if crypto is not None:
+            self.__on_click_item_list(crypto)
 
     def __init_threads(self):
         self.__mThreadUpdateGraph = StoppableThread(None, self.__update_graph_thread)
