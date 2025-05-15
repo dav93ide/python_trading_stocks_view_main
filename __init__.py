@@ -34,6 +34,7 @@
         ChartFrame.py
         ViewStocksFrame.py
         SearchStockFrame.py
+        ViewCryptosFrame.py
 
 
     Resources/

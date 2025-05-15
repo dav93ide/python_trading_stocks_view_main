@@ -17,6 +17,7 @@ from matplotlib.backends.backend_wxagg import NavigationToolbar2WxAgg as Navigat
 from matplotlib.figure import Figure
 from Threads.StoppableThread import StoppableThread
 from Networking.APIConstants import APIConstants
+from Frames.ViewCryptosFrame import ViewCryptosFrame
 
 class ViewCryptosPanel(BasePanel):
 
@@ -283,7 +284,7 @@ class ViewCryptosPanel(BasePanel):
         for c in self.__mCryptos:
             if c is not None:
                 cryptos.append(c)
-        frame = ViewStocksFrame(self.__mStockViewData.get_crypto().get_sign(), stocks, self.__mStockViewData.get_crypto())
+        frame = ViewCryptosFrame(self.__mStockViewData.get_crypto().get_sign(), cryptos, self.__mStockViewData.get_crypto())
         frame.Show()
 #endregion
 

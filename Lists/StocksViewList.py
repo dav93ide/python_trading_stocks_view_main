@@ -48,11 +48,33 @@ class StocksViewList(wx.ListCtrl):
 
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_item_selected)
 
+    def get_item_position(self, item):
+        for i in range(0, len(self.__mFilteredItems)):
+            item = self.__mFilteredItems[i]
+            if item.get_id() == item.get_id():
+                return i
+        return -1
+
+    def get_filtered_item_position(self, item):
+        for i in range(0, len(self.__mFilteredItems)):
+            item = self.__mFilteredItems[i]
+            if item.get_id() == item.get_id():
+                return i
+        return -1
+
     def add_items_and_populate(self, items):
         self.__mItems = items
         self.__mFilteredItems = items
         self.filter_items()
         self.populate_list()
+
+    def add_specific_filtered_items(self, items, start, end):
+        j = 0
+        for i in range(start, end):
+            self.__mFilteredItems[i] = items[j]
+            j += 1
+            if j >= len(items):
+                break
 
     def populate_list(self):
         self.DeleteAllItems()
