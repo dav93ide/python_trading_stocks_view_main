@@ -12,6 +12,7 @@
             StockView.py
         FilterClasses/
             FilterSearchStockPanel.py
+            FilterSearchCryptoPanel.py
         BalanceSheet.py
         CurrencyAsset.py
         CashFlow.py
@@ -34,7 +35,8 @@
         ChartFrame.py
         ViewStocksFrame.py
         SearchStockFrame.py
-        ViewCryptosFrame.py
+        ViewCryptoFrame.py
+        SearchCryptoFrame.py
 
 
     Resources/
@@ -57,6 +59,7 @@
         ViewStocksPanel.py
         SearchStockPanel.py
         ViewCryptosPanel.py
+        SearchCryptoPanel.py
 
 
     Dialogs/

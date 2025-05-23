@@ -20,13 +20,13 @@ import requests
 class DataSynchronization(object):
 
 #region - Public Methods
-    def sync_all_stocks_and_symbols():
+    def sync_all_stocks_and_symbols(pd):
         stocks = []            
         try:
             symbols = DataSynchronization.__sync_get_all_stocks_symbols()
             cookie = DataSynchronization.__get_cookie_yahoo_finance_fake_request()
             crumb = DataSynchronization.__get_crumb_yahoo_finance(cookie)
-            stocks = DataSynchronization.__sync_initial_all_stocks_data(symbols, crumb)
+            stocks = DataSynchronization.__sync_initial_all_stocks_data(symbols, crumb, pd)
         except:
             return stocks
         return stocks
@@ -64,8 +64,8 @@ class DataSynchronization(object):
         DataSynchronization.__sync_chart(symbol, rnge, interval, stockView)
         return stockView
 
-    def sync_all_crypto():
-        return DataSynchronization.__sync_get_all_cryptos()
+    def sync_all_crypto(pd):
+        return DataSynchronization.__sync_get_all_cryptos(pd)
 #endregion
 
 #region - Private Methods
@@ -90,11 +90,12 @@ class DataSynchronization(object):
         return symbols
 
         
-    def __sync_initial_all_stocks_data(symbols, crumb):
+    def __sync_initial_all_stocks_data(symbols, crumb, pd):
         arrStocks = []
 
         for i in range(0, len(symbols), 500):
             DataSynchronization.__sync_initial_stocks_data(crumb, symbols[i:i+500], arrStocks)
+            pd.Update(round(i * 100 / len(symbols)))
 
         
         if len(symbols) % 500 != 0:
@@ -663,7 +664,7 @@ class DataSynchronization(object):
 #endregion
 
 #region - Update Cryptos Methods
-    def __sync_get_all_cryptos():
+    def __sync_get_all_cryptos(pd):
         cryptos = []
         total = 250
         start = 0
@@ -672,6 +673,10 @@ class DataSynchronization(object):
 
             if jj is not None:
                 total = int(jj[APIConstants.FIELD_FINANCE][APIConstants.FIELD_RESULT][0][APIConstants.FIELD_TOTAL])
+                
+                if start < total:
+                    pd.Update(round(start * 100 / total))
+                
                 for i in range(0, len(jj[APIConstants.FIELD_FINANCE][APIConstants.FIELD_RESULT][0][APIConstants.FIELD_QUOTES])):
                     j = jj[APIConstants.FIELD_FINANCE][APIConstants.FIELD_RESULT][0][APIConstants.FIELD_QUOTES][i]
                     

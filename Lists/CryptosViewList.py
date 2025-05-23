@@ -122,10 +122,236 @@ class CryptosViewList(wx.ListCtrl):
             self.__mFilteredItems = self.__mItems
 
     def filter_order(self):
-        print("Filter")
+        if self.__mFilterData.get_max_price_mover():
+            pos = -1
+            for i in range(0, len(self.__mFilteredItems)):
+                one = self.__mFilteredItems[i]
+                for j in range(i + 1, len(self.__mFilteredItems)):
+                    two = self.__mFilteredItems[j]
+                    if one.get_market_change_percent() < two.get_market_change_percent():
+                        one = two
+                        pos = j
+                temp = self.__mFilteredItems[i]
+                self.__mFilteredItems[i] = one
+                self.__mFilteredItems[pos] = temp
+
+        if self.__mFilterData.get_min_price_mover():
+            pos = -1
+            for i in range(0, len(self.__mFilteredItems)):
+                one = self.__mFilteredItems[i]
+                for j in range(i + 1, len(self.__mFilteredItems)):
+                    two = self.__mFilteredItems[j]
+                    if one.get_market_change_percent() > two.get_market_change_percent():
+                        one = two
+                        pos = j
+                temp = self.__mFilteredItems[i]
+                self.__mFilteredItems[i] = one
+                self.__mFilteredItems[pos] = temp
+
+        if self.__mFilterData.get_max_volume_mover():
+            pos = -1
+            for i in range(0, len(self.__mFilteredItems)):
+                one = self.__mFilteredItems[i]
+                for j in range(i + 1, len(self.__mFilteredItems)):
+                    two = self.__mFilteredItems[j]
+                    if one.get_volume() < two.get_volume():
+                        one = two
+                        pos = j
+                temp = self.__mFilteredItems[i]
+                self.__mFilteredItems[i] = one
+                self.__mFilteredItems[pos] = temp
+
+        if self.__mFilterData.get_min_volume_mover():
+            pos = -1
+            for i in range(0, len(self.__mFilteredItems)):
+                one = self.__mFilteredItems[i]
+                for j in range(i + 1, len(self.__mFilteredItems)):
+                    two = self.__mFilteredItems[j]
+                    if one.get_volume() > two.get_volume():
+                        one = two
+                        pos = j
+                temp = self.__mFilteredItems[i]
+                self.__mFilteredItems[i] = one
+                self.__mFilteredItems[pos] = temp
 
     def filter_values(self):
-        print("Filter")
+        if self.__mFilterData is not None:
+            items = []
+            for item in self.__mFilteredItems:
+
+                if self.__mFilterData.get_max_price() is not None and self.__mFilterData.get_max_price() and self.__mFilterData.get_min_price() is not None and self.__mFilterData.get_min_price():
+                    if item.get_price() >= float(self.__mFilterData.get_min_price()) and item.get_price() <= float(self.__mFilterData.get_max_price()):
+                        items.append(item)
+                elif self.__mFilterData.get_min_price() is not None and self.__mFilterData.get_min_price():
+                    if item.get_price() >= float(self.__mFilterData.get_min_price()):
+                        items.append(item)
+                elif self.__mFilterData.get_max_price() is not None and self.__mFilterData.get_max_price():
+                    if item.get_price() <= float(self.__mFilterData.get_max_price()):
+                        items.append(item)
+                        
+
+                if self.__mFilterData.get_min_volume() is not None and self.__mFilterData.get_min_volume() and self.__mFilterData.get_max_volume() is not None and self.__mFilterData.get_max_volume():
+                    if item.get_volume() >= float(self.__mFilterData.get_min_volume()) and item.get_volume() <= float(self.__mFilterData.get_max_volume()):
+                        items.append(item)
+                elif self.__mFilterData.get_min_volume() is not None and self.__mFilterData.get_min_volume():
+                    if item.get_volume() >= float(self.__mFilterData.get_min_volume()):
+                        items.append(item)
+                elif self.__mFilterData.get_max_volume() is not None and self.__mFilterData.get_max_volume():
+                    if item.get_volume() <= float(self.__mFilterData.get_max_volume()):
+                        items.append(item)
+
+                if self.__mFilterData.get_value_max_mover() is not None and self.__mFilterData.get_value_max_mover() and self.__mFilterData.get_value_min_mover() is not None and self.__mFilterData.get_value_min_mover():
+                    if item.get_market_change_percent() and float(item.get_market_change_percent()) <= float(self.__mFilterData.get_value_max_mover()) and float(item.get_market_change_percent()) >= float(self.__mFilterData.get_value_min_mover()):
+                        items.append(item)
+                elif self.__mFilterData.get_value_min_mover() is not None and self.__mFilterData.get_value_min_mover():
+                    if item.get_market_change_percent() and float(item.get_market_change_percent()) >= float(self.__mFilterData.get_value_min_mover()):
+                        items.append(item)
+                elif self.__mFilterData.get_value_max_mover() is not None and self.__mFilterData.get_value_max_mover():
+                    if item.get_market_change_percent() and float(item.get_market_change_percent()) <= float(self.__mFilterData.get_value_max_mover()):
+                        items.append(item)
+
+
+                if self.__mFilterData.get_mover_above_zero() is not None and self.__mFilterData.get_mover_above_zero():
+                    if item.get_market_change_percent() and float(item.get_market_change_percent()) >= 0:
+                        items.append(item)
+                        
+
+                if self.__mFilterData.get_mover_above_fifty() is not None and self.__mFilterData.get_mover_above_fifty():
+                    if item.get_market_change_percent() and float(item.get_market_change_percent()) >= 50:
+                        items.append(item)
+
+                if self.__mFilterData.get_mover_above_hundred() is not None and self.__mFilterData.get_mover_above_hundred():
+                    if item.get_market_change_percent() and float(item.get_market_change_percent()) >= 100:
+                        items.append(item)
+                        
+
+                if self.__mFilterData.get_mover_below_zero() is not None and self.__mFilterData.get_mover_below_zero():
+                    if item.get_market_change_percent() and float(item.get_market_change_percent()) <= 0:
+                        items.append(item)
+                        
+
+                if self.__mFilterData.get_mover_below_fifty() is not None and self.__mFilterData.get_mover_below_fifty():
+                    if item.get_market_change_percent() and float(item.get_market_change_percent()) <= -50:
+                        items.append(item)
+                        
+
+                if self.__mFilterData.get_mover_above_zero_to_ten() is not None and self.__mFilterData.get_mover_above_zero_to_ten():
+                    if item.get_market_change_percent() and float(item.get_market_change_percent()) >= 0 and float(item.get_market_change_percent()) <= 10:
+                        items.append(item)
+                        
+
+                if self.__mFilterData.get_mover_above_ten_to_twenty() is not None and self.__mFilterData.get_mover_above_ten_to_twenty():
+                    if item.get_market_change_percent() and float(item.get_market_change_percent()) >= 10 and float(item.get_market_change_percent()) <= 20:
+                        items.append(item)
+                        
+
+                if self.__mFilterData.get_mover_above_twenty_to_thirty() is not None and self.__mFilterData.get_mover_above_twenty_to_thirty():
+                    if item.get_market_change_percent() and float(item.get_market_change_percent()) >= 20 and float(item.get_market_change_percent()) <= 30:
+                        items.append(item)
+                        
+
+                if self.__mFilterData.get_mover_above_thirty_to_fourty() is not None and self.__mFilterData.get_mover_above_thirty_to_fourty():
+                    if item.get_market_change_percent() and float(item.get_market_change_percent()) >= 30 and float(item.get_market_change_percent()) <= 40:
+                        items.append(item)
+                        
+
+                if self.__mFilterData.get_mover_below_zero_to_ten() is not None and self.__mFilterData.get_mover_below_zero_to_ten():
+                    if item.get_market_change_percent() and float(item.get_market_change_percent()) <= 0 and float(item.get_market_change_percent()) >= -10:
+                        items.append(item)
+                        
+
+                if self.__mFilterData.get_mover_below_ten_to_twenty() is not None and self.__mFilterData.get_mover_below_ten_to_twenty():
+                    if item.get_market_change_percent() and float(item.get_market_change_percent()) <= -10 and float(item.get_market_change_percent()) >= -20:
+                        items.append(item)
+                        
+
+                if self.__mFilterData.get_mover_below_twenty_to_thirty() is not None and self.__mFilterData.get_mover_below_twenty_to_thirty():
+                    if item.get_market_change_percent() and float(item.get_market_change_percent()) <= -20 and float(item.get_market_change_percent()) >= -30:
+                        items.append(item)
+                        
+
+                if self.__mFilterData.get_mover_below_thirty_to_fourty() is not None and self.__mFilterData.get_mover_below_thirty_to_fourty():
+                    if item.get_market_change_percent() and float(item.get_market_change_percent()) <= -30 and float(item.get_market_change_percent()) >= -40:
+                        items.append(item)
+
+                if self.__mFilterData.get_fifty_value_max_mover() is not None and self.__mFilterData.get_fifty_value_max_mover() and self.__mFilterData.get_fifty_value_min_mover() is not None and self.__mFilterData.get_fifty_value_min_mover():
+                    if item.get_fifty_two_weeks_perc_change() and float(item.get_fifty_two_weeks_perc_change()) <= float(self.__mFilterData.get_fifty_value_max_mover()) and float(item.get_market_change_percent()) >= float(self.__mFilterData.get_fifty_value_min_mover()):
+                        items.append(item)
+                elif self.__mFilterData.get_fifty_value_max_mover() is not None and self.__mFilterData.get_fifty_value_max_mover():
+                    if item.get_fifty_two_weeks_perc_change() and float(item.get_fifty_two_weeks_perc_change()) <= float(self.__mFilterData.get_fifty_value_max_mover()):
+                        items.append(item)
+                elif self.__mFilterData.get_fifty_value_min_mover() is not None and self.__mFilterData.get_fifty_value_min_mover():
+                    if item.get_fifty_two_weeks_perc_change() and float(item.get_fifty_two_weeks_perc_change()) >= float(self.__mFilterData.get_fifty_value_min_mover()):
+                        items.append(item)
+
+                if self.__mFilterData.get_mover_fifty_weeks_above_zero() is not None and self.__mFilterData.get_mover_fifty_weeks_above_zero():
+                    if item.get_fifty_two_weeks_perc_change() and float(item.get_fifty_two_weeks_perc_change()) >= 0:
+                        items.append(item)
+                        
+
+                if self.__mFilterData.get_mover_fifty_weeks_above_fifty() is not None and self.__mFilterData.get_mover_fifty_weeks_above_fifty():
+                    if item.get_fifty_two_weeks_perc_change() and float(item.get_fifty_two_weeks_perc_change()) >= 50:
+                        items.append(item)
+                        
+
+                if self.__mFilterData.get_mover_fifty_weeks_above_hundred() is not None and self.__mFilterData.get_mover_fifty_weeks_above_hundred():
+                    if item.get_fifty_two_weeks_perc_change() and float(item.get_fifty_two_weeks_perc_change()) >= 100:
+                        items.append(item)
+                        
+
+                if self.__mFilterData.get_mover_fifty_weeks_below_zero() is not None and self.__mFilterData.get_mover_fifty_weeks_below_zero():
+                    if item.get_fifty_two_weeks_perc_change() and float(item.get_fifty_two_weeks_perc_change()) < 0:
+                        items.append(item)
+                        
+
+                if self.__mFilterData.get_mover_fifty_weeks_below_fifty() is not None and self.__mFilterData.get_mover_fifty_weeks_below_fifty():
+                    if item.get_fifty_two_weeks_perc_change() and float(item.get_fifty_two_weeks_perc_change()) < 0:
+                        items.append(item)
+                        
+
+                if self.__mFilterData.get_mover_fifty_weeks_above_zero_to_ten() is not None and self.__mFilterData.get_mover_fifty_weeks_above_zero_to_ten():
+                    if item.get_fifty_two_weeks_perc_change() and float(item.get_fifty_two_weeks_perc_change()) > 0 and float(item.get_fifty_two_weeks_perc_change()) <= 10:
+                        items.append(item)
+                        
+
+                if self.__mFilterData.get_mover_fifty_weeks_above_ten_to_twenty() is not None and self.__mFilterData.get_mover_fifty_weeks_above_ten_to_twenty():
+                    if item.get_fifty_two_weeks_perc_change() and float(item.get_fifty_two_weeks_perc_change()) > 10 and float(item.get_fifty_two_weeks_perc_change()) <= 20:
+                        items.append(item)
+                        
+
+                if self.__mFilterData.get_mover_fifty_weeks_above_twenty_to_thirty() is not None and self.__mFilterData.get_mover_fifty_weeks_above_twenty_to_thirty():
+                    if item.get_fifty_two_weeks_perc_change() and float(item.get_fifty_two_weeks_perc_change()) > 20 and float(item.get_fifty_two_weeks_perc_change()) <= 30:
+                        items.append(item)
+                        
+
+                if self.__mFilterData.get_mover_fifty_weeks_above_thirty_to_fourty() is not None and self.__mFilterData.get_mover_fifty_weeks_above_thirty_to_fourty():
+                    if item.get_fifty_two_weeks_perc_change() and float(item.get_fifty_two_weeks_perc_change()) > 30 and float(item.get_fifty_two_weeks_perc_change()) <= 40:
+                        items.append(item)
+                        
+
+                if self.__mFilterData.get_mover_fifty_weeks_below_zero_to_ten() is not None and self.__mFilterData.get_mover_fifty_weeks_below_zero_to_ten():
+                    if item.get_fifty_two_weeks_perc_change() and float(item.get_fifty_two_weeks_perc_change()) < 0 and float(item.get_fifty_two_weeks_perc_change()) > -10:
+                        items.append(item)
+                        
+
+                if self.__mFilterData.get_mover_fifty_weeks_below_ten_to_twenty() is not None and self.__mFilterData.get_mover_fifty_weeks_below_ten_to_twenty():
+                    if item.get_fifty_two_weeks_perc_change() and float(item.get_fifty_two_weeks_perc_change()) < -10 and float(item.get_fifty_two_weeks_perc_change()) > -20:
+                        items.append(item)
+                        
+                
+                if self.__mFilterData.get_mover_fifty_weeks_below_twenty_to_thirty() is not None and self.__mFilterData.get_mover_fifty_weeks_below_twenty_to_thirty():
+                    if item.get_fifty_two_weeks_perc_change() and float(item.get_fifty_two_weeks_perc_change()) < -20 and float(item.get_fifty_two_weeks_perc_change()) > -30:
+                        items.append(item)
+                        
+
+                if self.__mFilterData.get_mover_fifty_weeks_below_thirty_to_fourty() is not None and self.__mFilterData.get_mover_fifty_weeks_below_thirty_to_fourty():
+                    if item.get_fifty_two_weeks_perc_change() and float(item.get_fifty_two_weeks_perc_change()) < -30 and float(item.get_fifty_two_weeks_perc_change()) > -40:
+                        items.append(item)
+
+            if len(items) > 0:
+                self.__mFilteredItems = items
+        else:
+            self.__mFilteredItems = self.__mItems
 
     def unbind_listener(self):
         self.Unbind(wx.EVT_LIST_ITEM_SELECTED)

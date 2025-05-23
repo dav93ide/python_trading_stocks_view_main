@@ -20,6 +20,8 @@ class Strings(object):
     STR_RESET_ALL = "Reset All"
     STR_ABORT = "Abort"
     STR_CONFIRM = "Confirm"
+    STR_STOCKS = "Stocks"
+    STR_CRYPTOS = "Cryptos"
 
     STR_SEARCH = "Search"
     STR_NAME = "Name"
@@ -136,6 +138,7 @@ class Strings(object):
     STR_FIELD_POST_MARKET = "Post Market: $"
     STR_FIFTY_WEEKS_STOCK_DATA = "50 Weeks Stock Data"
     STR_STOCK_DATA = "Stock Data"
+    STR_CRYPTO_DATA = "Crypto Data"
     STR_DIVIDEND_DATA = "Dividend Data"
     STR_UNDEFINED = "Undefined"
     STR_FIELD_EPS_CURRENT_YEAR = "EPS Current Year:"

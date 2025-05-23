@@ -1,4 +1,6 @@
-class FilterSearchStockPanel(object):
+
+
+class FilterSearchCryptoPanel():
 
     __mMaxPrice = None
     __mMinPrice = None
@@ -47,20 +49,6 @@ class FilterSearchStockPanel(object):
     __mMoverFiftyWeeksBelowTenToTwenty = None
     __mMoverFiftyWeeksBelowTwentyThirty = None
     __mMoverFiftyWeeksBelowThirtyFourty = None
-
-    __mDividendOnly = None
-    __mNoDividendOnly = None
-    __mDividendYeldMax = None
-    __mDividendDateMin = None
-    
-    __mTrailingPriceEarningsMax = None
-    __mForwardPriceEarningsMax = None
-    __mPriceToBookMax = None
-    __mBookValueShareMax = None
-
-    __mEPSCurrentYearMax = None
-    __mEPSTrailingTwelveMonthsMax = None
-    __mEPSForwardMax = None
 
 #region - Get Methods
     def get_max_price(self):
@@ -176,39 +164,6 @@ class FilterSearchStockPanel(object):
 
     def get_mover_fifty_weeks_below_thirty_to_fourty(self):
         return self.__mMoverFiftyWeeksBelowThirtyFourty
-
-    def get_dividend_only(self):
-	    return self.__mDividendOnly
-
-    def get_no_dividend_only(self):
-        return self.__mNoDividendOnly
-
-    def get_dividend_yeld_max(self):
-        return self.__mDividendYeldMax
-
-    def get_dividend_date_min(self):
-        return self.__mDividendDateMin
-
-    def get_trailing_price_earnings_max(self):
-	    return self.__mTrailingPriceEarningsMax
-
-    def get_forward_price_earnings_max(self):
-        return self.__mForwardPriceEarningsMax
-
-    def get_price_to_book_max(self):
-        return self.__mPriceToBookMax
-
-    def get_book_value_share_max(self):
-        return self.__mBookValueShareMax
-
-    def get_eps_current_year_max(self):
-        return self.__mEPSCurrentYearMax
-
-    def get_eps_trailing_twelve_months_max(self):
-        return self.__mEPSTrailingTwelveMonthsMax
-
-    def get_eps_forward_max(self):
-        return self.__mEPSForwardMax
 #endregion
 
 #region - Set Methods
@@ -325,40 +280,7 @@ class FilterSearchStockPanel(object):
 
     def set_mover_fifty_weeks_below_thirty_to_fourty(self, moverFiftyWeeksBelowThirtyFourty):
         self.__mMoverFiftyWeeksBelowThirtyFourty  = moverFiftyWeeksBelowThirtyFourty 
-
-    def set_dividend_only(self, dividendOnly):
-	    self.__mDividendOnly = dividendOnly
-
-    def set_no_dividend_only(self, noDividendOnly):
-        self.__mNoDividendOnly = noDividendOnly
-
-    def set_dividend_yeld_max(self, dividendYeldMax):
-        self.__mDividendYeldMax = dividendYeldMax
-
-    def set_dividend_date_min(self, dividendDateMin):
-        self.__mDividendDateMin = dividendDateMin
-
-    def set_trailing_price_earnings_max(self, trailingPriceEarningsMax):
-        self.__mTrailingPriceEarningsMax = trailingPriceEarningsMax
-
-    def set_forward_price_earnings_max(self, forwardPriceEarningsMax):
-        self.__mForwardPriceEarningsMax = forwardPriceEarningsMax
-
-    def set_price_to_book_max(self, priceToBookMax):
-        self.__mPriceToBookMax = priceToBookMax
-
-    def set_book_value_share_max(self, bookValueShareMax):
-        self.__mBookValueShareMax = bookValueShareMax
-
-    def set_eps_current_year_max(self, ePSCurrentYear):
-        self.__mEPSCurrentYearMax = ePSCurrentYear
-
-    def set_eps_trailing_twelve_months_max(self, ePSTrailingTwelveMonths):
-        self.__mEPSTrailingTwelveMonthsMax = ePSTrailingTwelveMonths
-
-    def set_eps_forward_max(self, ePSForward):
-        self.__mEPSForwardMax = ePSForward
-    #endregion
+#endregion
 
 #region Public Methods
     def to_dict(self):
@@ -388,15 +310,8 @@ class FilterSearchStockPanel(object):
                 "mMoverFiftyWeeksAboveTwentyThirty": self.__mMoverFiftyWeeksAboveTwentyThirty, "mMoverFiftyWeeksAboveThirtyFourty": self.__mMoverFiftyWeeksAboveThirtyFourty,
 
                 "mMoverFiftyWeeksBelowZeroToTen": self.__mMoverFiftyWeeksBelowZeroToTen, "mMoverFiftyWeeksBelowTenToTwenty": self.__mMoverFiftyWeeksBelowTenToTwenty,
-                "mMoverFiftyWeeksBelowTwentyThirty": self.__mMoverFiftyWeeksBelowTwentyThirty, "mMoverFiftyWeeksBelowThirtyFourty": self.__mMoverFiftyWeeksBelowThirtyFourty,
-                
-                "mDividendOnly": self.__mDividendOnly, "mNoDividendOnly": self.__mNoDividendOnly, "mDividendYeldMax": self.__mDividendYeldMax, "mDividendDateMin": self.__mDividendDateMin,
-                
-                "mTrailingPriceEarningsMax": self.__mTrailingPriceEarningsMax, "mForwardPriceEarningsMax": self.__mForwardPriceEarningsMax,
-                "mPriceToBookMax": self.__mPriceToBookMax, "mBookValueShareMax": self.__mBookValueShareMax,
-
-                "mEPSCurrentYearMax": self.__mEPSCurrentYearMax, "mEPSTrailingTwelveMonthsMax": self.__mEPSTrailingTwelveMonthsMax, "mEPSForwardMax": self.__mEPSForwardMax
-                }
+                "mMoverFiftyWeeksBelowTwentyThirty": self.__mMoverFiftyWeeksBelowTwentyThirty, "mMoverFiftyWeeksBelowThirtyFourty": self.__mMoverFiftyWeeksBelowThirtyFourty
+        }
 
     def from_json(self, json):
         self.set_min_price(json["mMinPrice"])
@@ -437,17 +352,6 @@ class FilterSearchStockPanel(object):
         self.set_mover_fifty_weeks_below_ten_to_twenty(json["mMoverFiftyWeeksBelowTenToTwenty"])
         self.set_mover_fifty_weeks_below_twenty_to_thirty(json["mMoverFiftyWeeksBelowTwentyThirty"])
         self.set_mover_fifty_weeks_below_thirty_to_fourty(json["mMoverFiftyWeeksBelowThirtyFourty"])
-        self.set_dividend_only(json["mDividendOnly"])
-        self.set_no_dividend_only(json["mNoDividendOnly"])
-        self.set_dividend_yeld_max(json["mDividendYeldMax"])
-        self.set_dividend_date_min(json["mDividendDateMin"])
-        self.set_trailing_price_earnings_max(json["mTrailingPriceEarningsMax"])
-        self.set_forward_price_earnings_max(json["mForwardPriceEarningsMax"])
-        self.set_price_to_book_max(json["mPriceToBookMax"])
-        self.set_book_value_share_max(json["mBookValueShareMax"])
-        self.set_eps_current_year_max(json["mEPSCurrentYearMax"])
-        self.set_eps_trailing_twelve_months_max(json["mEPSTrailingTwelveMonthsMax"])
-        self.set_eps_forward_max(json["mEPSForwardMax"])
 #enderegion
 
     # To String
@@ -491,15 +395,4 @@ class FilterSearchStockPanel(object):
                 f"#- __mMoverFiftyWeeksBelowTenToTwenty: {self.__mMoverFiftyWeeksBelowTenToTwenty}\n"\
                 f"#- __mMoverFiftyWeeksBelowTwentyThirty: {self.__mMoverFiftyWeeksBelowTwentyThirty}\n"\
                 f"#- __mMoverFiftyWeeksBelowThirtyFourty: {self.__mMoverFiftyWeeksBelowThirtyFourty}\n"\
-                f"#- __mDividendOnly: {self.__mDividendOnly}\n"\
-                f"#- __mNoDividendOnly: {self.__mNoDividendOnly}\n"\
-                f"#- __mDividendYeldMax: {self.__mDividendYeldMax}\n"\
-                f"#- __mDividendDateMin: {self.__mDividendDateMin}\n"\
-                f"#- __mTrailingPriceEarningsMax: {self.__mTrailingPriceEarningsMax}\n"\
-                f"#- __mForwardPriceEarningsMax: {self.__mForwardPriceEarningsMax}\n"\
-                f"#- __mPriceToBookMax: {self.__mPriceToBookMax}\n"\
-                f"#- __mBookValueShareMax: {self.__mBookValueShareMax}\n"\
-                f"#- __mEPSCurrentYearMax: {self.__mEPSCurrentYearMax}\n"\
-                f"#- __mEPSTrailingTwelveMonthsMax: {self.__mEPSTrailingTwelveMonthsMax}\n"\
-                f"#- __mEPSForwardMax: {self.__mEPSForwardMax}\n"\
                 "####################\n"

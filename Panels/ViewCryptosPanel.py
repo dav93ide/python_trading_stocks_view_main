@@ -22,6 +22,11 @@ from Networking.APIConstants import APIConstants
 from Frames.ViewCryptosFrame import ViewCryptosFrame
 from Environment import Environment
 from Frames.ChartFrame import ChartFrame
+from Frames.SearchCryptoFrame import SearchCryptoFrame
+from Classes.FilterClasses.FilterSearchCryptoPanel import FilterSearchCryptoPanel
+from wx.lib.pubsub import pub 
+
+LISTEN_FILTER_CRYPTO_PANEL = "ListenFiltersCryptoPanel"
 
 class ViewCryptosPanel(BasePanel):
 
@@ -75,16 +80,29 @@ class ViewCryptosPanel(BasePanel):
     __mCryptos = None
     __mStockViewData = None
 
+    __mFilterSearchCryptoPanel = FilterSearchCryptoPanel()
+
     def __init__(self, parent, size, cryptos, crypto):
         super().__init__(parent, size)
         self.__mCryptos = cryptos
+        self.__initial_sync()
         self.__init_threads()
         self.__init_timers()
         self.Bind(wx.EVT_WINDOW_DESTROY, self.__on_destroy_self)
+        pub.subscribe(self.listen_filter_crypto_panel, LISTEN_FILTER_CRYPTO_PANEL)
         self.__init_layout()
 
         if crypto is not None:
             self.__on_click_item_list(crypto)
+
+#region - Private Methods
+#region - Init Methods
+    def __initial_sync(self):
+        if self.__mCryptos is None or len(self.__mCryptos) == 0x0:
+            pd = wx.ProgressDialog(Strings.STR_CRYPTOS, Strings.STR_INITIAL_SYNCHRONIZATION, parent = None, style = wx.PD_ELAPSED_TIME|wx.PD_REMAINING_TIME)
+            pd.Show()
+            self.__mCryptos = DataSynchronization.sync_all_crypto(pd)
+            pd.Destroy()
 
     def __init_threads(self):
         self.__mThreadUpdateGraph = StoppableThread(None, self.__update_graph_thread)
@@ -143,9 +161,6 @@ class ViewCryptosPanel(BasePanel):
         main.Add(self.__mList, 1, wx.EXPAND)
         self.__mList.init_layout()
 
-        if self.__mCryptos is None or len(self.__mCryptos) == 0x0:
-            self.__mCryptos = DataSynchronization.sync_all_crypto()
-
         self.__mList.add_items_and_populate(self.__mCryptos)
 
         self.__mRightPanel.SetSizer(main)
@@ -159,6 +174,7 @@ class ViewCryptosPanel(BasePanel):
         self.__mLeftPanel.Fit()
         self.__mLeftPanel.SetupScrolling()
         self.__mLeftPanel.Layout()
+#endregion
 
 #region - Event Handler Methods
     def __on_destroy_self(self, evt):
@@ -171,7 +187,8 @@ class ViewCryptosPanel(BasePanel):
         self.__mList.filter_items_by_name(evt.GetString())
 
     def __on_click_search(self, evt):
-        print("Search")
+        self.__mSearchCryptoFrame = SearchCryptoFrame(Strings.STR_SEARCH, self.__mFilterSearchCryptoPanel)
+        self.__mSearchCryptoFrame.Show(True)
 
     def __on_click_item_list(self, item):
         self.__mStockViewData = DataSynchronization.sync_single_crypto_full_data(item)
@@ -858,4 +875,11 @@ class ViewCryptosPanel(BasePanel):
                 cryptos = DataSynchronization.sync_update_all_cryptos(cryptos)
                 self.__mList.add_specific_filtered_items(cryptos, list_top, len(filteredItems))
             time.sleep(30)
+#endregion
+
+    def listen_filter_crypto_panel(self, message, arg= None):
+        self.__mFilterSearchCryptoPanel.from_json(message)
+        self.__mList.set_filter_data(self.__mFilterSearchCryptoPanel)
+        self.__mList.filter_items()
+
 #endregion

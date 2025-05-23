@@ -4,6 +4,7 @@ import wx.lib.agw.aui as aui
 import wx.lib.mixins.inspection as wit
 import time
 import random
+import json
 import matplotlib.cm as cm
 import numpy as np
 import matplotlib.pyplot as plt
@@ -31,7 +32,6 @@ from Frames.ViewStocksFrame import ViewStocksFrame
 from Frames.SearchStockFrame import SearchStockFrame
 from Classes.FilterClasses.FilterSearchStockPanel import FilterSearchStockPanel
 from wx.lib.pubsub import pub 
-import json
 
 LISTEN_FILTER_STOCK_PANEL = "ListenFiltersStockPanel"
 
@@ -81,8 +81,6 @@ class ViewStocksPanel(BasePanel):
     __mTimerUpdateList = None
     __mTimerUpdateLeftPanel = None
 
-    __mStockViewData = None
-
     __mGraphLastValue = None
     __mGraphLastColor = "b"
 
@@ -97,11 +95,15 @@ class ViewStocksPanel(BasePanel):
     __mIsShowingChartYTD = False
     __mIsShowingChartMax = False
 
+    __mStocks = None
+    __mStockViewData = None
+
     __mFilterSearchStockPanel = FilterSearchStockPanel()
 
     def __init__(self, parent, size, stocks, stock):
         super().__init__(parent, size)
         self.__mStocks = stocks
+        self.__initial_sync()
         self.__init_threads()
         self.Bind(wx.EVT_WINDOW_DESTROY, self.__on_destroy_self)
         pub.subscribe(self.listen_filter_stock_panel, LISTEN_FILTER_STOCK_PANEL)
@@ -113,6 +115,13 @@ class ViewStocksPanel(BasePanel):
 
 #region - Private Methods
 #region - Init Methods
+    def __initial_sync(self):
+        if self.__mStocks is None or len(self.__mStocks) == 0x0:
+            pd = wx.ProgressDialog(Strings.STR_STOCKS, Strings.STR_INITIAL_SYNCHRONIZATION, parent = None, style = wx.PD_ELAPSED_TIME|wx.PD_REMAINING_TIME)
+            pd.Show()
+            self.__mStocks = DataSynchronization.sync_all_stocks_and_symbols(pd)
+            pd.Destroy()
+
     def __init_threads(self):
         self.__mThreadUpdateGraph = StoppableThread(None, self.__update_graph_thread)
         self.__mThreadUpdateList = StoppableThread(None, self.__update_list_thread)
@@ -169,9 +178,6 @@ class ViewStocksPanel(BasePanel):
         self.__mList = StocksViewList(self.__mRightPanel, wx.ID_ANY, wx.EXPAND|wx.LC_REPORT|wx.SUNKEN_BORDER, self.GetSize()[0], self.__on_click_item_list)
         main.Add(self.__mList, 1, wx.EXPAND)
         self.__mList.init_layout()
-
-        if self.__mStocks is None or len(self.__mStocks) == 0x0:
-            self.__mStocks = DataSynchronization.sync_all_stocks_and_symbols()
 
         self.__mList.add_items_and_populate(self.__mStocks)
 
