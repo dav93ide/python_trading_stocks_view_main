@@ -95,7 +95,10 @@ class DataSynchronization(object):
 
         for i in range(0, len(symbols), 500):
             DataSynchronization.__sync_initial_stocks_data(crumb, symbols[i:i+500], arrStocks)
-            pd.Update(round(i * 100 / len(symbols)))
+            if round(i * 100 / len(symbols), 2) > 99 and round(i * 100 / len(symbols)) < 100:
+                pd.Update(99)
+            else:
+                pd.Update(round(i * 100 / len(symbols)))
 
         
         if len(symbols) % 500 != 0:
@@ -675,7 +678,10 @@ class DataSynchronization(object):
                 total = int(jj[APIConstants.FIELD_FINANCE][APIConstants.FIELD_RESULT][0][APIConstants.FIELD_TOTAL])
                 
                 if start < total:
-                    pd.Update(round(start * 100 / total))
+                    if round(start * 100 / total, 2) > 99 and round(start * 100 / total, 2) < 100:
+                        pd.Update(99)
+                    else:
+                        pd.Update(round(start * 100 / total))
                 
                 for i in range(0, len(jj[APIConstants.FIELD_FINANCE][APIConstants.FIELD_RESULT][0][APIConstants.FIELD_QUOTES])):
                     j = jj[APIConstants.FIELD_FINANCE][APIConstants.FIELD_RESULT][0][APIConstants.FIELD_QUOTES][i]
@@ -837,8 +843,5 @@ class DataSynchronization(object):
 
                 if APIConstants.FIELD_LONG_NAME in j:
                     crypto.set_name(j[APIConstants.FIELD_LONG_NAME])
-
-                
-
 #endregion
 #endregion
