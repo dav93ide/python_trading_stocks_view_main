@@ -9,7 +9,7 @@ class MainApplication(wx.App):
 
     __mMainFrame: MainFrame = None
     __mDialog = None
-    __mStarted = False
+    __mAppStarted = False
 
     def __init__(self, redirect):
         wx.App.__init__(self, redirect)
@@ -23,8 +23,8 @@ class MainApplication(wx.App):
 
     def __check_internet_connection(self):
         if NetworkingUtils.check_internet_connection():
-            if not self.__mStarted:
-                self.__mStarted = True
+            if not self.__mAppStarted:
+                self.__mAppStarted = True
                 self.__mMainFrame = MainFrame()
                 self.__mMainFrame.Show()
                 self.SetTopWindow(self.__mMainFrame)
