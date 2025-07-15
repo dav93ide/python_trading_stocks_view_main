@@ -5,16 +5,17 @@ class ConfirmDialog(wx.Dialog):
 
     __mMainPanel: wx.Panel = None
 
-    __mTitle = None
     __mMessage = None
 
-    __mCallback = None
+    __mCallbackConfirm = None
+    __mCallbackAbort = None
 
-    def __init__(self, parent, title, msg, callback):
+    def __init__(self, parent, title, msg, callbackConfirm, callbackAbort = None):
         wx.Dialog.__init__(self, parent, title = title)
         self.__mMessage = msg
         self.__init_main_panel()
-        self.__mCallback = callback
+        self.__mCallbackConfirm = callbackConfirm
+        self.__mCallbackAbort = callbackAbort
 
 #region - Private Methods
 #region - Init Methods
@@ -27,11 +28,13 @@ class ConfirmDialog(wx.Dialog):
         vbs.AddSpacer(25)
 
         p = wx.Panel(self.__mMainPanel)
-        p.SetBackgroundColour((0, 0, 0))
+        p.SetBackgroundColour((90, 90, 90))
         hbs = wx.BoxSizer(wx.HORIZONTAL)
+        hbs.AddSpacer(25)
         hbs.Add(self.__get_button_abort(p), 1, wx.CENTER)
         hbs.AddSpacer(15)
         hbs.Add(self.__get_button_confirm(p), 1, wx.CENTER)
+        hbs.AddSpacer(25)
         p.SetSizer(hbs)
         p.Fit()
     
@@ -41,6 +44,7 @@ class ConfirmDialog(wx.Dialog):
         self.__mMainPanel.Fit()
         self.__mMainPanel.Update()
         self.__mMainPanel.SetAutoLayout(True)
+#endregion
 
     def __get_button_abort(self, panel):
         b = wx.Button(panel, wx.ID_ANY, Strings.STR_ABORT)
@@ -51,14 +55,14 @@ class ConfirmDialog(wx.Dialog):
         b = wx.Button(panel, wx.ID_ANY, Strings.STR_CONFIRM)
         b.Bind(wx.EVT_BUTTON, self.__on_click_confirm)
         return b
-#endregion
 
 #region - Event Handler Methods
     def __on_click_abort(self, evt):
+        self.__mCallbackAbort()
         self.Destroy()
 
     def __on_click_confirm(self, evt):
-        self.__mCallback()
+        self.__mCallbackConfirm()
         self.Destroy()
 #endregion
 #endregion

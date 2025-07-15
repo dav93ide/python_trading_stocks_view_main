@@ -195,6 +195,7 @@ class Strings(object):
 #region - Error Strings
     STR_ERROR_JSON = "Json Error"
     STR_ERROR_GRAPH = "Graph Error"
+    STR_ERROR_INTERNET_CONNECTION = "Internet Connection Error"
 #endregion
 
 #region - Messages Question Strings
@@ -210,6 +211,7 @@ class Strings(object):
     STR_MSG_ERROR_INSERTED_CAPITAL_TOO_HIGH = "Capitale inserito troppo alto."
     STR_MSG_ERROR_NO_NAME_INSERTED = "Necessario Inserire Un Nome Per Continuare."
     STR_MSG_ERROR_NAME_ALREADY_PRESENT = "Nome Gia` Presente."
+    STR_MSG_ERROR_INTERNET_CONNECTION = "No Internet Connection.\n Please enable Internet and press \'Confirm\'."
 #endregion
 
 #region - Success Messages Strings 
