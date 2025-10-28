@@ -869,6 +869,7 @@ class SearchStockPanel(BasePanel):
 
     def __on_check_max_mover(self, evt):
         self.__mFilterSearchStockPanel.set_max_price_mover(evt.IsChecked())
+        self.__mFilterSearchStockPanel.set_min_price_mover(False)
         self.__mcbMinPriceMover.SetValue(False)
         self.__mcbMinVolumeMover.SetValue(False)
         self.__mcbMaxVolumeMover.SetValue(False)
@@ -877,6 +878,7 @@ class SearchStockPanel(BasePanel):
 
     def __on_check_min_mover(self, evt):
         self.__mFilterSearchStockPanel.set_min_price_mover(evt.IsChecked())
+        self.__mFilterSearchStockPanel.set_max_price_mover(False)
         self.__mcbMaxPriceMover.SetValue(False)
         self.__mcbMinVolumeMover.SetValue(False)
         self.__mcbMaxVolumeMover.SetValue(False)
@@ -885,6 +887,7 @@ class SearchStockPanel(BasePanel):
 
     def __on_check_max_volume(self, evt):
         self.__mFilterSearchStockPanel.set_max_volume_mover(evt.IsChecked())
+        self.__mFilterSearchStockPanel.set_min_volume_mover(False)
         self.__mcbMinVolumeMover.SetValue(False)
         self.__mcbMaxPriceMover.SetValue(False)
         self.__mcbMinPriceMover.SetValue(False)
@@ -893,6 +896,7 @@ class SearchStockPanel(BasePanel):
 
     def __on_check_min_volume(self, evt):
         self.__mFilterSearchStockPanel.set_min_volume_mover(evt.IsChecked())
+        self.__mFilterSearchStockPanel.set_max_volume_mover(False)
         self.__mcbMaxVolumeMover.SetValue(False)
         self.__mcbMaxPriceMover.SetValue(False)
         self.__mcbMinPriceMover.SetValue(False)
@@ -901,6 +905,8 @@ class SearchStockPanel(BasePanel):
 
     def __on_check_above_zero(self, evt):
         self.__mFilterSearchStockPanel.set_mover_above_zero(evt.IsChecked())
+        self.__mFilterSearchStockPanel.set_mover_above_fifty(False)
+        self.__mFilterSearchStockPanel.set_mover_above_hundred(False)
         self.__mcbMoverAboveFifty.SetValue(False)
         self.__mcbMoverAboveHundred.SetValue(False)
         self.__mcbMoverBelowZero.SetValue(False)
@@ -915,7 +921,9 @@ class SearchStockPanel(BasePanel):
         self.__mcbMoverBelowThirtyFourty.SetValue(False)
 
     def __on_check_above_fifty(self, evt):
+        self.__mFilterSearchStockPanel.set_mover_above_zero(False)
         self.__mFilterSearchStockPanel.set_mover_above_fifty(evt.IsChecked())
+        self.__mFilterSearchStockPanel.set_mover_above_hundred(False)
         self.__mcbMoverAboveZero.SetValue(False)
         self.__mcbMoverAboveHundred.SetValue(False)
         self.__mcbMoverBelowZero.SetValue(False)
@@ -930,6 +938,8 @@ class SearchStockPanel(BasePanel):
         self.__mcbMoverBelowThirtyFourty.SetValue(False)
 
     def __on_check_above_hundred(self, evt):
+        self.__mFilterSearchStockPanel.set_mover_above_zero(False)
+        self.__mFilterSearchStockPanel.set_mover_above_fifty(False)
         self.__mFilterSearchStockPanel.set_mover_above_hundred(evt.IsChecked())
         self.__mcbMoverAboveZero.SetValue(False)
         self.__mcbMoverAboveFifty.SetValue(False)
@@ -946,6 +956,7 @@ class SearchStockPanel(BasePanel):
 
     def __on_check_below_zero(self, evt):
         self.__mFilterSearchStockPanel.set_mover_below_zero(evt.IsChecked())
+        self.__mFilterSearchStockPanel.set_mover_below_fifty(False)
         self.__mcbMoverAboveZero.SetValue(False)
         self.__mcbMoverAboveFifty.SetValue(False)
         self.__mcbMoverAboveHundred.SetValue(False)
@@ -960,6 +971,7 @@ class SearchStockPanel(BasePanel):
         self.__mcbMoverBelowThirtyFourty.SetValue(False)
 
     def __on_check_below_fifty(self, evt):
+        self.__mFilterSearchStockPanel.set_mover_below_zero(False)
         self.__mFilterSearchStockPanel.set_mover_below_fifty(evt.IsChecked())
         self.__mcbMoverAboveZero.SetValue(False)
         self.__mcbMoverAboveFifty.SetValue(False)
@@ -976,6 +988,9 @@ class SearchStockPanel(BasePanel):
 
     def __on_check_above_zero_to_ten(self, evt):
         self.__mFilterSearchStockPanel.set_mover_above_zero_to_ten(evt.IsChecked())
+        self.__mFilterSearchStockPanel.set_mover_above_ten_to_twenty(False)
+        self.__mFilterSearchStockPanel.set_mover_above_twenty_to_thirty(False)
+        self.__mFilterSearchStockPanel.set_mover_above_thirty_to_fourty(False)
         self.__mcbMoverAboveZero.SetValue(False)
         self.__mcbMoverAboveFifty.SetValue(False)
         self.__mcbMoverAboveHundred.SetValue(False)
@@ -990,7 +1005,10 @@ class SearchStockPanel(BasePanel):
         self.__mcbMoverBelowThirtyFourty.SetValue(False)
 
     def __on_check_above_ten_to_twenty(self, evt):
+        self.__mFilterSearchStockPanel.set_mover_above_zero_to_ten(False)
         self.__mFilterSearchStockPanel.set_mover_above_ten_to_twenty(evt.IsChecked())
+        self.__mFilterSearchStockPanel.set_mover_above_twenty_to_thirty(False)
+        self.__mFilterSearchStockPanel.set_mover_above_thirty_to_fourty(False)
         self.__mcbMoverAboveZero.SetValue(False)
         self.__mcbMoverAboveFifty.SetValue(False)
         self.__mcbMoverAboveHundred.SetValue(False)
@@ -1005,7 +1023,10 @@ class SearchStockPanel(BasePanel):
         self.__mcbMoverBelowThirtyFourty.SetValue(False)
 
     def __on_check_above_twenty_to_thirty(self, evt):
+        self.__mFilterSearchStockPanel.set_mover_above_zero_to_ten(False)
+        self.__mFilterSearchStockPanel.set_mover_above_ten_to_twenty(False)
         self.__mFilterSearchStockPanel.set_mover_above_twenty_to_thirty(evt.IsChecked())
+        self.__mFilterSearchStockPanel.set_mover_above_thirty_to_fourty(False)
         self.__mcbMoverAboveZero.SetValue(False)
         self.__mcbMoverAboveFifty.SetValue(False)
         self.__mcbMoverAboveHundred.SetValue(False)
@@ -1019,6 +1040,9 @@ class SearchStockPanel(BasePanel):
         self.__mcbMoverBelowThirtyFourty.SetValue(False)
 
     def __on_check_above_thirty_to_fourty(self, evt):
+        self.__mFilterSearchStockPanel.set_mover_above_zero_to_ten(False)
+        self.__mFilterSearchStockPanel.set_mover_above_ten_to_twenty(False)
+        self.__mFilterSearchStockPanel.set_mover_above_twenty_to_thirty(False)
         self.__mFilterSearchStockPanel.set_mover_above_thirty_to_fourty(evt.IsChecked())
         self.__mcbMoverAboveZero.SetValue(False)
         self.__mcbMoverAboveFifty.SetValue(False)
@@ -1035,6 +1059,9 @@ class SearchStockPanel(BasePanel):
 
     def __on_check_below_zero_to_ten(self, evt):
         self.__mFilterSearchStockPanel.set_mover_below_zero_to_ten(evt.IsChecked())
+        self.__mFilterSearchStockPanel.set_mover_below_ten_to_twenty(False)
+        self.__mFilterSearchStockPanel.set_mover_below_twenty_to_thirty(False)
+        self.__mFilterSearchStockPanel.set_mover_below_thirty_to_fourty(False)
         self.__mcbMoverAboveZero.SetValue(False)
         self.__mcbMoverAboveFifty.SetValue(False)
         self.__mcbMoverAboveHundred.SetValue(False)
@@ -1049,7 +1076,10 @@ class SearchStockPanel(BasePanel):
         self.__mcbMoverBelowThirtyFourty.SetValue(False)
 
     def __on_check_below_ten_to_twenty(self, evt):
+        self.__mFilterSearchStockPanel.set_mover_below_zero_to_ten(False)
         self.__mFilterSearchStockPanel.set_mover_below_ten_to_twenty(evt.IsChecked())
+        self.__mFilterSearchStockPanel.set_mover_below_twenty_to_thirty(False)
+        self.__mFilterSearchStockPanel.set_mover_below_thirty_to_fourty(False)
         self.__mcbMoverAboveZero.SetValue(False)
         self.__mcbMoverAboveFifty.SetValue(False)
         self.__mcbMoverAboveHundred.SetValue(False)
@@ -1064,7 +1094,10 @@ class SearchStockPanel(BasePanel):
         self.__mcbMoverBelowThirtyFourty.SetValue(False)
 
     def __on_check_below_twenty_to_thirty(self, evt):
+        self.__mFilterSearchStockPanel.set_mover_below_zero_to_ten(False)
+        self.__mFilterSearchStockPanel.set_mover_below_ten_to_twenty(False)
         self.__mFilterSearchStockPanel.set_mover_below_twenty_to_thirty(evt.IsChecked())
+        self.__mFilterSearchStockPanel.set_mover_below_thirty_to_fourty(False)
         self.__mcbMoverAboveZero.SetValue(False)
         self.__mcbMoverAboveFifty.SetValue(False)
         self.__mcbMoverAboveHundred.SetValue(False)
@@ -1079,6 +1112,9 @@ class SearchStockPanel(BasePanel):
         self.__mcbMoverBelowThirtyFourty.SetValue(False)
 
     def __on_check_below_thirty_to_fourty(self, evt):
+        self.__mFilterSearchStockPanel.set_mover_below_zero_to_ten(False)
+        self.__mFilterSearchStockPanel.set_mover_below_ten_to_twenty(False)
+        self.__mFilterSearchStockPanel.set_mover_below_twenty_to_thirty(False)
         self.__mFilterSearchStockPanel.set_mover_below_thirty_to_fourty(evt.IsChecked())
         self.__mcbMoverAboveZero.SetValue(False)
         self.__mcbMoverAboveFifty.SetValue(False)
@@ -1172,6 +1208,8 @@ class SearchStockPanel(BasePanel):
 
     def __on_check_fifty_weeks_above_zero(self, evt):
         self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_zero(evt.IsChecked())
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_fifty(False)
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_hundred(False)
         self.__mcbMoverFiftyWeeksAboveFifty.SetValue(False)
         self.__mcbMoverFiftyWeeksAboveHundred.SetValue(False)
         self.__mcbMoverFiftyWeeksBelowZero.SetValue(False)
@@ -1186,7 +1224,9 @@ class SearchStockPanel(BasePanel):
         self.__mcbMoverFiftyWeeksBelowThirtyFourty.SetValue(False)
 
     def __on_check_fifty_weeks_above_fifty(self, evt):
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_zero(False)
         self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_fifty(evt.IsChecked())
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_hundred(False)
         self.__mcbMoverFiftyWeeksAboveZero.SetValue(False)
         self.__mcbMoverFiftyWeeksAboveHundred.SetValue(False)
         self.__mcbMoverFiftyWeeksBelowZero.SetValue(False)
@@ -1201,6 +1241,8 @@ class SearchStockPanel(BasePanel):
         self.__mcbMoverFiftyWeeksBelowThirtyFourty.SetValue(False)
 
     def __on_check_fifty_weeks_above_hundred(self, evt):
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_zero(False)
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_fifty(evt.IsChecked())
         self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_hundred(evt.IsChecked())
         self.__mcbMoverFiftyWeeksAboveZero.SetValue(False)
         self.__mcbMoverFiftyWeeksAboveFifty.SetValue(False)
@@ -1217,6 +1259,7 @@ class SearchStockPanel(BasePanel):
 
     def __on_check_fifty_weeks_below_zero(self, evt):
         self.__mFilterSearchStockPanel.set_mover_fifty_weeks_below_zero(evt.IsChecked())
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_below_fifty(False)
         self.__mcbMoverFiftyWeeksAboveZero.SetValue(False)
         self.__mcbMoverFiftyWeeksAboveFifty.SetValue(False)
         self.__mcbMoverFiftyWeeksAboveHundred.SetValue(False)
@@ -1231,6 +1274,7 @@ class SearchStockPanel(BasePanel):
         self.__mcbMoverFiftyWeeksBelowThirtyFourty.SetValue(False)
 
     def __on_check_fifty_weeks_below_fifty(self, evt):
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_below_zero(False)
         self.__mFilterSearchStockPanel.set_mover_fifty_weeks_below_fifty(evt.IsChecked())
         self.__mcbMoverFiftyWeeksAboveZero.SetValue(False)
         self.__mcbMoverFiftyWeeksAboveFifty.SetValue(False)
@@ -1247,6 +1291,9 @@ class SearchStockPanel(BasePanel):
 
     def __on_check_fifty_weeks_above_zero_to_ten(self, evt):      
         self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_zero_to_ten(evt.IsChecked())
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_ten_to_twenty(False)
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_twenty_to_thirty(False)
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_thirty_fourty(False)
         self.__mcbMoverFiftyWeeksAboveZero.SetValue(False)
         self.__mcbMoverFiftyWeeksAboveFifty.SetValue(False)
         self.__mcbMoverFiftyWeeksAboveHundred.SetValue(False)
@@ -1261,7 +1308,10 @@ class SearchStockPanel(BasePanel):
         self.__mcbMoverFiftyWeeksBelowThirtyFourty.SetValue(False)
 
     def __on_check_fifty_weeks_above_ten_to_twenty(self, evt):      
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_zero_to_ten(False)
         self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_ten_to_twenty(evt.IsChecked())
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_twenty_to_thirty(False)
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_thirty_fourty(False)
         self.__mcbMoverFiftyWeeksAboveZero.SetValue(False)
         self.__mcbMoverFiftyWeeksAboveFifty.SetValue(False)
         self.__mcbMoverFiftyWeeksAboveHundred.SetValue(False)
@@ -1276,7 +1326,10 @@ class SearchStockPanel(BasePanel):
         self.__mcbMoverFiftyWeeksBelowThirtyFourty.SetValue(False)
 
     def __on_check_fifty_weeks_above_twenty_to_thirty(self, evt):   
-        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_twenty_thirty(evt.IsChecked())
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_zero_to_ten(False)
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_ten_to_twenty(False)
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_twenty_to_thirty(evt.IsChecked())
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_thirty_fourty(False)
         self.__mcbMoverFiftyWeeksAboveZero.SetValue(False)
         self.__mcbMoverFiftyWeeksAboveFifty.SetValue(False)
         self.__mcbMoverFiftyWeeksAboveHundred.SetValue(False)
@@ -1291,6 +1344,9 @@ class SearchStockPanel(BasePanel):
         self.__mcbMoverFiftyWeeksBelowThirtyFourty.SetValue(False)
 
     def __on_check_fifty_weeks_above_thirty_to_fourty(self, evt):   
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_zero_to_ten(False)
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_ten_to_twenty(False)
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_twenty_to_thirty(False)
         self.__mFilterSearchStockPanel.set_mover_fifty_weeks_above_thirty_fourty(evt.IsChecked())
         self.__mcbMoverFiftyWeeksAboveZero.SetValue(False)
         self.__mcbMoverFiftyWeeksAboveFifty.SetValue(False)
@@ -1307,6 +1363,9 @@ class SearchStockPanel(BasePanel):
 
     def __on_check_fifty_weeks_below_zero_to_ten(self, evt):       
         self.__mFilterSearchStockPanel.set_mover_fifty_weeks_below_zero_to_ten(evt.IsChecked())
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_below_ten_to_twenty(False)
+        self.__mFilterSearchStockPanel.set_mover_below_twenty_to_thirty(False)
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_below_thirty_fourty(False)
         self.__mcbMoverFiftyWeeksAboveZero.SetValue(False)
         self.__mcbMoverFiftyWeeksAboveFifty.SetValue(False)
         self.__mcbMoverFiftyWeeksAboveHundred.SetValue(False)
@@ -1321,7 +1380,10 @@ class SearchStockPanel(BasePanel):
         self.__mcbMoverFiftyWeeksBelowThirtyFourty.SetValue(False)
 
     def __on_check_fifty_weeks_below_ten_to_twenty(self, evt):     
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_below_zero_to_ten(False)
         self.__mFilterSearchStockPanel.set_mover_fifty_weeks_below_ten_to_twenty(evt.IsChecked())
+        self.__mFilterSearchStockPanel.set_mover_below_twenty_to_thirty(False)
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_below_thirty_fourty(False)
         self.__mcbMoverFiftyWeeksAboveZero.SetValue(False)
         self.__mcbMoverFiftyWeeksAboveFifty.SetValue(False)
         self.__mcbMoverFiftyWeeksAboveHundred.SetValue(False)
@@ -1336,7 +1398,10 @@ class SearchStockPanel(BasePanel):
         self.__mcbMoverFiftyWeeksBelowThirtyFourty.SetValue(False)
 
     def __on_check_fifty_weeks_below_twenty_to_thirty(self, evt):   
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_below_zero_to_ten(False)
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_below_ten_to_twenty(False)
         self.__mFilterSearchStockPanel.set_mover_below_twenty_to_thirty(evt.IsChecked())
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_below_thirty_fourty(False)
         self.__mcbMoverFiftyWeeksAboveZero.SetValue(False)
         self.__mcbMoverFiftyWeeksAboveFifty.SetValue(False)
         self.__mcbMoverFiftyWeeksAboveHundred.SetValue(False)
@@ -1351,6 +1416,9 @@ class SearchStockPanel(BasePanel):
         self.__mcbMoverFiftyWeeksBelowThirtyFourty.SetValue(False)
 
     def __on_check_fifty_weeks_below_thirty_to_fourty(self, evt):   
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_below_zero_to_ten(False)
+        self.__mFilterSearchStockPanel.set_mover_fifty_weeks_below_ten_to_twenty(False)
+        self.__mFilterSearchStockPanel.set_mover_below_twenty_to_thirty(False)
         self.__mFilterSearchStockPanel.set_mover_fifty_weeks_below_thirty_fourty(evt.IsChecked())
         self.__mcbMoverFiftyWeeksAboveZero.SetValue(False)
         self.__mcbMoverFiftyWeeksAboveFifty.SetValue(False)
@@ -1367,11 +1435,13 @@ class SearchStockPanel(BasePanel):
 
     def __on_check_dividend_only(self, evt):   
         self.__mFilterSearchStockPanel.set_dividend_only(evt.IsChecked())
+        self.__mFilterSearchStockPanel.set_no_dividend_only(False)
         self.__mcbNoDividendOnly.SetValue(False)
         self.__mcbDividendDateMin.SetValue(False)
         self.__mcbDividendYeldMax.SetValue(False)
 
     def __on_check_no_dividend_only(self, evt):   
+        self.__mFilterSearchStockPanel.set_dividend_only(False)
         self.__mFilterSearchStockPanel.set_no_dividend_only(evt.IsChecked())
         self.__mcbDividendOnly.SetValue(False)
 

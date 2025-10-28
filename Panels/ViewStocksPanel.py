@@ -117,7 +117,7 @@ class ViewStocksPanel(BasePanel):
 #region - Init Methods
     def __initial_sync(self):
         if self.__mStocks is None or len(self.__mStocks) == 0x0:
-            pd = wx.ProgressDialog(Strings.STR_STOCKS, Strings.STR_INITIAL_SYNCHRONIZATION, parent = None, style = wx.PD_ELAPSED_TIME|wx.PD_REMAINING_TIME)
+            pd = wx.ProgressDialog(Strings.STR_STOCKS, Strings.STR_INITIAL_SYNCHRONIZATION, parent = None, style = wx.PD_AUTO_HIDE | wx.PD_ELAPSED_TIME|wx.PD_REMAINING_TIME)
             pd.Show()
             self.__mStocks = DataSynchronization.sync_all_stocks_and_symbols(pd)
             pd.Destroy()

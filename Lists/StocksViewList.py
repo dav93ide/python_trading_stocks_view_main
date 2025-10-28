@@ -484,7 +484,7 @@ class StocksViewList(wx.ListCtrl):
                         items.append(item)
 
                 if self.__mFilterData.get_no_dividend_only() is not None and self.__mFilterData.get_no_dividend_only():
-                    if item.get_dividend_date() is None and item.get_dividend_date() > time.time():
+                    if item.get_dividend_date() is None:
                         items.append(item)
 
             if len(items) > 0:
