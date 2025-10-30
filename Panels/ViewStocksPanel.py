@@ -143,7 +143,7 @@ class ViewStocksPanel(BasePanel):
         self.__mMainSplitter = wx.SplitterWindow(self)
         self.__init_left_panel()
         self.__init_right_panel()
-        self.__mMainSplitter.SplitVertically(self.__mLeftPanel, self.__mRightPanel, round((wx.DisplaySize()[0] / 10 * 7.5)))
+        self.__mMainSplitter.SplitVertically(self.__mLeftPanel, self.__mRightPanel, round((wx.DisplaySize()[0] / 1.5)))
 
         self.__mbsMainBox.Add(self.__mMainSplitter, 1, wx.EXPAND)
         self.__mbsMainBox.AddSpacer(10)
